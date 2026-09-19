@@ -49,16 +49,13 @@ export default async function DashboardPage() {
 
       <section className="tb-band tb-layer">
         <div className="tb-wrap">
-          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>
-            &gt; Ranked by {provider.name} provider
-          </p>
           <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
             {results.length} people,<br />strongest first.
           </h1>
           <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
             {strong.length > 0
-              ? `${strong.length} share a school, an organisation, an employer or a hometown with you. Start there — those are the messages that get answered.`
-              : "Nothing above a shared industry yet. The questions below are what would change that."}
+              ? `${strong.length} share a school, an organisation, an employer or a hometown with you. Start there.`
+              : "Nothing above a shared industry yet. The questions below would change that."}
           </p>
         </div>
       </section>
@@ -73,8 +70,7 @@ export default async function DashboardPage() {
               Write to these first
             </h2>
             <p className="body-sm tb-copy" style={{ color: "var(--ink-muted)", margin: "0 0 var(--space-24)" }}>
-              {timely[0].outreach.timing}. After that it stops being a reason to write, so we stop
-              showing it as one.
+              {timely[0].outreach.timing}.
             </p>
             <div className="grid gap-[var(--space-16)] md:grid-cols-2">
               {timely.map((r) => <PersonCard key={r.personId} person={byId.get(r.personId)!} result={r} />)}
@@ -93,12 +89,11 @@ export default async function DashboardPage() {
               <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-8) 0 0" }}>
                 {gaps[0].demandCount > 0 ? (
                   <>
-                    &ldquo;{gaps[0].field.question}&rdquo; is the one worth answering next.{" "}
-                    {gaps[0].demandCount} {gaps[0].demandCount === 1 ? "person" : "people"} here
-                    would move up the ladder if we knew.
+                    Next: &ldquo;{gaps[0].field.question}&rdquo; &mdash; {gaps[0].demandCount}{" "}
+                    {gaps[0].demandCount === 1 ? "person" : "people"} here would move up if we knew.
                   </>
                 ) : (
-                  "Each one adds people we can find for you."
+                  "Each one adds people we can find."
                 )}
               </p>
             </div>

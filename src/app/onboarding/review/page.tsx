@@ -28,8 +28,7 @@ export default async function ReviewPage() {
             Here is what<br />we read.
           </h1>
           <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
-            Everything below is something we can now match you on, so none of it becomes a question.
-            Anything we got wrong, you can fix in the next step.
+            None of this becomes a question. Fix anything wrong in the next step.
           </p>
         </div>
       </section>
@@ -42,8 +41,7 @@ export default async function ReviewPage() {
               {profile.uncertainties.length} thing{profile.uncertainties.length === 1 ? "" : "s"} we could not resolve
             </p>
             <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 var(--space-16)" }}>
-              Rather than guess, we wrote them down. Each one turns into a question, shown next to
-              exactly what confused us.
+              Each one becomes a question.
             </p>
             <ul className="body-sm" style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: "var(--space-8)" }}>
               {profile.uncertainties.map((note) => (
@@ -64,7 +62,7 @@ export default async function ReviewPage() {
             ["Majors", a.majors.join(", ")], ["Minors", a.minors.join(", ")],
             ["Certifications", a.certifications_in_progress.join(", ")], ["Clearance", a.clearance],
           ]} />
-          <Facts title="Affiliations — the strongest signal we have" items={[
+          <Facts title="Affiliations" items={[
             ["Clubs and orgs", a.student_orgs.join(", ")], ["Greek", a.greek.join(", ")],
             ["Competitions", a.case_competitions.join(", ")], ["Programs", a.programs.join(", ")],
           ]} />
@@ -82,9 +80,6 @@ export default async function ReviewPage() {
           <button type="submit" className="tb-btn tb-btn--solid mono-label">
             Looks right &mdash; ask me the rest &#8599;
           </button>
-          <span className="mono-micro" style={{ color: "var(--ink-faint)", textTransform: "none" }}>
-            &gt; Next we ask only for what a resume never carries.
-          </span>
         </form>
       </section>
 

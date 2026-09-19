@@ -62,8 +62,7 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
               <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: "var(--space-16)" }}>
                 {result.evidence.length === 0 && (
                   <li className="body-sm" style={{ color: "var(--ink-muted)" }}>
-                    Nothing beyond the fact that you want to work there. That is a real reason to
-                    write, but it is the weakest one on the list.
+                    Nothing beyond wanting to work there &mdash; the weakest reason on the list.
                   </li>
                 )}
                 {result.evidence.map((e, i) => (
@@ -100,8 +99,7 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
                 )}
               </div>
               <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-16) 0 0", textTransform: "none" }}>
-                A starting point, not a script. We do not send this for you, and we never will — a
-                message that arrives without a person behind it is the problem we exist to solve.
+                A starting point, not a script. We do not send it for you.
               </p>
             </div>
           </div>
@@ -136,7 +134,6 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
         readings={[
           { label: "Tier", value: String(result.rank) },
           { label: "Score", value: `${Math.round(result.score)} / 100` },
-          { label: "Band floor", value: String(result.components.base) },
           { label: "Evidence", value: String(result.evidence.length) },
           { label: "Source", value: person.source },
         ]}

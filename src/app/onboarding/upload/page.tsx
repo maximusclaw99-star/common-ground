@@ -24,15 +24,14 @@ export default async function UploadPage() {
             Start with<br />your resume.
           </h1>
           <p className="body" style={{ color: "var(--ink-muted)", margin: "0 0 var(--space-32)" }}>
-            Everything on it becomes something we can match you on — your school, your employers,
-            the clubs in your activities section. {derivable} of our {FIELDS.length} questions can be
-            answered straight from it, so the more it says, the less we ask.
+            Your school, employers and clubs become things we can match on. {derivable} of our{" "}
+            {FIELDS.length} questions are answered from it.
           </p>
 
           <UploadForm reader={reader.name} />
 
           <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-24) 0 0", textTransform: "none" }}>
-            &gt; Stored privately, readable only by you. We never send it anywhere on your behalf.
+            &gt; Stored privately. Never sent anywhere on your behalf.
           </p>
 
           <div className="tb-rule" style={{ marginTop: "var(--space-32)", paddingTop: "var(--space-24)" }}>

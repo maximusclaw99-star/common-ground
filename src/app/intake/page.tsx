@@ -60,8 +60,8 @@ function NothingLeftToAsk() {
     <div className="tb-panel" style={{ textAlign: "center" }}>
       <h1 className="display-sm" style={{ textTransform: "uppercase", margin: 0 }}>All caught up</h1>
       <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: "var(--space-16) auto var(--space-24)" }}>
-        We have everything we can use. Come back after a career fair or a conference — those
-        connections only stay open for about 72 hours, so we will ask again when they matter.
+        Nothing left to ask. Come back after a career fair or conference — those stay useful for
+        about 72 hours.
       </p>
       <Link className="tb-btn tb-btn--solid mono-label" href="/dashboard">See your people &#8599;</Link>
     </div>
