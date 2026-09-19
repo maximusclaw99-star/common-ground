@@ -39,7 +39,7 @@ export async function saveAnswersAction(
   completed: boolean,
 ): Promise<{ ok: boolean; error?: string }> {
   const { student } = await getSession();
-  if (!student) return { ok: false, error: "Not signed in" };
+  if (!student) redirect("/sign-up?reason=expired&next=/intake");
 
   try {
     const { facts, meta } = applyAnswers(student.facts, student.meta, answers);

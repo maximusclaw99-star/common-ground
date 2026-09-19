@@ -4,14 +4,23 @@ import Link from "next/link";
 import { useActionState } from "react";
 import type { AuthState } from "./actions";
 
+/** Why the student was sent here, when they did not come on their own. */
+const REASONS: Record<string, (demo: boolean) => string> = {
+  expired: (demo) => demo
+    ? "Your session ended: this server's memory was cleared, which takes demo accounts with it. Make the account again and carry on."
+    : "Your session ended. Sign in again to carry on.",
+};
+
 export function AuthForm({
-  mode, action, next, demo,
+  mode, action, next, demo, reason,
 }: {
   mode: "sign-in" | "sign-up";
   action: (prev: AuthState, formData: FormData) => Promise<AuthState>;
   next: string;
   demo: boolean;
+  reason?: string;
 }) {
+  const why = reason ? REASONS[reason]?.(demo) : undefined;
   const [state, formAction, pending] = useActionState(action, { error: null });
   const signingUp = mode === "sign-up";
 
@@ -28,6 +37,15 @@ export function AuthForm({
           ? "Your resume and answers are yours alone. We never post, message or apply as you."
           : "Pick up where you left off."}
       </p>
+
+      {why && (
+        <p className="body-sm tb-panel" role="status" style={{ marginTop: "var(--space-24)", color: "var(--ink)" }}>
+          <span className="mono-label" style={{ color: "var(--alert)" }}>
+            <span className="tb-led tb-led--alert" aria-hidden /> Signed out &mdash;{" "}
+          </span>
+          {why}
+        </p>
+      )}
 
       {demo && (
         <p className="body-sm tb-panel" style={{ marginTop: "var(--space-24)", color: "var(--ink-muted)" }}>

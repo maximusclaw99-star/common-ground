@@ -52,7 +52,7 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
 
   if (!isSupabaseConfigured()) {
     const id = await demoAccountId();
-    if (!id || !demoStore.get(id)) return { error: "Your session expired — sign in again." };
+    if (!id || !demoStore.get(id)) redirect("/sign-up?reason=expired&next=/onboarding/upload");
     // What the resume already told us counts for ranking right away; the
     // questionnaire still asks the student to confirm each of these, because
     // no meta entry is written here, so nothing is silently treated as answered.
@@ -63,7 +63,7 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
 
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) return { error: "Your session expired — sign in again." };
+  if (!auth.user) redirect("/sign-in?reason=expired&next=/onboarding/upload");
 
   const storagePath = `${auth.user.id}/resume.pdf`;
   const { error: uploadError } = await supabase.storage

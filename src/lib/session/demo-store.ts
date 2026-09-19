@@ -89,8 +89,23 @@ function prefilled(email: string): StoredStudent {
 
 const initial = (email: string) => (process.env.DEMO_PREFILL === "1" ? prefilled(email) : seed(email));
 
-const accounts = new Map<string, AccountRecord>();
-const idsByEmail = new Map<string, string>();
+/**
+ * Pinned to globalThis, not module scope. Next's dev server re-evaluates a
+ * module whenever it or an import changes, and can hold more than one
+ * instance of it across route bundles; a plain `const accounts = new Map()`
+ * is emptied by either, which is how an account signed up a minute ago came
+ * back as "session expired" on upload. globalThis is process-wide and outlives
+ * every re-evaluation — the same trick used for database clients in dev.
+ */
+interface DemoState {
+  accounts: Map<string, AccountRecord>;
+  idsByEmail: Map<string, string>;
+}
+const globalStore = globalThis as typeof globalThis & { __commonGroundDemo?: DemoState };
+const state: DemoState = globalStore.__commonGroundDemo ??= {
+  accounts: new Map(), idsByEmail: new Map(),
+};
+const { accounts, idsByEmail } = state;
 
 const normaliseEmail = (email: string) => email.trim().toLowerCase();
 
