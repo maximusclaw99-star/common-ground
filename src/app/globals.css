@@ -122,6 +122,34 @@ body {
     opacity: 0.32;
   }
 
+  /* Progress track. Indeterminate on purpose: the server action is one round
+     trip and reports nothing back until it finishes, so a percentage here
+     would be invented — the one thing this system says a readout must never
+     be. The block sweeps at a constant rate, which is how everything else in
+     the system moves. */
+  .tb-progress {
+    position: relative;
+    height: 10px;
+    overflow: hidden;
+    background: var(--canvas);
+    border: var(--border-1) solid var(--rule-strong);
+    border-radius: var(--radius-none);
+  }
+  .tb-progress__bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 28%;
+    background: var(--ink);
+    animation: tb-sweep 1.4s linear infinite;
+  }
+  @keyframes tb-sweep {
+    from { transform: translateX(-100%); }
+    /* 100% of the track expressed in multiples of the block's own width. */
+    to   { transform: translateX(357%); }
+  }
+
   /* The readout at the point the two hands meet. */
   .tb-contact {
     position: absolute;
@@ -142,4 +170,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .tb-chip, .tb-card { transition: none; }
+  /* Nothing sweeps; the elapsed counter beside it still says work is happening. */
+  .tb-progress__bar { animation: none; width: 100%; opacity: 0.25; }
 }

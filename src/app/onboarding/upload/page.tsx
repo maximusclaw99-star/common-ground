@@ -29,7 +29,7 @@ export default async function UploadPage() {
             answered straight from it, so the more it says, the less we ask.
           </p>
 
-          <UploadForm />
+          <UploadForm reader={reader.name} />
 
           <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-24) 0 0", textTransform: "none" }}>
             &gt; Stored privately, readable only by you. We never send it anywhere on your behalf.

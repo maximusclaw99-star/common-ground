@@ -1,17 +1,20 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { ReadingProgress } from "@/components/intake/reading-progress";
 import { uploadResume, type UploadState } from "../actions";
 
-export function UploadForm() {
+export function UploadForm({ reader }: { reader: string }) {
   const [state, action, pending] = useActionState<UploadState, FormData>(uploadResume, { error: null });
   const [name, setName] = useState<string | null>(null);
 
   return (
     <form action={action}>
       <label
-        className="flex cursor-pointer flex-col items-center justify-center text-center"
+        className="flex flex-col items-center justify-center text-center"
         style={{
+          cursor: pending ? "default" : "pointer",
+          opacity: pending ? 0.5 : 1,
           border: "var(--border-2) dashed var(--rule-strong)",
           borderRadius: "var(--radius-none)",
           background: "var(--canvas-raised)",
@@ -20,6 +23,7 @@ export function UploadForm() {
       >
         <input
           name="resume" type="file" accept="application/pdf" className="sr-only"
+          disabled={pending}
           onChange={(e) => setName(e.target.files?.[0]?.name ?? null)}
         />
         <span className="mono-label">{name ?? "Choose your resume"}</span>
@@ -39,11 +43,15 @@ export function UploadForm() {
         </p>
       )}
 
-      <button type="submit" disabled={pending || !name} aria-disabled={pending || !name}
-        className="tb-btn tb-btn--solid mono-label"
-        style={{ marginTop: "var(--space-24)", width: "100%", justifyContent: "center" }}>
-        {pending ? "Reading it" : "Read my resume \u2197"}
-      </button>
+      {pending ? (
+        <ReadingProgress reader={reader} />
+      ) : (
+        <button type="submit" disabled={!name} aria-disabled={!name}
+          className="tb-btn tb-btn--solid mono-label"
+          style={{ marginTop: "var(--space-24)", width: "100%", justifyContent: "center" }}>
+          Read my resume &#8599;
+        </button>
+      )}
     </form>
   );
 }
