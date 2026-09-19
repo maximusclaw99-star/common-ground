@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import { saveAnswersAction, structureAnswerAction } from "@/app/intake/actions";
 import type { Answer } from "@/lib/intake/answers";
 import { humanEstimate, peopleRemaining } from "@/lib/intake/steps";
@@ -30,6 +30,11 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
   const [values, setValues] = useState<Record<string, unknown>>(() =>
     Object.fromEntries(steps.flatMap((s) => s.fields).map((g) => [g.field.id, g.prefill ?? emptyFor(g)])));
   const [skipped, setSkipped] = useState<Record<string, boolean>>({});
+  // Text a student has typed into a chips field but not yet committed with
+  // Enter. Held in a ref because it must be readable at submit time without
+  // re-rendering the form on every keystroke.
+  const draftsRef = useRef<Record<string, string>>({});
+  const [invalid, setInvalid] = useState<Record<string, string>>({});
 
   // Clamped rather than indexed directly: a shorter `steps` prop must not
   // render an undefined screen.
@@ -43,6 +48,7 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
   const setValue = (id: string, value: unknown) => {
     setValues((v) => ({ ...v, [id]: value }));
     setSkipped((s) => (s[id] ? { ...s, [id]: false } : s));
+    setInvalid((p) => (p[id] ? { ...p, [id]: "" } : p));
   };
 
   const dictate = (gap: Gap) => async (raw: string) => {
@@ -73,13 +79,73 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
     }
   };
 
-  const answersForStep = (): Answer[] =>
+  /**
+   * Commits anything typed but not yet entered.
+   *
+   * Without this, typing a company and clicking Continue without pressing
+   * Enter silently dropped it — and because the button was disabled at that
+   * moment, the click did nothing at all. That is the whole "Continue does
+   * not respond" report.
+   */
+  const flushDrafts = (): Record<string, unknown> => {
+    const merged = { ...values };
+    for (const [id, draft] of Object.entries(draftsRef.current)) {
+      const text = draft.trim();
+      if (!text) continue;
+      const field = step.fields.find((g) => g.field.id === id)?.field;
+      if (!field || field.input !== "chips") continue;
+      const current = Array.isArray(merged[id]) ? (merged[id] as string[]) : [];
+      if (!current.some((c) => c.toLowerCase() === text.toLowerCase())) {
+        merged[id] = [...current, text];
+      }
+    }
+    return merged;
+  };
+
+  /** Precise, per-field, and never a dead button. */
+  const validate = (candidate: Record<string, unknown>): Record<string, string> => {
+    const problems: Record<string, string> = {};
+    for (const gap of step.fields) {
+      const { field } = gap;
+      if (!field.required || skipped[field.id]) continue;
+      const v = candidate[field.id];
+      const min = field.minAnswers ?? 1;
+      if (Array.isArray(v)) {
+        if (v.length < min) {
+          problems[field.id] = v.length === 0
+            ? `Add at least ${min}.`
+            : `Add at least ${min} — you have ${v.length}.`;
+        }
+      } else if (!v) {
+        problems[field.id] = "This one is needed to rank anyone.";
+      }
+    }
+    return problems;
+  };
+
+  const answersForStep = (source: Record<string, unknown>): Answer[] =>
     step.fields.map((gap) => ({
       fieldId: gap.field.id,
-      value: skipped[gap.field.id] ? emptyFor(gap) : values[gap.field.id],
+      value: skipped[gap.field.id] ? emptyFor(gap) : source[gap.field.id],
       source: "answer" as const,
       confidence: 1,
     }));
+
+  const submit = () => {
+    const merged = flushDrafts();
+    setValues(merged);
+    draftsRef.current = {};
+    const problems = validate(merged);
+    setInvalid(problems);
+    if (Object.keys(problems).length) {
+      // Say what is wrong and put the cursor on it, rather than going quiet.
+      const first = Object.keys(problems)[0];
+      document.getElementById(first)?.focus();
+      document.getElementById(first)?.scrollIntoView({ block: "center", behavior: "smooth" });
+      return;
+    }
+    advance(answersForStep(merged));
+  };
 
   const advance = (answers: Answer[]) => {
     setError(null);
@@ -91,12 +157,6 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
     });
   };
 
-  const missingRequired = step.fields.filter((g) => {
-    if (!g.field.required) return false;
-    const v = values[g.field.id];
-    if (Array.isArray(v)) return v.length < (g.field.minAnswers ?? 1);
-    return !v;
-  });
 
   return (
     <div>
@@ -181,7 +241,14 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
                     onChange={(v) => setValue(id, v)}
                     onDictate={dictate(gap)}
                     dictationBusy={busyField === id}
+                    onDraftChange={(draft) => { draftsRef.current[id] = draft; }}
                   />
+                  {invalid[id] && (
+                    <p className="mono-label" role="alert"
+                      style={{ color: "var(--alert)", margin: "var(--space-8) 0 0" }}>
+                      {invalid[id]}
+                    </p>
+                  )}
                   {REASON_NOTE[gap.reason] && (
                     <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-8) 0 0", textTransform: "none" }}>
                       {REASON_NOTE[gap.reason]}
@@ -213,9 +280,13 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
         )}
         <button
           type="button"
-          disabled={saving || missingRequired.length > 0}
-          aria-disabled={saving || missingRequired.length > 0}
-          onClick={() => advance(answersForStep())}
+          // Only ever disabled while a save is in flight. A button that is
+          // dead because a field is incomplete cannot explain itself, and a
+          // click on it is swallowed entirely — including the blur that would
+          // have committed what the student just typed.
+          disabled={saving}
+          aria-disabled={saving}
+          onClick={submit}
           className="tb-btn tb-btn--solid mono-label"
         >
           {saving ? "Saving" : last ? "Finish \u2197" : "Continue"}
@@ -227,18 +298,23 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
             disabled={saving}
             // Skipping the optional screen still records an answer for every
             // field on it, so none of them come back next time.
-            onClick={() => advance(step.fields.map((gap) => ({
-              fieldId: gap.field.id, value: emptyFor(gap), source: "answer" as const, confidence: 1,
-            })))}
+            onClick={() => {
+              draftsRef.current = {};
+              setInvalid({});
+              advance(step.fields.map((gap) => ({
+                fieldId: gap.field.id, value: emptyFor(gap), source: "answer" as const, confidence: 1,
+              })));
+            }}
             className="tb-btn mono-label"
           >
             Skip these
           </button>
         )}
 
-        {missingRequired.length > 0 && (
-          <span className="mono-micro" style={{ color: "var(--ink-faint)", textTransform: "none" }}>
-            &gt; {missingRequired[0].field.question} is needed to rank anyone.
+        {Object.values(invalid).some(Boolean) && (
+          <span className="mono-micro" style={{ color: "var(--alert)", textTransform: "none" }}>
+            &gt; {Object.values(invalid).filter(Boolean).length} field
+            {Object.values(invalid).filter(Boolean).length === 1 ? "" : "s"} still needed above.
           </span>
         )}
       </div>

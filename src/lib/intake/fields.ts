@@ -1,4 +1,5 @@
 import { IN_SCOPE_RANKS, tierWeight } from "@/lib/affinity/tiers";
+import { COMPANY_OPTIONS, MAJOR_OPTIONS, ROLE_OPTIONS } from "./options";
 import type { Field } from "./types";
 
 export const SENIORITY_OPTIONS = [
@@ -41,8 +42,8 @@ export const FIELDS: readonly Field[] = Object.freeze<Field[]>([
     id: "majors", path: "majors", theme: "confirm",
     question: "What are you studying?",
     help: "Majors and minors. People remember their own major — it's a real opening line, not a form field.",
-    placeholder: "Business Information Technology",
-    input: "chips", minAnswers: 1,
+    placeholder: "Search majors, or type your own",
+    input: "chips", options: MAJOR_OPTIONS, minAnswers: 1,
     tiers: [2, 3], resumeDerivable: true, required: false, dictation: false,
   },
 
@@ -155,15 +156,17 @@ export const FIELDS: readonly Field[] = Object.freeze<Field[]>([
   {
     id: "target_companies", path: "target_companies", theme: "targets",
     question: "Which companies are you targeting?",
-    help: "Five to ten is plenty. We'll go and find people at every one of them.",
-    input: "chips", minAnswers: 3,
+    help: "Pick at least three — we'll go and find people at every one of them. Not listed? Type it and press Enter.",
+    placeholder: "Search companies, or type your own",
+    input: "chips", options: COMPANY_OPTIONS, minAnswers: 3,
     tiers: [10, 11], resumeDerivable: false, required: true, dictation: true,
   },
   {
     id: "target_roles", path: "target_roles", theme: "targets",
     question: "What roles are you going for?",
-    help: "Titles as they'd appear on a posting, not what you'd call them in conversation.",
-    input: "chips", minAnswers: 1,
+    help: "Titles as they'd appear on a posting. Not listed? Type it and press Enter.",
+    placeholder: "Search roles, or type your own",
+    input: "chips", options: ROLE_OPTIONS, minAnswers: 1,
     tiers: [10, 11], resumeDerivable: true, required: true, dictation: false,
   },
   {

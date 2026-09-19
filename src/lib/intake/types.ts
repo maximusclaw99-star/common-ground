@@ -27,6 +27,8 @@ export const THEME_COPY: Readonly<Record<Theme, { title: string; subtitle: strin
 /** Option sources resolved at render time against the canonical alias tables. */
 export type OptionSource = "school-canon" | "org-canon" | "seniority" | "function" | "clearance";
 
+export type { OptionGroup } from "./options";
+
 export interface Field {
   id: string;
   /** Which AffinityFacts key this writes. */
@@ -37,7 +39,7 @@ export interface Field {
   help: string;
   placeholder?: string;
   input: InputType;
-  options?: OptionSource | readonly string[];
+  options?: OptionSource | readonly string[] | readonly import("./options").OptionGroup[];
   /** Which affinity tiers this field unlocks. Drives ordering. */
   tiers: readonly number[];
   theme: Theme;

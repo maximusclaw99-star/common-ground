@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { SCHOOL_ALIASES, ORG_ALIASES } from "@/lib/affinity/aliases";
+import type { OptionGroup } from "@/lib/intake/options";
 import type { Field } from "@/lib/intake/types";
+import { Combobox } from "./combobox";
 import { MicButton } from "./mic-button";
 import { SpecificityMeter } from "./specificity-meter";
 
@@ -22,12 +24,23 @@ function suggestionsFor(field: Field): string[] {
   return Array.isArray(field.options) ? [...field.options] : [];
 }
 
+/** Grouped option lists are objects; the canon sources are strings. */
+function groupsFor(field: Field): readonly OptionGroup[] | null {
+  const o = field.options;
+  if (Array.isArray(o) && o.length && typeof o[0] === "object" && "items" in (o[0] as object)) {
+    return o as readonly OptionGroup[];
+  }
+  return null;
+}
+
 export interface FieldInputProps {
   field: Field;
   value: unknown;
   onChange: (value: unknown) => void;
   onDictate?: (text: string) => void;
   dictationBusy?: boolean;
+  /** Reports text typed but not yet committed, so submit can flush it. */
+  onDraftChange?: (draft: string) => void;
 }
 
 export function FieldInput(props: FieldInputProps) {
@@ -42,14 +55,45 @@ export function FieldInput(props: FieldInputProps) {
   }
 }
 
-function ChipsInput({ field, value, onChange, onDictate, dictationBusy }: FieldInputProps) {
+/**
+ * A field with a curated list gets a real searchable multi-select; everything
+ * else keeps free-text chip entry with datalist hints. These are two
+ * components rather than one with a branch, because the branch would sit
+ * above the free-text path's hooks.
+ */
+function ChipsInput(props: FieldInputProps) {
+  return groupsFor(props.field) ? <PickerChips {...props} /> : <FreeChips {...props} />;
+}
+
+function PickerChips({ field, value, onChange, onDictate, dictationBusy, onDraftChange }: FieldInputProps) {
   const chips = Array.isArray(value) ? (value as string[]) : [];
+  const groups = groupsFor(field)!;
+  return (
+    <div>
+      <Combobox
+        inputId={field.id}
+        value={chips}
+        onChange={onChange}
+        groups={groups}
+        placeholder={field.placeholder}
+        onDraftChange={onDraftChange}
+      />
+      {field.dictation && onDictate && <MicButton onTranscript={onDictate} busy={dictationBusy} />}
+      {field.specificityMeter && <SpecificityMeter values={chips} />}
+    </div>
+  );
+}
+
+function FreeChips({ field, value, onChange, onDictate, dictationBusy, onDraftChange }: FieldInputProps) {
+  const chips = Array.isArray(value) ? (value as string[]) : [];
+
   const [draft, setDraft] = useState("");
   const suggestions = suggestionsFor(field);
   const listId = `${field.id}-options`;
 
   const add = (raw: string) => {
     const next = raw.trim();
+    onDraftChange?.("");
     if (!next || chips.some((c) => c.toLowerCase() === next.toLowerCase())) return setDraft("");
     onChange([...chips, next]);
     setDraft("");
@@ -85,7 +129,7 @@ function ChipsInput({ field, value, onChange, onDictate, dictationBusy }: FieldI
           // no keydown, so commit it here rather than waiting for Enter.
           const next = e.target.value;
           if (suggestions.includes(next)) add(next);
-          else setDraft(next);
+          else { setDraft(next); onDraftChange?.(next); }
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add(draft); }
