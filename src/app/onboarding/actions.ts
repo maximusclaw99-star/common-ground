@@ -1,0 +1,94 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { extractProfile } from "@/lib/ai/extract-profile";
+import { demoStore } from "@/lib/session/demo-store";
+import { getSession } from "@/lib/session";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
+
+export interface UploadState { error: string | null }
+
+/**
+ * Reads the resume once and keeps the result.
+ *
+ * The extraction is what makes the questionnaire short: every fact found here
+ * is a question the student never sees. Anything the model was unsure about
+ * lands in `uncertainties`, which routes straight to the question that
+ * resolves it.
+ */
+export async function uploadResume(_prev: UploadState, formData: FormData): Promise<UploadState> {
+  const file = formData.get("resume");
+  if (!(file instanceof File) || file.size === 0) return { error: "Choose a PDF first." };
+  if (file.type !== "application/pdf") return { error: "It needs to be a PDF." };
+  if (file.size > 15 * 1024 * 1024) return { error: "That file is over 15 MB." };
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return {
+      error: "ANTHROPIC_API_KEY isn't set, so we can't read the resume yet. " +
+        "The demo student is already loaded — continue to the questions to see the flow.",
+    };
+  }
+
+  const base64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+
+  let profile;
+  try {
+    profile = await extractProfile({ documents: [{ kind: "resume", base64 }] });
+  } catch (error) {
+    console.error("[onboarding] extraction failed", error);
+    return { error: "We couldn't read that PDF. If it's a scan, a text-based export works better." };
+  }
+
+  if (!isSupabaseConfigured()) {
+    demoStore.set({ profile });
+    redirect("/onboarding/review");
+  }
+
+  const supabase = await createClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return { error: "Your session expired — sign in again." };
+
+  const storagePath = `${auth.user.id}/resume.pdf`;
+  const { error: uploadError } = await supabase.storage
+    .from("documents")
+    .upload(storagePath, file, { upsert: true, contentType: "application/pdf" });
+  if (uploadError) return { error: uploadError.message };
+
+  await supabase.from("documents").upsert({
+    user_id: auth.user.id, kind: "resume", storage_path: storagePath,
+    filename: file.name, byte_size: file.size, parsed_at: new Date().toISOString(),
+  }, { onConflict: "user_id,kind" });
+
+  await supabase.from("student_profiles").upsert({
+    user_id: auth.user.id,
+    skills: profile.skills, coursework: profile.coursework,
+    experience: profile.experience, projects: profile.projects,
+    targets: profile.targets, resume_affinity: profile.affinity,
+    uncertainties: profile.uncertainties,
+  }, { onConflict: "user_id" });
+
+  await supabase.from("profiles").upsert({
+    user_id: auth.user.id, full_name: profile.full_name,
+    school: profile.school, grad_date: profile.grad_date, work_auth: profile.work_auth,
+  }, { onConflict: "user_id" });
+
+  redirect("/onboarding/review");
+}
+
+/** The confirmation gate: nothing downstream reads a profile the student hasn't seen. */
+export async function confirmProfile(): Promise<void> {
+  const { student } = await getSession();
+  if (!student) redirect("/sign-in");
+
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient();
+    const { data: auth } = await supabase.auth.getUser();
+    if (auth.user) {
+      await supabase.from("student_profiles")
+        .update({ confirmed_at: new Date().toISOString() })
+        .eq("user_id", auth.user.id);
+    }
+  }
+  redirect("/intake");
+}
