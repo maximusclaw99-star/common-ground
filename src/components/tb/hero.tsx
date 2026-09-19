@@ -26,7 +26,14 @@ export function Hero({
   const pageRef = useRef<HTMLElement>(null);
 
   return (
-    <section ref={pageRef} className="tb-page" style={{ position: "relative", flexGrow: 1 }}>
+    <section
+      ref={pageRef}
+      className="tb-page"
+      // Tall enough that the hands are the page rather than a texture behind
+      // it. Capped in px so a very tall monitor does not strand the bands
+      // below it off-screen.
+      style={{ position: "relative", flexGrow: 1, minHeight: "min(82vh, 880px)" }}
+    >
       <HeroLayers pageRef={pageRef} picture={picture} marble={marble} />
       <div className="tb-hero tb-layer">
         <div className="tb-hero__inner">

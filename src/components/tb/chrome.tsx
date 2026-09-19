@@ -9,25 +9,6 @@ function Mark() {
   );
 }
 
-/**
- * The announcement bar. One per page, and the only place `inverse-surface` is
- * used besides the solid button.
- */
-export function Ticker({ items }: { items: string[] }) {
-  const track = [...items, ...items];
-  return (
-    <div className="tb-ticker mono-ticker" role="marquee" aria-label="Announcement">
-      <div className="tb-ticker__track">
-        {track.map((item, i) => (
-          <span key={i} className="tb-ticker__item" aria-hidden={i >= items.length || undefined}>
-            {item}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export interface NavProps {
   current?: "people" | "openings" | "profile";
   signedIn?: boolean;

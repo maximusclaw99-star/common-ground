@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Nav, StatusFooter, Ticker } from "@/components/tb/chrome";
+import { Nav, StatusFooter } from "@/components/tb/chrome";
 import { Hero } from "@/components/tb/hero";
 import { LiveClock } from "@/components/tb/live-clock";
 import { TierLadder } from "@/components/tier-badge";
@@ -20,10 +20,6 @@ export default async function LandingPage() {
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
-      <Ticker items={[
-        "Recruiters stopped reading cold applications. They still answer people they have something in common with.",
-        "Internships open a year early. The students who get them started talking long before the posting went up.",
-      ]} />
       <Nav cta={{ label: "Sign in", href: "/sign-in" }} />
 
       <Hero

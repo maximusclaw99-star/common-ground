@@ -3,7 +3,7 @@
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { RELIEF_RATIO, handsReliefSource } from "./hands-relief";
-import { CONNECT_AT, REACH, fit, measure, pictureSource, type Geometry } from "./picture-relief";
+import { CONNECT_AT, NEAR, REACH, fit, measure, pictureSource, type Geometry } from "./picture-relief";
 
 /**
  * The three background layers, together — the system is explicit that they
@@ -60,7 +60,11 @@ export function HeroLayers({ pageRef, picture, marble }: {
     if (reduced) state.p = 1;
 
     const relief = window.TB.asciiRelief(host, loaded
-      ? { source: pictureSource(loaded.img, loaded.geo, state), cell: 5, ratio: RELIEF_RATIO, alpha: 0.55 }
+      // gamma below 1 lifts the mid-tones. A photograph's slender parts — the
+      // human hand's extended finger especially — otherwise land on the first
+      // two rungs of the ramp, which are "." and ",", and a picture whose
+      // subject dissolves exactly where the two hands meet is no picture.
+      ? { source: pictureSource(loaded.img, loaded.geo, state), cell: 5, ratio: RELIEF_RATIO, alpha: 0.5, gamma: 0.5 }
       : { source: handsReliefSource(), cell: 5, ratio: RELIEF_RATIO, alpha: 0.32 });
     const cross = page ? window.TB.crosshair(page) : null;
 
@@ -87,6 +91,10 @@ export function HeroLayers({ pageRef, picture, marble }: {
       state.p += (target - state.p) * 0.16;
       if (Math.abs(target - state.p) < 0.002) state.p = target;
       relief?.redraw();
+      // Kept in step with the live geometry rather than placed once: if the
+      // two ever drift, the cursor is measured against a point the reader
+      // cannot see.
+      placeMark();
       setConnected((was) => { const now = state.p >= CONNECT_AT; return was === now ? was : now; });
       raf = state.p !== target ? requestAnimationFrame(tick) : 0;
     };
@@ -97,7 +105,8 @@ export function HeroLayers({ pageRef, picture, marble }: {
       const c = contact(); if (!c) return;
       const r = host.getBoundingClientRect();
       const d = Math.hypot(e.clientX - (r.left + c.x), e.clientY - (r.top + c.y));
-      target = 1 - Math.min(1, d / (REACH * host.clientHeight));
+      const near = NEAR * host.clientHeight, reach = REACH * host.clientHeight;
+      target = 1 - Math.min(1, Math.max(0, (d - near) / (reach - near)));
       kick();
     };
     const onLeave = () => { if (!reduced && !pinned) { target = 0; kick(); } };
