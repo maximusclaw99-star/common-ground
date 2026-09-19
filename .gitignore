@@ -43,6 +43,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Synced from design/terminal-brutalist by scripts/sync-design.mjs
-/public/tb/
-/src/styles/tb-bundle.generated.css
+# NOTE: the two outputs of scripts/sync-design.mjs are deliberately NOT ignored.
+# They are generated, but they are also build inputs: globals.css imports the
+# stylesheet, and the page fetches /tb/bundle.js at runtime. Ignoring them made
+# the build depend on the `prebuild` npm lifecycle hook, and `next build` run
+# directly — which is what a plain CI job does — failed on a fresh clone.
+# They are regenerated on every dev and build, so drift shows up as a diff.
