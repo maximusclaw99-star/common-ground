@@ -79,6 +79,46 @@ body {
   }
   .tb-field::placeholder { color: var(--ink-faint); text-transform: none; }
 
+  /* Dictation. The mic sits at the end of the field it fills, so the control
+     and its target are the same object — a labelled button underneath read as
+     a second, competing action. A circle, alone in a square system, because
+     it is the one control that is a device rather than a field. */
+  .tb-dictate__box { position: relative; display: block; }
+  .tb-dictate__box .tb-field { padding-right: 48px; }
+  .tb-mic {
+    position: absolute;
+    right: var(--space-8);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-1) solid var(--rule-strong);
+    border-radius: 999px;
+    background: var(--canvas-raised);
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: color 100ms ease, background 100ms ease, border-color 100ms ease;
+  }
+  /* Where there is no single field to sit in — a pair, a list of events — the
+     same circle stands on its own line instead. */
+  .tb-mic--standalone { position: static; transform: none; flex-shrink: 0; }
+  .tb-mic:hover:not(:disabled) { color: var(--ink); border-color: var(--ink); }
+  .tb-mic:disabled { opacity: 0.4; cursor: default; }
+  .tb-mic[aria-pressed="true"] {
+    color: var(--canvas);
+    background: var(--signal);
+    border-color: var(--signal);
+    animation: tb-mic-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes tb-mic-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--signal) 55%, transparent); }
+    50%      { box-shadow: 0 0 0 5px color-mix(in srgb, var(--signal) 0%, transparent); }
+  }
+  .tb-mic svg { width: 15px; height: 15px; }
+
   /* A removable chip. Square, bordered, mono — a pill would read as a
      different product entirely. */
   .tb-chip {
@@ -169,7 +209,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tb-chip, .tb-card { transition: none; }
+  .tb-chip, .tb-card, .tb-mic { transition: none; }
+  /* The mic still turns solid while listening; it just stops pulsing. */
+  .tb-mic[aria-pressed="true"] { animation: none; }
   /* Nothing sweeps; the elapsed counter beside it still says work is happening. */
   .tb-progress__bar { animation: none; width: 100%; opacity: 0.25; }
 }

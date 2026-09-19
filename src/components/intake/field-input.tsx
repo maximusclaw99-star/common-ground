@@ -5,7 +5,7 @@ import { SCHOOL_ALIASES, ORG_ALIASES } from "@/lib/affinity/aliases";
 import type { OptionGroup } from "@/lib/intake/options";
 import type { Field } from "@/lib/intake/types";
 import { Combobox } from "./combobox";
-import { MicButton } from "./mic-button";
+import { Dictation, MicField } from "./mic-button";
 import { SpecificityMeter } from "./specificity-meter";
 
 const inputClass = "tb-field";
@@ -43,6 +43,37 @@ export interface FieldInputProps {
   onDraftChange?: (draft: string) => void;
 }
 
+/** Wraps a single field so the mic sits at its end, with any status beneath. */
+function withMic(
+  field: Field,
+  onDictate: ((text: string) => void) | undefined,
+  busy: boolean | undefined,
+  input: React.ReactNode,
+) {
+  if (!field.dictation || !onDictate) return input;
+  return <MicField onTranscript={onDictate} busy={busy}>{input}</MicField>;
+}
+
+/** For fields made of several inputs, where no one box owns the mic. */
+function StandaloneMic({
+  field, onDictate, busy, row,
+}: {
+  field: Field;
+  onDictate?: (text: string) => void;
+  busy?: boolean;
+  row: (mic: React.ReactNode) => React.ReactNode;
+}) {
+  if (!field.dictation || !onDictate) return <>{row(null)}</>;
+  return (
+    <Dictation
+      onTranscript={onDictate}
+      busy={busy}
+      standalone
+      render={(mic, status) => <>{row(mic)}{status}</>}
+    />
+  );
+}
+
 export function FieldInput(props: FieldInputProps) {
   const { field } = props;
   switch (field.input) {
@@ -68,17 +99,26 @@ function ChipsInput(props: FieldInputProps) {
 function PickerChips({ field, value, onChange, onDictate, dictationBusy, onDraftChange }: FieldInputProps) {
   const chips = Array.isArray(value) ? (value as string[]) : [];
   const groups = groupsFor(field)!;
+  const box = (trailing?: React.ReactNode) => (
+    <Combobox
+      inputId={field.id}
+      value={chips}
+      onChange={onChange}
+      groups={groups}
+      placeholder={field.placeholder}
+      onDraftChange={onDraftChange}
+      trailing={trailing}
+    />
+  );
   return (
     <div>
-      <Combobox
-        inputId={field.id}
-        value={chips}
-        onChange={onChange}
-        groups={groups}
-        placeholder={field.placeholder}
-        onDraftChange={onDraftChange}
-      />
-      {field.dictation && onDictate && <MicButton onTranscript={onDictate} busy={dictationBusy} />}
+      {field.dictation && onDictate ? (
+        <Dictation
+          onTranscript={onDictate}
+          busy={dictationBusy}
+          render={(mic, status) => <>{box(mic)}{status}</>}
+        />
+      ) : box()}
       {field.specificityMeter && <SpecificityMeter values={chips} />}
     </div>
   );
@@ -119,29 +159,31 @@ function FreeChips({ field, value, onChange, onDictate, dictationBusy, onDraftCh
         </ul>
       )}
 
-      <input
-        className={inputClass}
-        value={draft}
-        list={suggestions.length ? listId : undefined}
-        placeholder={field.placeholder ?? "Type and press Enter"}
-        onChange={(e) => {
-          // Picking from the datalist fires a change with the full value and
-          // no keydown, so commit it here rather than waiting for Enter.
-          const next = e.target.value;
-          if (suggestions.includes(next)) add(next);
-          else { setDraft(next); onDraftChange?.(next); }
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add(draft); }
-          if (e.key === "Backspace" && !draft && chips.length) onChange(chips.slice(0, -1));
-        }}
-        onBlur={() => add(draft)}
-      />
+      {withMic(
+        field, onDictate, dictationBusy,
+        <input
+          className={inputClass}
+          value={draft}
+          list={suggestions.length ? listId : undefined}
+          placeholder={field.placeholder ?? "Type and press Enter"}
+          onChange={(e) => {
+            // Picking from the datalist fires a change with the full value and
+            // no keydown, so commit it here rather than waiting for Enter.
+            const next = e.target.value;
+            if (suggestions.includes(next)) add(next);
+            else { setDraft(next); onDraftChange?.(next); }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add(draft); }
+            if (e.key === "Backspace" && !draft && chips.length) onChange(chips.slice(0, -1));
+          }}
+          onBlur={() => add(draft)}
+        />,
+      )}
       {suggestions.length > 0 && (
         <datalist id={listId}>{suggestions.map((s) => <option key={s} value={s} />)}</datalist>
       )}
 
-      {field.dictation && onDictate && <MicButton onTranscript={onDictate} busy={dictationBusy} />}
       {field.specificityMeter && <SpecificityMeter values={chips} />}
     </div>
   );
@@ -150,13 +192,15 @@ function FreeChips({ field, value, onChange, onDictate, dictationBusy, onDraftCh
 function TextInput({ field, value, onChange, onDictate, dictationBusy }: FieldInputProps) {
   return (
     <div>
-      <input
-        className={inputClass}
-        value={typeof value === "string" ? value : ""}
-        placeholder={field.placeholder}
-        onChange={(e) => onChange(e.target.value)}
-      />
-      {field.dictation && onDictate && <MicButton onTranscript={onDictate} busy={dictationBusy} />}
+      {withMic(
+        field, onDictate, dictationBusy,
+        <input
+          className={inputClass}
+          value={typeof value === "string" ? value : ""}
+          placeholder={field.placeholder}
+          onChange={(e) => onChange(e.target.value)}
+        />,
+      )}
     </div>
   );
 }
@@ -198,14 +242,16 @@ function PairInput({ field, value, onChange, onDictate, dictationBusy }: FieldIn
   };
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-[var(--space-12)]">
-        <input className={inputClass} style={{ flex: 1, minWidth: "10rem" }} placeholder="from — cybersecurity"
-          value={pair.from ?? ""} onChange={(e) => set("from")(e.target.value)} />
-        <span className="mono-label" style={{ color: "var(--ink-faint)" }} aria-hidden>&rarr;</span>
-        <input className={inputClass} style={{ flex: 1, minWidth: "10rem" }} placeholder="to — consulting"
-          value={pair.to ?? ""} onChange={(e) => set("to")(e.target.value)} />
-      </div>
-      {field.dictation && onDictate && <MicButton onTranscript={onDictate} busy={dictationBusy} />}
+      <StandaloneMic field={field} onDictate={onDictate} busy={dictationBusy} row={(mic) => (
+        <div className="flex flex-wrap items-center gap-[var(--space-12)]">
+          <input className={inputClass} style={{ flex: 1, minWidth: "10rem" }} placeholder="from — cybersecurity"
+            value={pair.from ?? ""} onChange={(e) => set("from")(e.target.value)} />
+          <span className="mono-label" style={{ color: "var(--ink-faint)" }} aria-hidden>&rarr;</span>
+          <input className={inputClass} style={{ flex: 1, minWidth: "10rem" }} placeholder="to — consulting"
+            value={pair.to ?? ""} onChange={(e) => set("to")(e.target.value)} />
+          {mic}
+        </div>
+      )} />
     </div>
   );
 }
@@ -241,14 +287,18 @@ function EventListInput({ field, value, onChange, onDictate, dictationBusy }: Fi
           </button>
         </div>
       ))}
-      <button
-        type="button"
-        onClick={() => onChange([...rows, { name: "", kind: "career_fair", date: new Date().toISOString().slice(0, 10), org: null }])}
-        className="tb-btn tb-btn--sm mono-label"
-      >
-        + Add an event
-      </button>
-      {field.dictation && onDictate && <MicButton onTranscript={onDictate} busy={dictationBusy} />}
+      <StandaloneMic field={field} onDictate={onDictate} busy={dictationBusy} row={(mic) => (
+        <div className="flex flex-wrap items-center gap-[var(--space-12)]">
+          <button
+            type="button"
+            onClick={() => onChange([...rows, { name: "", kind: "career_fair", date: new Date().toISOString().slice(0, 10), org: null }])}
+            className="tb-btn tb-btn--sm mono-label"
+          >
+            + Add an event
+          </button>
+          {mic}
+        </div>
+      )} />
     </div>
   );
 }

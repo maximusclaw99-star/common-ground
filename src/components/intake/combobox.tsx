@@ -26,11 +26,13 @@ export interface ComboboxProps {
   /** Reports the uncommitted text so the form can flush it on submit. */
   onDraftChange?: (draft: string) => void;
   inputId?: string;
+  /** Sits inside the input's box, at its end — the dictation mic. */
+  trailing?: React.ReactNode;
 }
 
 interface Row { kind: "header" | "option" | "free"; label: string; value?: string }
 
-export function Combobox({ value, onChange, groups, placeholder, onDraftChange, inputId }: ComboboxProps) {
+export function Combobox({ value, onChange, groups, placeholder, onDraftChange, inputId, trailing }: ComboboxProps) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -124,20 +126,23 @@ export function Combobox({ value, onChange, groups, placeholder, onDraftChange, 
         </ul>
       )}
 
-      <input
-        id={inputId}
-        className="tb-field"
-        role="combobox"
-        aria-expanded={open}
-        aria-controls={listId}
-        aria-autocomplete="list"
-        autoComplete="off"
-        value={query}
-        placeholder={placeholder ?? "Search, or type your own"}
-        onChange={(e) => { type(e.target.value); setOpen(true); }}
-        onFocus={() => setOpen(true)}
-        onKeyDown={onKeyDown}
-      />
+      <span className="tb-dictate__box">
+        <input
+          id={inputId}
+          className="tb-field"
+          role="combobox"
+          aria-expanded={open}
+          aria-controls={listId}
+          aria-autocomplete="list"
+          autoComplete="off"
+          value={query}
+          placeholder={placeholder ?? "Search, or type your own"}
+          onChange={(e) => { type(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={onKeyDown}
+        />
+        {trailing}
+      </span>
 
       {open && rows.length > 0 && (
         <ul
