@@ -33,7 +33,6 @@ export default async function LandingPage() {
         note="Two minutes &middot; We only ask what your resume does not already say"
       >
         <Link className="tb-btn tb-btn--solid mono-label" href={start}>Upload your resume &#8599;</Link>
-        <Link className="tb-btn mono-label" href="#ladder">See the ladder</Link>
       </Hero>
 
       <section className="tb-band tb-band-top tb-layer">
