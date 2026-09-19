@@ -17,6 +17,10 @@ one carries the small, nameable things a coffee chat runs on — the same things
 Fourteen people (`p9001`–`p9014`) are planted around the demo student in `src/lib/session/demo-store.ts` so the
 dashboard has a hook on every rung the moment `PEOPLE_PROVIDER=databricks` is set.
 
+Every person and student also carries a `photo_url` into `public/people/` — 200 randomuser.me portraits fetched once by
+`scripts/fetch_portraits.py` and committed, gender-matched to the generated first name, so the demo never depends on a
+third-party host. Swap `photo_for()` in the generator to DiceBear SVGs if photos of real models ever feel wrong.
+
 ## Turn it on in the app
 
 ```bash
@@ -27,9 +31,16 @@ DATABRICKS_WAREHOUSE_ID=<from SQL Warehouses -> Connection details>
 DATABRICKS_TOKEN=<personal access token>
 ```
 
-`npm run dev` — the dashboard now ranks the warehouse's 314 people instead of the 11-person fixture cast.
-`src/lib/people/databricks.ts` reads `workspace.jobsearch.v_people_provider`, which already emits `Person`'s
-column names; the file is transport, not mapping.
+`npm run dev` — the dashboard now ranks the warehouse's 314 people instead of the 11-person fixture cast, and
+`/jobs` shows the warehouse's 120 openings scored for the student, grouped by the month each window opens.
+
+- `src/lib/people/databricks.ts` reads `workspace.jobsearch.v_people_provider`, which already emits `Person`'s
+  column names; the file is transport, not mapping.
+- `src/lib/positions/databricks.ts` reads `positions` + `companies` + `position_requirements` and scores in the app
+  (`src/lib/positions/score.ts`) with the same weights as `v_student_position_matches`, because the student on the
+  page is not a row in the warehouse's `students` table. `POSITIONS_PROVIDER` follows `PEOPLE_PROVIDER`.
+- Skill-gap advice on `/jobs` is one `ai_query()` call for the top opening's headline gap, the same prompt as
+  `v_skill_gap_advice`, raced against an 8-second deadline so it can never block the page.
 
 ## Rebuild the warehouse
 
