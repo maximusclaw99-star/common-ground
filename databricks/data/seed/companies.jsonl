@@ -1,0 +1,41 @@
+{"id": "c001", "name": "Databricks", "vertical": "swe", "size": "large", "hq": "San Francisco, CA", "careers_url": "https://careers.example.com/databricks"}
+{"id": "c002", "name": "Northwind Systems", "vertical": "swe", "size": "large", "hq": "Boston, MA", "careers_url": "https://careers.example.com/northwind-systems"}
+{"id": "c003", "name": "Lattice Labs", "vertical": "swe", "size": "mid", "hq": "Austin, TX", "careers_url": "https://careers.example.com/lattice-labs"}
+{"id": "c004", "name": "Halcyon Cloud", "vertical": "swe", "size": "large", "hq": "Boston, MA", "careers_url": "https://careers.example.com/halcyon-cloud"}
+{"id": "c005", "name": "Quillsoft", "vertical": "swe", "size": "small", "hq": "Atlanta, GA", "careers_url": "https://careers.example.com/quillsoft"}
+{"id": "c006", "name": "Orbital Dynamics", "vertical": "swe", "size": "mid", "hq": "Dallas, TX", "careers_url": "https://careers.example.com/orbital-dynamics"}
+{"id": "c007", "name": "Ferrite AI", "vertical": "swe", "size": "small", "hq": "Seattle, WA", "careers_url": "https://careers.example.com/ferrite-ai"}
+{"id": "c008", "name": "Brightline Software", "vertical": "swe", "size": "mid", "hq": "New York, NY", "careers_url": "https://careers.example.com/brightline-software"}
+{"id": "c009", "name": "Kestrel Networks", "vertical": "swe", "size": "large", "hq": "San Francisco, CA", "careers_url": "https://careers.example.com/kestrel-networks"}
+{"id": "c010", "name": "Tidewater Robotics", "vertical": "swe", "size": "small", "hq": "Atlanta, GA", "careers_url": "https://careers.example.com/tidewater-robotics"}
+{"id": "c011", "name": "Meridian Data", "vertical": "swe", "size": "mid", "hq": "San Francisco, CA", "careers_url": "https://careers.example.com/meridian-data"}
+{"id": "c012", "name": "Vantage Mobility", "vertical": "swe", "size": "large", "hq": "Dallas, TX", "careers_url": "https://careers.example.com/vantage-mobility"}
+{"id": "c013", "name": "Sable Security", "vertical": "swe", "size": "small", "hq": "New York, NY", "careers_url": "https://careers.example.com/sable-security"}
+{"id": "c014", "name": "Cobalt Health Tech", "vertical": "swe", "size": "mid", "hq": "Boston, MA", "careers_url": "https://careers.example.com/cobalt-health-tech"}
+{"id": "c015", "name": "Argent Payments", "vertical": "swe", "size": "large", "hq": "Arlington, VA", "careers_url": "https://careers.example.com/argent-payments"}
+{"id": "c016", "name": "Skyline Devices", "vertical": "swe", "size": "mid", "hq": "New York, NY", "careers_url": "https://careers.example.com/skyline-devices"}
+{"id": "c017", "name": "Granite Infrastructure", "vertical": "swe", "size": "large", "hq": "Atlanta, GA", "careers_url": "https://careers.example.com/granite-infrastructure"}
+{"id": "c018", "name": "Nimbus Analytics", "vertical": "swe", "size": "mid", "hq": "New York, NY", "careers_url": "https://careers.example.com/nimbus-analytics"}
+{"id": "c019", "name": "Redwood Platforms", "vertical": "swe", "size": "large", "hq": "New York, NY", "careers_url": "https://careers.example.com/redwood-platforms"}
+{"id": "c020", "name": "Deloitte", "vertical": "consulting", "size": "large", "hq": "Washington, DC", "careers_url": "https://careers.example.com/deloitte"}
+{"id": "c021", "name": "Ashford & Grey", "vertical": "consulting", "size": "large", "hq": "Arlington, VA", "careers_url": "https://careers.example.com/ashford---grey"}
+{"id": "c022", "name": "Beacon Strategy Partners", "vertical": "consulting", "size": "large", "hq": "Chicago, IL", "careers_url": "https://careers.example.com/beacon-strategy-partners"}
+{"id": "c023", "name": "Corvid Advisory", "vertical": "consulting", "size": "mid", "hq": "Dallas, TX", "careers_url": "https://careers.example.com/corvid-advisory"}
+{"id": "c024", "name": "Delta Ridge Consulting", "vertical": "consulting", "size": "large", "hq": "New York, NY", "careers_url": "https://careers.example.com/delta-ridge-consulting"}
+{"id": "c025", "name": "Eastgate Partners", "vertical": "consulting", "size": "mid", "hq": "Seattle, WA", "careers_url": "https://careers.example.com/eastgate-partners"}
+{"id": "c026", "name": "Foxglove Advisory", "vertical": "consulting", "size": "small", "hq": "Dallas, TX", "careers_url": "https://careers.example.com/foxglove-advisory"}
+{"id": "c027", "name": "Harbor Point Consulting", "vertical": "consulting", "size": "large", "hq": "Dallas, TX", "careers_url": "https://careers.example.com/harbor-point-consulting"}
+{"id": "c028", "name": "Ironwood Strategy", "vertical": "consulting", "size": "mid", "hq": "Austin, TX", "careers_url": "https://careers.example.com/ironwood-strategy"}
+{"id": "c029", "name": "Juniper Public Sector", "vertical": "consulting", "size": "mid", "hq": "Austin, TX", "careers_url": "https://careers.example.com/juniper-public-sector"}
+{"id": "c030", "name": "Keystone Operations Group", "vertical": "consulting", "size": "small", "hq": "Boston, MA", "careers_url": "https://careers.example.com/keystone-operations-group"}
+{"id": "c031", "name": "Acme Analytics", "vertical": "consulting", "size": "small", "hq": "Washington, DC", "careers_url": "https://careers.example.com/acme-analytics"}
+{"id": "c032", "name": "Atlas Capital Partners", "vertical": "finance", "size": "large", "hq": "San Francisco, CA", "careers_url": "https://careers.example.com/atlas-capital-partners"}
+{"id": "c033", "name": "Blackstone Ridge", "vertical": "finance", "size": "large", "hq": "San Francisco, CA", "careers_url": "https://careers.example.com/blackstone-ridge"}
+{"id": "c034", "name": "Carraway Asset Management", "vertical": "finance", "size": "mid", "hq": "San Francisco, CA", "careers_url": "https://careers.example.com/carraway-asset-management"}
+{"id": "c035", "name": "Dunmore Securities", "vertical": "finance", "size": "large", "hq": "New York, NY", "careers_url": "https://careers.example.com/dunmore-securities"}
+{"id": "c036", "name": "Everest Quant", "vertical": "finance", "size": "small", "hq": "New York, NY", "careers_url": "https://careers.example.com/everest-quant"}
+{"id": "c037", "name": "Falcon Point Trading", "vertical": "finance", "size": "mid", "hq": "Chicago, IL", "careers_url": "https://careers.example.com/falcon-point-trading"}
+{"id": "c038", "name": "Greystone Investment Bank", "vertical": "finance", "size": "large", "hq": "Seattle, WA", "careers_url": "https://careers.example.com/greystone-investment-bank"}
+{"id": "c039", "name": "Harlow Private Equity", "vertical": "finance", "size": "mid", "hq": "Austin, TX", "careers_url": "https://careers.example.com/harlow-private-equity"}
+{"id": "c040", "name": "Ivory Tower Ventures", "vertical": "finance", "size": "small", "hq": "San Francisco, CA", "careers_url": "https://careers.example.com/ivory-tower-ventures"}
+{"id": "c041", "name": "Jetstream Fintech", "vertical": "finance", "size": "mid", "hq": "Washington, DC", "careers_url": "https://careers.example.com/jetstream-fintech"}

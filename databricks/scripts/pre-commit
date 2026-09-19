@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Blocks commits that contain secrets. Installed into .git/hooks by scripts/setup.sh.
+# Patterns: Databricks PATs, bearer headers with a real value, a filled-in RAPIDAPI_KEY,
+# GitHub tokens. Extend as we add providers.
+set -euo pipefail
+
+pattern='dapi[0-9a-f]{20,}|Bearer [A-Za-z0-9_\-]{16,}|RAPIDAPI_KEY[[:space:]]*=[[:space:]]*[^[:space:]]+|gh[pousr]_[A-Za-z0-9]{20,}'
+
+# Only scan what's staged; ignore the example env file and this hook itself.
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -vE '(^|/)(\.env\.example|scripts/pre-commit)$' || true)
+[ -z "$files" ] && exit 0
+
+hits=$(git diff --cached -U0 -- $files | grep -E '^\+' | grep -vE '^\+\+\+' | grep -nE "$pattern" || true)
+if [ -n "$hits" ]; then
+  echo "✗ commit blocked: possible secret in staged changes"
+  echo "$hits" | sed 's/^/    /' | cut -c1-160
+  echo "  Move it to .env (gitignored) and read it from the environment."
+  exit 1
+fi
+exit 0

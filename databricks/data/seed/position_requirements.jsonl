@@ -1,0 +1,572 @@
+{"position_id": "j120", "requirement": "Accounting", "kind": "skill", "required": false}
+{"position_id": "j120", "requirement": "Financial modeling", "kind": "skill", "required": true}
+{"position_id": "j120", "requirement": "Statistics", "kind": "skill", "required": true}
+{"position_id": "j120", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j120", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j120", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j055", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j055", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j055", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j055", "requirement": "Prior internship or shipped project", "kind": "experience", "required": false}
+{"position_id": "j055", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j024", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j024", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j024", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j024", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j024", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j065", "requirement": "Prior leadership role in a student org", "kind": "experience", "required": true}
+{"position_id": "j065", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false}
+{"position_id": "j065", "requirement": "PMP", "kind": "certification", "required": true}
+{"position_id": "j065", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j065", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j102", "requirement": "Bloomberg Terminal", "kind": "skill", "required": true}
+{"position_id": "j102", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j102", "requirement": "Statistics", "kind": "skill", "required": false}
+{"position_id": "j102", "requirement": "Financial modeling", "kind": "skill", "required": false}
+{"position_id": "j102", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j006", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j006", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j006", "requirement": "Security+", "kind": "certification", "required": false}
+{"position_id": "j006", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j006", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j087", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false}
+{"position_id": "j087", "requirement": "Case interviews", "kind": "skill", "required": true}
+{"position_id": "j087", "requirement": "Prior leadership role in a student org", "kind": "experience", "required": false}
+{"position_id": "j087", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j043", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j043", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j043", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j043", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j043", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j058", "requirement": "Spark", "kind": "skill", "required": false}
+{"position_id": "j058", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": false}
+{"position_id": "j058", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": true}
+{"position_id": "j058", "requirement": "Docker", "kind": "skill", "required": true}
+{"position_id": "j058", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j036", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j036", "requirement": "Machine Learning", "kind": "skill", "required": true}
+{"position_id": "j036", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j036", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j036", "requirement": "BS in Computer Science or related", "kind": "degree", "required": false}
+{"position_id": "j054", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j054", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": false}
+{"position_id": "j054", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j054", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j054", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j096", "requirement": "FMVA", "kind": "certification", "required": true}
+{"position_id": "j096", "requirement": "CFA Level I", "kind": "certification", "required": false}
+{"position_id": "j096", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j096", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": false}
+{"position_id": "j092", "requirement": "Financial modeling", "kind": "skill", "required": false}
+{"position_id": "j092", "requirement": "Bloomberg Terminal", "kind": "skill", "required": true}
+{"position_id": "j092", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j092", "requirement": "Series 79 (SIE)", "kind": "certification", "required": false}
+{"position_id": "j092", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j108", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j108", "requirement": "Prior finance internship", "kind": "experience", "required": false}
+{"position_id": "j108", "requirement": "Financial modeling", "kind": "skill", "required": false}
+{"position_id": "j108", "requirement": "Series 79 (SIE)", "kind": "certification", "required": true}
+{"position_id": "j108", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j014", "requirement": "Git", "kind": "skill", "required": false}
+{"position_id": "j014", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j014", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j014", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j073", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": true}
+{"position_id": "j073", "requirement": "PMP", "kind": "certification", "required": false}
+{"position_id": "j073", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j073", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j073", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j050", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j050", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j050", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j050", "requirement": "Spark", "kind": "skill", "required": true}
+{"position_id": "j050", "requirement": "BS in Computer Science or related", "kind": "degree", "required": false}
+{"position_id": "j033", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j033", "requirement": "Prior internship or shipped project", "kind": "experience", "required": false}
+{"position_id": "j033", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j033", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j033", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j112", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j112", "requirement": "Statistics", "kind": "skill", "required": true}
+{"position_id": "j112", "requirement": "DCF valuation", "kind": "skill", "required": true}
+{"position_id": "j112", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j030", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j030", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j030", "requirement": "Distributed Systems", "kind": "skill", "required": true}
+{"position_id": "j030", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j030", "requirement": "BS in Computer Science or related", "kind": "degree", "required": false}
+{"position_id": "j107", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j107", "requirement": "Bloomberg Terminal", "kind": "skill", "required": true}
+{"position_id": "j107", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j107", "requirement": "Accounting", "kind": "skill", "required": false}
+{"position_id": "j107", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j118", "requirement": "CFA Level I", "kind": "certification", "required": true}
+{"position_id": "j118", "requirement": "Prior finance internship", "kind": "experience", "required": true}
+{"position_id": "j118", "requirement": "Bloomberg Terminal", "kind": "skill", "required": true}
+{"position_id": "j118", "requirement": "Financial modeling", "kind": "skill", "required": false}
+{"position_id": "j118", "requirement": "Series 79 (SIE)", "kind": "certification", "required": true}
+{"position_id": "j118", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": false}
+{"position_id": "j078", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": true}
+{"position_id": "j078", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j078", "requirement": "Market sizing", "kind": "skill", "required": true}
+{"position_id": "j078", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false}
+{"position_id": "j078", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j078", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j031", "requirement": "Prior internship or shipped project", "kind": "experience", "required": true}
+{"position_id": "j031", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j031", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": true}
+{"position_id": "j031", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j013", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j013", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j013", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j100", "requirement": "Prior finance internship", "kind": "experience", "required": true}
+{"position_id": "j100", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j100", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j100", "requirement": "Financial modeling", "kind": "skill", "required": true}
+{"position_id": "j100", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j057", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j057", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": true}
+{"position_id": "j057", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j004", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j004", "requirement": "Prior internship or shipped project", "kind": "experience", "required": false}
+{"position_id": "j004", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j004", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j004", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j003", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j003", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j003", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j003", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j072", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false}
+{"position_id": "j072", "requirement": "Stakeholder management", "kind": "skill", "required": false}
+{"position_id": "j072", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j072", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": false}
+{"position_id": "j072", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j079", "requirement": "Market sizing", "kind": "skill", "required": true}
+{"position_id": "j079", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": true}
+{"position_id": "j079", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j079", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j044", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j044", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j044", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j044", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j044", "requirement": "AWS", "kind": "skill", "required": false}
+{"position_id": "j044", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j007", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j007", "requirement": "Machine Learning", "kind": "skill", "required": true}
+{"position_id": "j007", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j007", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j066", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false}
+{"position_id": "j066", "requirement": "Market sizing", "kind": "skill", "required": true}
+{"position_id": "j066", "requirement": "Excel modeling", "kind": "skill", "required": false}
+{"position_id": "j066", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j066", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j028", "requirement": "Spark", "kind": "skill", "required": false}
+{"position_id": "j028", "requirement": "Distributed Systems", "kind": "skill", "required": true}
+{"position_id": "j028", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j028", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j028", "requirement": "Prior internship or shipped project", "kind": "experience", "required": true}
+{"position_id": "j028", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j076", "requirement": "PMP", "kind": "certification", "required": false}
+{"position_id": "j076", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j076", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false}
+{"position_id": "j076", "requirement": "Stakeholder management", "kind": "skill", "required": true}
+{"position_id": "j076", "requirement": "Security+", "kind": "certification", "required": false}
+{"position_id": "j076", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j074", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j074", "requirement": "Case interviews", "kind": "skill", "required": false}
+{"position_id": "j074", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j074", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j070", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": true}
+{"position_id": "j070", "requirement": "Excel modeling", "kind": "skill", "required": false}
+{"position_id": "j070", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j113", "requirement": "Prior finance internship", "kind": "experience", "required": true}
+{"position_id": "j113", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j113", "requirement": "Financial modeling", "kind": "skill", "required": true}
+{"position_id": "j113", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j039", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j039", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j039", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": false}
+{"position_id": "j039", "requirement": "Java", "kind": "skill", "required": true}
+{"position_id": "j039", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j081", "requirement": "Prior leadership role in a student org", "kind": "experience", "required": true}
+{"position_id": "j081", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": true}
+{"position_id": "j081", "requirement": "Case interviews", "kind": "skill", "required": true}
+{"position_id": "j081", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j109", "requirement": "Prior finance internship", "kind": "experience", "required": true}
+{"position_id": "j109", "requirement": "FMVA", "kind": "certification", "required": true}
+{"position_id": "j109", "requirement": "Financial modeling", "kind": "skill", "required": true}
+{"position_id": "j109", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j037", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j037", "requirement": "Docker", "kind": "skill", "required": true}
+{"position_id": "j037", "requirement": "Distributed Systems", "kind": "skill", "required": true}
+{"position_id": "j037", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j037", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j052", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j052", "requirement": "Prior internship or shipped project", "kind": "experience", "required": true}
+{"position_id": "j052", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": true}
+{"position_id": "j052", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j064", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": true}
+{"position_id": "j064", "requirement": "Case interviews", "kind": "skill", "required": true}
+{"position_id": "j064", "requirement": "Market sizing", "kind": "skill", "required": true}
+{"position_id": "j064", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j064", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j091", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j091", "requirement": "Prior finance internship", "kind": "experience", "required": true}
+{"position_id": "j091", "requirement": "DCF valuation", "kind": "skill", "required": true}
+{"position_id": "j091", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j091", "requirement": "FMVA", "kind": "certification", "required": true}
+{"position_id": "j091", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j099", "requirement": "Accounting", "kind": "skill", "required": true}
+{"position_id": "j099", "requirement": "CFA Level I", "kind": "certification", "required": true}
+{"position_id": "j099", "requirement": "Statistics", "kind": "skill", "required": false}
+{"position_id": "j099", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j034", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j034", "requirement": "AWS", "kind": "skill", "required": false}
+{"position_id": "j034", "requirement": "Docker", "kind": "skill", "required": true}
+{"position_id": "j034", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j034", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j061", "requirement": "Case interviews", "kind": "skill", "required": true}
+{"position_id": "j061", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j061", "requirement": "Stakeholder management", "kind": "skill", "required": false}
+{"position_id": "j061", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j035", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j035", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j035", "requirement": "Spark", "kind": "skill", "required": false}
+{"position_id": "j035", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": false}
+{"position_id": "j035", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j035", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j038", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j038", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j038", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": true}
+{"position_id": "j038", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j038", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j116", "requirement": "Prior finance internship", "kind": "experience", "required": true}
+{"position_id": "j116", "requirement": "Statistics", "kind": "skill", "required": true}
+{"position_id": "j116", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j116", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j116", "requirement": "FMVA", "kind": "certification", "required": false}
+{"position_id": "j116", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": false}
+{"position_id": "j051", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j051", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j051", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j051", "requirement": "Spark", "kind": "skill", "required": false}
+{"position_id": "j051", "requirement": "AWS", "kind": "skill", "required": false}
+{"position_id": "j051", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j056", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j056", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j056", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j056", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j056", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j032", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j032", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j032", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j032", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j093", "requirement": "Statistics", "kind": "skill", "required": true}
+{"position_id": "j093", "requirement": "CFA Level I", "kind": "certification", "required": true}
+{"position_id": "j093", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j093", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": false}
+{"position_id": "j049", "requirement": "Java", "kind": "skill", "required": true}
+{"position_id": "j049", "requirement": "Spark", "kind": "skill", "required": true}
+{"position_id": "j049", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j049", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j110", "requirement": "Statistics", "kind": "skill", "required": true}
+{"position_id": "j110", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j110", "requirement": "FMVA", "kind": "certification", "required": true}
+{"position_id": "j110", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j110", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j115", "requirement": "Bloomberg Terminal", "kind": "skill", "required": true}
+{"position_id": "j115", "requirement": "Financial modeling", "kind": "skill", "required": true}
+{"position_id": "j115", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j020", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j020", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j020", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j084", "requirement": "Stakeholder management", "kind": "skill", "required": true}
+{"position_id": "j084", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j084", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": true}
+{"position_id": "j084", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j048", "requirement": "Distributed Systems", "kind": "skill", "required": true}
+{"position_id": "j048", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j048", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j048", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": true}
+{"position_id": "j048", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j015", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j015", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j015", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j015", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j015", "requirement": "AWS", "kind": "skill", "required": false}
+{"position_id": "j015", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j077", "requirement": "Prior leadership role in a student org", "kind": "experience", "required": false}
+{"position_id": "j077", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j077", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": true}
+{"position_id": "j077", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": true}
+{"position_id": "j077", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j040", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j040", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j040", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j040", "requirement": "Prior internship or shipped project", "kind": "experience", "required": true}
+{"position_id": "j040", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": true}
+{"position_id": "j040", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j105", "requirement": "CFA Level I", "kind": "certification", "required": false}
+{"position_id": "j105", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j105", "requirement": "Statistics", "kind": "skill", "required": true}
+{"position_id": "j105", "requirement": "Bloomberg Terminal", "kind": "skill", "required": true}
+{"position_id": "j105", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j103", "requirement": "DCF valuation", "kind": "skill", "required": true}
+{"position_id": "j103", "requirement": "Statistics", "kind": "skill", "required": true}
+{"position_id": "j103", "requirement": "Bloomberg Terminal", "kind": "skill", "required": true}
+{"position_id": "j103", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j088", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": true}
+{"position_id": "j088", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": true}
+{"position_id": "j088", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j088", "requirement": "Stakeholder management", "kind": "skill", "required": false}
+{"position_id": "j088", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j045", "requirement": "Prior internship or shipped project", "kind": "experience", "required": false}
+{"position_id": "j045", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j045", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j045", "requirement": "AWS", "kind": "skill", "required": false}
+{"position_id": "j045", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j045", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j027", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j027", "requirement": "Prior internship or shipped project", "kind": "experience", "required": false}
+{"position_id": "j027", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j002", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j002", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j002", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j097", "requirement": "DCF valuation", "kind": "skill", "required": false}
+{"position_id": "j097", "requirement": "CFA Level I", "kind": "certification", "required": false}
+{"position_id": "j097", "requirement": "Financial modeling", "kind": "skill", "required": true}
+{"position_id": "j097", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j097", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j119", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j119", "requirement": "DCF valuation", "kind": "skill", "required": true}
+{"position_id": "j119", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j119", "requirement": "Statistics", "kind": "skill", "required": false}
+{"position_id": "j119", "requirement": "Prior finance internship", "kind": "experience", "required": true}
+{"position_id": "j119", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j063", "requirement": "Market sizing", "kind": "skill", "required": false}
+{"position_id": "j063", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j063", "requirement": "Case interviews", "kind": "skill", "required": true}
+{"position_id": "j063", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": true}
+{"position_id": "j063", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j104", "requirement": "DCF valuation", "kind": "skill", "required": false}
+{"position_id": "j104", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j104", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j104", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j104", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j021", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j021", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": true}
+{"position_id": "j021", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j021", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j029", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j029", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j029", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j029", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": false}
+{"position_id": "j029", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j053", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j053", "requirement": "Java", "kind": "skill", "required": true}
+{"position_id": "j053", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j053", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j053", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j053", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j009", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j009", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j009", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": true}
+{"position_id": "j009", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j009", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j059", "requirement": "Spark", "kind": "skill", "required": true}
+{"position_id": "j059", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j059", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j059", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j059", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": false}
+{"position_id": "j059", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j090", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j090", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": false}
+{"position_id": "j090", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j090", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j090", "requirement": "Prior leadership role in a student org", "kind": "experience", "required": false}
+{"position_id": "j090", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": false}
+{"position_id": "j046", "requirement": "Java", "kind": "skill", "required": true}
+{"position_id": "j046", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j046", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j046", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j046", "requirement": "BS in Computer Science or related", "kind": "degree", "required": false}
+{"position_id": "j016", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j016", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j016", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j016", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j016", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j071", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j071", "requirement": "PMP", "kind": "certification", "required": false}
+{"position_id": "j071", "requirement": "Market sizing", "kind": "skill", "required": false}
+{"position_id": "j071", "requirement": "Case interviews", "kind": "skill", "required": true}
+{"position_id": "j071", "requirement": "Tableau Desktop Specialist", "kind": "certification", "required": true}
+{"position_id": "j071", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j023", "requirement": "Java", "kind": "skill", "required": true}
+{"position_id": "j023", "requirement": "Prior internship or shipped project", "kind": "experience", "required": true}
+{"position_id": "j023", "requirement": "Spark", "kind": "skill", "required": true}
+{"position_id": "j023", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j008", "requirement": "Prior internship or shipped project", "kind": "experience", "required": false}
+{"position_id": "j008", "requirement": "Machine Learning", "kind": "skill", "required": true}
+{"position_id": "j008", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j008", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j008", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j008", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j019", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j019", "requirement": "AWS", "kind": "skill", "required": false}
+{"position_id": "j019", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j098", "requirement": "Accounting", "kind": "skill", "required": true}
+{"position_id": "j098", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j098", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j068", "requirement": "Stakeholder management", "kind": "skill", "required": false}
+{"position_id": "j068", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j068", "requirement": "Prior leadership role in a student org", "kind": "experience", "required": false}
+{"position_id": "j068", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": false}
+{"position_id": "j117", "requirement": "Statistics", "kind": "skill", "required": false}
+{"position_id": "j117", "requirement": "Financial modeling", "kind": "skill", "required": true}
+{"position_id": "j117", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j117", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j117", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j089", "requirement": "Market sizing", "kind": "skill", "required": true}
+{"position_id": "j089", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false}
+{"position_id": "j089", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j089", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j089", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j080", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j080", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j080", "requirement": "Case interviews", "kind": "skill", "required": false}
+{"position_id": "j080", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": false}
+{"position_id": "j025", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j025", "requirement": "Prior internship or shipped project", "kind": "experience", "required": false}
+{"position_id": "j025", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j025", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j010", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j010", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j010", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j010", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j005", "requirement": "Docker", "kind": "skill", "required": true}
+{"position_id": "j005", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": true}
+{"position_id": "j005", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j005", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j001", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j001", "requirement": "Spark", "kind": "skill", "required": true}
+{"position_id": "j001", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j085", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j085", "requirement": "PMP", "kind": "certification", "required": false}
+{"position_id": "j085", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j085", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j085", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j106", "requirement": "Bloomberg Terminal", "kind": "skill", "required": true}
+{"position_id": "j106", "requirement": "Statistics", "kind": "skill", "required": false}
+{"position_id": "j106", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": false}
+{"position_id": "j106", "requirement": "Accounting", "kind": "skill", "required": false}
+{"position_id": "j106", "requirement": "CFA Level I", "kind": "certification", "required": true}
+{"position_id": "j106", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j069", "requirement": "Case interviews", "kind": "skill", "required": true}
+{"position_id": "j069", "requirement": "Prior leadership role in a student org", "kind": "experience", "required": true}
+{"position_id": "j069", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j069", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j069", "requirement": "PMP", "kind": "certification", "required": false}
+{"position_id": "j069", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j067", "requirement": "Stakeholder management", "kind": "skill", "required": true}
+{"position_id": "j067", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": true}
+{"position_id": "j067", "requirement": "Security+", "kind": "certification", "required": false}
+{"position_id": "j067", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j083", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j083", "requirement": "PMP", "kind": "certification", "required": false}
+{"position_id": "j083", "requirement": "Case interviews", "kind": "skill", "required": true}
+{"position_id": "j083", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j083", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j114", "requirement": "Prior finance internship", "kind": "experience", "required": false}
+{"position_id": "j114", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j114", "requirement": "CFA Level I", "kind": "certification", "required": true}
+{"position_id": "j114", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j041", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j041", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j041", "requirement": "Spark", "kind": "skill", "required": true}
+{"position_id": "j041", "requirement": "Machine Learning", "kind": "skill", "required": true}
+{"position_id": "j041", "requirement": "CKA (Kubernetes)", "kind": "certification", "required": false}
+{"position_id": "j041", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j094", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j094", "requirement": "Prior finance internship", "kind": "experience", "required": true}
+{"position_id": "j094", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j094", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j101", "requirement": "Bloomberg Market Concepts", "kind": "certification", "required": true}
+{"position_id": "j101", "requirement": "Bloomberg Terminal", "kind": "skill", "required": false}
+{"position_id": "j101", "requirement": "Accounting", "kind": "skill", "required": true}
+{"position_id": "j101", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j101", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j095", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": true}
+{"position_id": "j095", "requirement": "DCF valuation", "kind": "skill", "required": true}
+{"position_id": "j095", "requirement": "Accounting", "kind": "skill", "required": true}
+{"position_id": "j095", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j047", "requirement": "Java", "kind": "skill", "required": true}
+{"position_id": "j047", "requirement": "Machine Learning", "kind": "skill", "required": true}
+{"position_id": "j047", "requirement": "Git", "kind": "skill", "required": true}
+{"position_id": "j047", "requirement": "Prior internship or shipped project", "kind": "experience", "required": false}
+{"position_id": "j047", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j042", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j042", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j042", "requirement": "Spark", "kind": "skill", "required": false}
+{"position_id": "j042", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j042", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j042", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j075", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j075", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": true}
+{"position_id": "j075", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j075", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j011", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j011", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j011", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j011", "requirement": "Distributed Systems", "kind": "skill", "required": false}
+{"position_id": "j011", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": true}
+{"position_id": "j011", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j086", "requirement": "PMP", "kind": "certification", "required": false}
+{"position_id": "j086", "requirement": "Stakeholder management", "kind": "skill", "required": true}
+{"position_id": "j086", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j086", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j086", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j062", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j062", "requirement": "Case interviews", "kind": "skill", "required": false}
+{"position_id": "j062", "requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false}
+{"position_id": "j062", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j062", "requirement": "SQL", "kind": "skill", "required": false}
+{"position_id": "j062", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j012", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j012", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": true}
+{"position_id": "j012", "requirement": "Security+", "kind": "certification", "required": false}
+{"position_id": "j012", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j012", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j111", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j111", "requirement": "Statistics", "kind": "skill", "required": false}
+{"position_id": "j111", "requirement": "FMVA", "kind": "certification", "required": false}
+{"position_id": "j111", "requirement": "Accounting", "kind": "skill", "required": true}
+{"position_id": "j111", "requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false}
+{"position_id": "j111", "requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}
+{"position_id": "j022", "requirement": "Java", "kind": "skill", "required": false}
+{"position_id": "j022", "requirement": "Machine Learning", "kind": "skill", "required": true}
+{"position_id": "j022", "requirement": "AWS", "kind": "skill", "required": true}
+{"position_id": "j022", "requirement": "Spark", "kind": "skill", "required": false}
+{"position_id": "j022", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": true}
+{"position_id": "j022", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j018", "requirement": "Java", "kind": "skill", "required": true}
+{"position_id": "j018", "requirement": "SQL", "kind": "skill", "required": true}
+{"position_id": "j018", "requirement": "Python", "kind": "skill", "required": false}
+{"position_id": "j018", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j018", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j082", "requirement": "PowerPoint", "kind": "skill", "required": true}
+{"position_id": "j082", "requirement": "Prior leadership role in a student org", "kind": "experience", "required": true}
+{"position_id": "j082", "requirement": "Excel modeling", "kind": "skill", "required": true}
+{"position_id": "j082", "requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}
+{"position_id": "j017", "requirement": "Machine Learning", "kind": "skill", "required": false}
+{"position_id": "j017", "requirement": "Security+", "kind": "certification", "required": true}
+{"position_id": "j017", "requirement": "Docker", "kind": "skill", "required": false}
+{"position_id": "j017", "requirement": "Distributed Systems", "kind": "skill", "required": true}
+{"position_id": "j017", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j060", "requirement": "Python", "kind": "skill", "required": true}
+{"position_id": "j060", "requirement": "Java", "kind": "skill", "required": true}
+{"position_id": "j060", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j060", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
+{"position_id": "j026", "requirement": "Databricks Data Engineer Associate", "kind": "certification", "required": false}
+{"position_id": "j026", "requirement": "AWS Solutions Architect Associate", "kind": "certification", "required": false}
+{"position_id": "j026", "requirement": "Spark", "kind": "skill", "required": false}
+{"position_id": "j026", "requirement": "BS in Computer Science or related", "kind": "degree", "required": true}
