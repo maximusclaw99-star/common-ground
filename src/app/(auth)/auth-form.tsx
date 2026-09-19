@@ -12,13 +12,15 @@ const REASONS: Record<string, (demo: boolean) => string> = {
 };
 
 export function AuthForm({
-  mode, action, next, demo, reason,
+  mode, action, next, demo, reason, demoLogin,
 }: {
   mode: "sign-in" | "sign-up";
   action: (prev: AuthState, formData: FormData) => Promise<AuthState>;
   next: string;
   demo: boolean;
   reason?: string;
+  /** The standing demo account, shown so nobody has to make one just to look. */
+  demoLogin?: { email: string; password: string } | null;
 }) {
   const why = reason ? REASONS[reason]?.(demo) : undefined;
   const [state, formAction, pending] = useActionState(action, { error: null });
@@ -54,6 +56,14 @@ export function AuthForm({
           </span>
           accounts live in this server&rsquo;s memory and are cleared when it restarts. Any address
           works; nothing is sent to it.
+          {demoLogin && (
+            <span className="block" style={{ marginTop: "var(--space-12)" }}>
+              Just looking? Sign in as{" "}
+              <code className="mono-label" style={{ color: "var(--ink)", textTransform: "none" }}>{demoLogin.email}</code>
+              {" "}with password{" "}
+              <code className="mono-label" style={{ color: "var(--ink)", textTransform: "none" }}>{demoLogin.password}</code>.
+            </span>
+          )}
         </p>
       )}
 

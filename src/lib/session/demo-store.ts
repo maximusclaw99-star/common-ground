@@ -107,6 +107,17 @@ const state: DemoState = globalStore.__commonGroundDemo ??= {
 };
 const { accounts, idsByEmail } = state;
 
+/**
+ * The standing demo login, so there is always an account to walk in with —
+ * on a laptop after a restart, or on Vercel after a cold start, where every
+ * account made by hand has just been wiped. `DEMO_LOGIN=email:password`
+ * overrides it. Shown on the sign-in page in demo mode; it is not a secret.
+ */
+export const DEMO_LOGIN: { email: string; password: string } = (() => {
+  const [email, ...rest] = (process.env.DEMO_LOGIN ?? "demo@commonground.app:commonground").split(":");
+  return { email: email.trim(), password: rest.join(":") || "commonground" };
+})();
+
 const normaliseEmail = (email: string) => email.trim().toLowerCase();
 
 /**
@@ -182,5 +193,13 @@ export const demoStore = {
   clear(): void {
     accounts.clear();
     idsByEmail.clear();
+    seedDemoLogin();
   },
 };
+
+function seedDemoLogin(): void {
+  if (!idsByEmail.has(normaliseEmail(DEMO_LOGIN.email))) {
+    demoStore.createAccount(DEMO_LOGIN.email, DEMO_LOGIN.password);
+  }
+}
+seedDemoLogin();

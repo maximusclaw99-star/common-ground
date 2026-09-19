@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { beforeEach, test } from "vitest";
-import { demoStore } from "./demo-store";
+import { DEMO_LOGIN, demoStore } from "./demo-store";
 
 beforeEach(() => demoStore.clear());
 
@@ -45,4 +45,11 @@ test("reset returns the student to the seed but keeps the account", () => {
   assert.equal(demoStore.get(acct.id)!.intakeCompletedAt, null);
   assert.equal(demoStore.get(acct.id)!.email, "sam@vt.edu");
   assert.ok(demoStore.authenticate("sam@vt.edu", "password"));
+});
+
+test("the standing demo login always exists, even on a fresh store", () => {
+  // Restarts and cold starts wipe every account made by hand; this one is
+  // remade on start so there is always a way in.
+  assert.ok(demoStore.authenticate(DEMO_LOGIN.email, DEMO_LOGIN.password));
+  assert.equal(demoStore.createAccount(DEMO_LOGIN.email, "anything"), null);
 });
