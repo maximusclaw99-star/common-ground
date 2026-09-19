@@ -2,8 +2,7 @@ import Link from "next/link";
 import { Nav, StatusFooter } from "@/components/tb/chrome";
 import { Hero } from "@/components/tb/hero";
 import { LiveClock } from "@/components/tb/live-clock";
-import { TierLadder } from "@/components/tier-badge";
-import { IN_SCOPE_RANKS, TIERS } from "@/lib/affinity/tiers";
+import { TIERS } from "@/lib/affinity/tiers";
 import { FIELDS } from "@/lib/intake/fields";
 import { getSession } from "@/lib/session";
 
@@ -26,10 +25,7 @@ export default async function LandingPage() {
         picture="/hands.png"
         marble="/marble.png"
         head={<>Eleven people,<br />not a thousand<br />applications.</>}
-        lines={[
-          `> ranking ${TIERS.filter((t) => t.inScope).length} kinds of common ground...`,
-          "> 2 require data we refuse to collect_",
-        ]}
+        lines={[`> ranking ${TIERS.filter((t) => t.inScope).length} kinds of common ground_`]}
         note="Two minutes &middot; We only ask what your resume does not already say"
       >
         <Link className="tb-btn tb-btn--solid mono-label" href={start}>Upload your resume &#8599;</Link>
@@ -38,44 +34,19 @@ export default async function LandingPage() {
       <section className="tb-band tb-band-top tb-layer">
         <div className="tb-wrap grid gap-[var(--space-32)] md:grid-cols-3">
           <Point n="01" title="We read your resume first">
-            Everything on it becomes a signal we can match on. Then we ask, once, for what a resume
-            never carries: where you grew up, which clubs you are actually in, the jump you are
-            trying to make.
+            Everything on it becomes something we can match on. Then we ask, once, for what a
+            resume never carries.
           </Point>
           <Point n="02" title="We rank people, not postings">
             Eleven levels of common ground, strongest first. A shared fraternity beats a shared
-            industry. The scoring is deterministic, so every result shows the exact fact that
-            produced it.
+            industry. Every result shows the fact that produced it.
           </Point>
           <Point n="03" title="You send the message">
-            We draft an opening line from the thing you genuinely share, and say what to ask. We
-            never send anything, and we never write as you.
+            We draft an opening line from what you share. We never send anything.
           </Point>
         </div>
       </section>
 
-      <section id="ladder" className="tb-band tb-band-top tb-layer">
-        <div className="tb-wrap grid gap-[var(--space-32)] md:grid-cols-[1fr_1.1fr]">
-          <div>
-            <p className="mono-label" style={{ color: "var(--ink-subtle)" }}>&gt; The ladder</p>
-            <h2 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
-              Not all<br />connections<br />are worth<br />the same.
-            </h2>
-            <div className="tb-copy body" style={{ color: "var(--ink-muted)" }}>
-              <p>
-                Most tools treat &ldquo;works at your target company&rdquo; as a match. It is the
-                weakest signal on this list. We rank on {IN_SCOPE_RANKS.length} levels, and we ask{" "}
-                {FIELDS.length} questions at most to fill them in — fewer the more your resume says.
-              </p>
-              <p style={{ marginBottom: 0 }}>
-                The two greyed rungs need your private LinkedIn connection graph. Collecting it
-                would mean holding data on people who never signed up here, so we do not.
-              </p>
-            </div>
-          </div>
-          <div className="tb-panel"><TierLadder /></div>
-        </div>
-      </section>
 
       <section className="tb-band tb-band-top tb-layer">
         <div className="tb-wrap" style={{ textAlign: "center" }}>
@@ -83,8 +54,8 @@ export default async function LandingPage() {
             Start in your first year.
           </h2>
           <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: "var(--space-16) auto var(--space-32)" }}>
-            Not the week applications open. The advantage is entirely in having talked to people
-            before the posting went up, and it is available to you right now.
+            Not the week applications open. The advantage is in having talked to people before the
+            posting went up.
           </p>
           <Link className="tb-btn tb-btn--solid mono-label" href={start}>Upload your resume &#8599;</Link>
         </div>
@@ -93,8 +64,7 @@ export default async function LandingPage() {
       <StatusFooter
         live={!demo}
         readings={[
-          { label: "Tiers ranked", value: String(IN_SCOPE_RANKS.length) },
-          { label: "Tiers refused", value: String(TIERS.filter((t) => !t.inScope).length) },
+          { label: "Tiers ranked", value: String(TIERS.filter((t) => t.inScope).length) },
           { label: "Questions", value: `${FIELDS.length} max` },
           { label: "UTC", value: <LiveClock zone="utc" /> },
           { label: "Local", value: <LiveClock /> },

@@ -25,7 +25,7 @@ export function AuthForm({
       </h1>
       <p className="body" style={{ color: "var(--ink-muted)", margin: 0 }}>
         {signingUp
-          ? "Your resume and your answers stay yours. We never post, message or apply as you."
+          ? "We never post, message or apply as you."
           : "Pick up where you left off."}
       </p>
 

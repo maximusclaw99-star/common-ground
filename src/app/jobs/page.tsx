@@ -58,18 +58,15 @@ export default async function JobsPage() {
 
       <section className="tb-band tb-layer">
         <div className="tb-wrap">
-          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>
-            &gt; Openings from {provider.name} provider
-          </p>
           <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
             {open.length} window{open.length === 1 ? "" : "s"},<br />soonest first.
           </h1>
           <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
             {soon.length > 0
-              ? `${soon.length} ${soon.length === 1 ? "is" : "are"} open or open inside 60 days. A posting you reach through a person is worth more than one you find first — check who you know there before you apply.`
+              ? `${soon.length} ${soon.length === 1 ? "is" : "are"} open or open inside 60 days. Check who you know there before you apply.`
               : verticals.length
-                ? "Nothing opens in the next 60 days for what you told us. The ones below are further out; the people page is where the work is now."
-                : "Tell us what you want to do and these sharpen. Until then, every launch vertical is shown."}
+                ? "Nothing opens in the next 60 days for what you told us. The ones below are further out."
+                : "Tell us what you want to do and these sharpen."}
           </p>
         </div>
       </section>
@@ -111,7 +108,7 @@ export default async function JobsPage() {
           <div className="tb-wrap">
             <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>Missed</h2>
             <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
-              Closed this cycle. Shown so next year&rsquo;s date is not a surprise.
+              Closed this cycle.
             </p>
             <div className="grid gap-[var(--space-16)] md:grid-cols-2">
               {closed.map((r) => (
@@ -126,10 +123,9 @@ export default async function JobsPage() {
         <div className="tb-wrap tb-panel">
           <p className="mono-label" style={{ margin: 0 }}>Where these come from</p>
           <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0" }}>
-            Today: the {provider.name === "mock" ? "bundled demo postings" : "workspace.jobsearch warehouse"}. Next: the
-            nightly poll of the applicant tracking systems behind {boards.length} employers — Greenhouse, Lever, Ashby and
-            Workday, with closure detection that refuses to mark a role closed just because a poll failed. That ingest is
-            built and tested; wiring it into this page is the remaining step.
+            {provider.name === "mock"
+              ? `Sample postings, for the demo. Live boards from ${boards.length} employers are next.`
+              : "The workspace.jobsearch warehouse."}
           </p>
           <Link href="/dashboard" className="tb-btn tb-btn--sm mono-label" style={{ marginTop: "var(--space-24)" }}>
             Who you know at these &#8599;
