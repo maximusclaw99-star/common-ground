@@ -11,12 +11,12 @@ import { demoStore, type StoredStudent } from "./demo-store";
 export type { StoredStudent };
 
 export interface Session {
-  /** Null when nobody is signed in — in demo mode too, now that it has accounts. */
+  /** Null when nobody is signed in. In demo mode, null only before the proxy has run. */
   student: StoredStudent | null;
   demo: boolean;
 }
 
-/** Demo mode's "who is this": the account id in the session cookie, if any. */
+/** Demo mode's "who is this": the browser id in the cookie, if any. */
 export async function demoAccountId(): Promise<string | null> {
   const jar = await cookies();
   return jar.get(DEMO_COOKIE)?.value ?? null;
@@ -83,7 +83,7 @@ export async function getSession(): Promise<Session> {
 export async function saveFacts(facts: AffinityFacts, meta: FactsMeta, completed = false): Promise<void> {
   if (!isSupabaseConfigured()) {
     const id = await demoAccountId();
-    if (!id || !demoStore.get(id)) throw new Error("Not signed in");
+    if (!id) throw new Error("Not signed in");
     demoStore.set(id, { facts, meta, ...(completed ? { intakeCompletedAt: new Date().toISOString() } : {}) });
     return;
   }

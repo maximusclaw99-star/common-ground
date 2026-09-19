@@ -116,7 +116,7 @@ export function DemoStrip() {
     <div className="tb-band-bottom tb-layer mono-micro"
       style={{ padding: "var(--space-8) var(--space-24)", color: "var(--ink-faint)", textTransform: "uppercase" }}>
       <span className="tb-led tb-led--alert" aria-hidden="true" />{" "}
-      No database configured &mdash; accounts and answers live in this server&rsquo;s memory until it restarts
+      No database configured &mdash; your answers are private to this browser and live in the server&rsquo;s memory until it restarts
     </div>
   );
 }

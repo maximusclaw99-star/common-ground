@@ -10,9 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function UploadPage() {
   const { demo, student } = await getSession();
-  // The proxy already turns strangers away; this catches a session cookie
-  // whose account no longer exists (demo mode after a restart).
-  if (!student) redirect("/sign-up?next=/onboarding/upload");
+  if (!student) redirect("/sign-in?next=/onboarding/upload");
   const derivable = FIELDS.filter((f) => f.resumeDerivable).length;
   const reader = getResumeProvider();
 

@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { DEMO_COOKIE } from "@/lib/session/cookie";
-import { demoStore } from "@/lib/session/demo-store";
 
 export interface AuthState {
   error: string | null;
@@ -13,24 +12,11 @@ export interface AuthState {
   notice?: string | null;
 }
 
-const DEMO_SESSION_DAYS = 30;
-
 /** Only ever a same-site path, so a `next` param cannot send anyone off-site. */
 const safeNext = (raw: unknown, fallback: string): string => {
   const s = String(raw ?? "");
   return s.startsWith("/") && !s.startsWith("//") ? s : fallback;
 };
-
-async function startDemoSession(id: string): Promise<void> {
-  const jar = await cookies();
-  jar.set(DEMO_COOKIE, id, {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: DEMO_SESSION_DAYS * 24 * 60 * 60,
-  });
-}
 
 async function authenticate(
   mode: "sign-in" | "sign-up",
@@ -43,28 +29,9 @@ async function authenticate(
   if (!email || !password) return { error: "Email and password are both needed." };
   if (password.length < 6) return { error: "Password needs at least six characters." };
 
-  // Demo mode: an account is a row in this server's memory. The point is not
-  // security, it is that every student gets their own resume and answers —
-  // the flow is the same one a real project runs, minus the durability.
-  if (!isSupabaseConfigured()) {
-    if (mode === "sign-in") {
-      const account = demoStore.authenticate(email, password);
-      if (!account) {
-        return {
-          error: demoStore.hasAccount(email)
-            ? "That password does not match."
-            : "No account with that address on this server. Demo accounts live in memory and are cleared when it restarts — make a new one.",
-        };
-      }
-      await startDemoSession(account.id);
-      redirect(next);
-    }
-
-    const account = demoStore.createAccount(email, password);
-    if (!account) return { error: "That address already has an account here. Sign in instead." };
-    await startDemoSession(account.id);
-    redirect(next);
-  }
+  // Demo mode has no accounts to sign in to; the pages redirect before the
+  // form is ever shown, so this only answers a stale form post.
+  if (!isSupabaseConfigured()) redirect(next);
 
   const supabase = await createClient();
 
@@ -97,6 +64,8 @@ export async function signOut(): Promise<void> {
     const supabase = await createClient();
     await supabase.auth.signOut();
   } else {
+    // Demo mode: dropping the id is "start over" — the next visit gets a
+    // fresh student.
     const jar = await cookies();
     jar.delete(DEMO_COOKIE);
   }

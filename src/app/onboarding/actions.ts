@@ -52,7 +52,7 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
 
   if (!isSupabaseConfigured()) {
     const id = await demoAccountId();
-    if (!id || !demoStore.get(id)) redirect("/sign-up?reason=expired&next=/onboarding/upload");
+    if (!id) redirect("/onboarding/upload");
     // What the resume already told us counts for ranking right away; the
     // questionnaire still asks the student to confirm each of these, because
     // no meta entry is written here, so nothing is silently treated as answered.

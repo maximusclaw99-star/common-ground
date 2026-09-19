@@ -21,13 +21,21 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   };
 
-  // Demo mode: no Supabase project, so accounts live in the server's memory
-  // and the session is a cookie holding one's id. The proxy cannot see that
-  // memory, only whether the cookie is there; a stale id (after a restart)
-  // gets past here and is turned away by the page, which finds nobody behind
-  // it and redirects to sign-in itself.
+  // Demo mode: no Supabase project, so there is nothing to sign in to. Each
+  // browser instead gets a random id on its first visit, and that id owns an
+  // in-memory student — private to the browser, no password, nothing to
+  // expire. Set on the request too, so the page rendering right now already
+  // sees it.
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    if (isProtectedPath(path) && !request.cookies.get(DEMO_COOKIE)?.value) return toSignIn();
+    if (!request.cookies.get(DEMO_COOKIE)?.value) {
+      const id = crypto.randomUUID();
+      request.cookies.set(DEMO_COOKIE, id);
+      response = NextResponse.next({ request });
+      response.cookies.set(DEMO_COOKIE, id, {
+        httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 30,
+      });
+    }
+    response.headers.set("x-cg-mode", "demo");
     return response;
   }
 

@@ -5,24 +5,19 @@ import { useActionState } from "react";
 import type { AuthState } from "./actions";
 
 /** Why the student was sent here, when they did not come on their own. */
-const REASONS: Record<string, (demo: boolean) => string> = {
-  expired: (demo) => demo
-    ? "Your session ended: this server's memory was cleared, which takes demo accounts with it. Make the account again and carry on."
-    : "Your session ended. Sign in again to carry on.",
+const REASONS: Record<string, string> = {
+  expired: "Your session ended. Sign in again to carry on.",
 };
 
 export function AuthForm({
-  mode, action, next, demo, reason, demoLogin,
+  mode, action, next, reason,
 }: {
   mode: "sign-in" | "sign-up";
   action: (prev: AuthState, formData: FormData) => Promise<AuthState>;
   next: string;
-  demo: boolean;
   reason?: string;
-  /** The standing demo account, shown so nobody has to make one just to look. */
-  demoLogin?: { email: string; password: string } | null;
 }) {
-  const why = reason ? REASONS[reason]?.(demo) : undefined;
+  const why = reason ? REASONS[reason] : undefined;
   const [state, formAction, pending] = useActionState(action, { error: null });
   const signingUp = mode === "sign-up";
 
@@ -46,24 +41,6 @@ export function AuthForm({
             <span className="tb-led tb-led--alert" aria-hidden /> Signed out &mdash;{" "}
           </span>
           {why}
-        </p>
-      )}
-
-      {demo && (
-        <p className="body-sm tb-panel" style={{ marginTop: "var(--space-24)", color: "var(--ink-muted)" }}>
-          <span className="mono-label" style={{ color: "var(--alert)" }}>
-            <span className="tb-led tb-led--alert" aria-hidden /> Demo mode &mdash;{" "}
-          </span>
-          accounts live in this server&rsquo;s memory and are cleared when it restarts. Any address
-          works; nothing is sent to it.
-          {demoLogin && (
-            <span className="block" style={{ marginTop: "var(--space-12)" }}>
-              Just looking? Sign in as{" "}
-              <code className="mono-label" style={{ color: "var(--ink)", textTransform: "none" }}>{demoLogin.email}</code>
-              {" "}with password{" "}
-              <code className="mono-label" style={{ color: "var(--ink)", textTransform: "none" }}>{demoLogin.password}</code>.
-            </span>
-          )}
         </p>
       )}
 

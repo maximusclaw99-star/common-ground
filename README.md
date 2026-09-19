@@ -9,15 +9,14 @@ npm install
 npm run dev     # http://localhost:3000 — runs in demo mode with no config at all
 ```
 
-With no `.env.local`, the app runs in **demo mode**: accounts and answers live in the server's
-memory, every screen works, and a banner says so on every page. You still make an account first —
-any address, nothing is sent to it — and each account gets its own student, so two browsers never
-see each other's answers. A restart clears them. Copy `.env.example` to `.env.local` to turn on real
-accounts and persistence.
+With no `.env.local`, the app runs in **demo mode**: there is no sign-in, every screen works, and a
+banner says so on every page. Each browser gets its own student, keyed by a cookie the proxy sets
+on the first visit, so two browsers never see each other's answers; a server restart clears them.
+Copy `.env.example` to `.env.local` to turn on real accounts and persistence.
 
-The flow is: make an account → upload a resume → answer only the questions the resume left open
-(about you, never about companies) → **dashboard**, where you pick one company at a time and see
-who to write to there.
+The flow is: upload a resume → answer only the questions the resume left open (about you, never
+about companies) → **dashboard**, where you pick one company at a time and see who to write to
+there. With Supabase configured, making an account comes first.
 
 ## The ladder
 
@@ -85,8 +84,8 @@ about clubs. Two rules carry most of the weight:
 
 Every account path is already written — sign-up, sign-in, sign-out, per-user storage, and row-level
 security keyed on `auth.uid()`. What is missing is a project to point it at. Until there is one,
-`isSupabaseConfigured()` is false and accounts live in `src/lib/session/demo-store.ts` instead: the
-same sign-up form, a session cookie holding the account id, one student per account, gone on restart.
+`isSupabaseConfigured()` is false, the sign-in pages pass straight through, and
+`src/lib/session/demo-store.ts` keeps one student per browser behind the `cg_demo` cookie.
 
 1. Create a free project at [supabase.com](https://supabase.com) (this needs your own login).
 2. Run the three files in `supabase/migrations/` **in order** in the project's SQL editor, or

@@ -1,19 +1,19 @@
-import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import { EMPTY_FACTS, type AffinityFacts, type FactsMeta, type StudentProfile } from "@/lib/ai/schemas";
 import { student as fixtureStudent } from "@/lib/affinity/__fixtures__/cast";
 
 /**
- * The demo-mode store: accounts and their students, held in module memory.
+ * The demo-mode store: one student per browser, held in module memory.
  *
  * Deliberately not a database. Demo mode exists so the product can be shown
  * and built before Supabase is configured, and anything that survives a server
  * restart would start to look like persistence we have not actually built.
  *
- * It IS per account, though. The first version held a single student that
- * every visitor shared, which meant the questionnaire showed one person the
- * answers another had just typed. Each account now owns its own student, keyed
- * by a session cookie, so two browsers never see each other's answers — the
- * same shape the Supabase path has, minus the durability.
+ * There is no sign-in here. proxy.ts hands every browser a random id in a
+ * cookie on its first visit, and that id owns a student. Two browsers never
+ * see each other's answers — the bug the first shared-student version had —
+ * and nobody types a password to look at a demo. An id the store has never
+ * seen (after a restart, say) simply gets a fresh student, so there is no
+ * "session expired" to run into.
  */
 export interface StoredStudent {
   profile: StudentProfile;
@@ -23,26 +23,14 @@ export interface StoredStudent {
   email: string | null;
 }
 
-export interface DemoAccount {
-  id: string;
-  email: string;
-  createdAt: string;
-}
-
-interface AccountRecord extends DemoAccount {
-  salt: string;
-  hash: string;
-  student: StoredStudent;
-}
-
 /**
  * A resume that has been read, but that leaves the questionnaire real work to
  * do: it names a school, employers and one club, and flags an ambiguity the
- * extractor could not resolve on its own. Every new demo account starts here,
- * because the resume reader needs warehouse credentials that a demo room
- * rarely has — the student can still replace it by uploading their own.
+ * extractor could not resolve on its own. Every browser starts here, because
+ * the resume reader needs warehouse credentials that a demo room rarely has —
+ * the student can still replace it by uploading their own.
  */
-function seed(email: string): StoredStudent {
+function seed(): StoredStudent {
   return {
     profile: {
       ...fixtureStudent.profile,
@@ -62,17 +50,17 @@ function seed(email: string): StoredStudent {
     facts: { ...EMPTY_FACTS },
     meta: {},
     intakeCompletedAt: null,
-    email,
+    email: null,
   };
 }
 
 /**
- * DEMO_PREFILL=1 seeds each new account with the fully answered questionnaire
+ * DEMO_PREFILL=1 seeds each new browser with the fully answered questionnaire
  * from the fixture instead of an empty one, so the dashboard is interesting
  * without walking the questions live. Off by default: the questionnaire is
  * the demo, and this exists for rehearsal-free showings only.
  */
-function prefilled(email: string): StoredStudent {
+function prefilled(): StoredStudent {
   const meta: FactsMeta = {};
   const now = new Date().toISOString();
   for (const key of Object.keys(fixtureStudent.facts)) {
@@ -83,123 +71,58 @@ function prefilled(email: string): StoredStudent {
     facts: { ...fixtureStudent.facts },
     meta,
     intakeCompletedAt: now,
-    email,
+    email: null,
   };
 }
 
-const initial = (email: string) => (process.env.DEMO_PREFILL === "1" ? prefilled(email) : seed(email));
+const initial = () => (process.env.DEMO_PREFILL === "1" ? prefilled() : seed());
 
 /**
  * Pinned to globalThis, not module scope. Next's dev server re-evaluates a
  * module whenever it or an import changes, and can hold more than one
- * instance of it across route bundles; a plain `const accounts = new Map()`
- * is emptied by either, which is how an account signed up a minute ago came
- * back as "session expired" on upload. globalThis is process-wide and outlives
- * every re-evaluation — the same trick used for database clients in dev.
+ * instance of it across route bundles; a plain `const students = new Map()`
+ * is emptied by either. globalThis is process-wide and outlives every
+ * re-evaluation — the same trick used for database clients in dev.
  */
-interface DemoState {
-  accounts: Map<string, AccountRecord>;
-  idsByEmail: Map<string, string>;
-}
-const globalStore = globalThis as typeof globalThis & { __commonGroundDemo?: DemoState };
-const state: DemoState = globalStore.__commonGroundDemo ??= {
-  accounts: new Map(), idsByEmail: new Map(),
-};
-const { accounts, idsByEmail } = state;
-
-/**
- * The standing demo login, so there is always an account to walk in with —
- * on a laptop after a restart, or on Vercel after a cold start, where every
- * account made by hand has just been wiped. `DEMO_LOGIN=email:password`
- * overrides it. Shown on the sign-in page in demo mode; it is not a secret.
- */
-export const DEMO_LOGIN: { email: string; password: string } = (() => {
-  const [email, ...rest] = (process.env.DEMO_LOGIN ?? "demo@commonground.app:commonground").split(":");
-  return { email: email.trim(), password: rest.join(":") || "commonground" };
-})();
-
-const normaliseEmail = (email: string) => email.trim().toLowerCase();
-
-/**
- * scrypt with a per-account salt. Overkill for something that lives in RAM
- * and dies on restart, but the cost of doing it properly is three lines, and
- * a demo that stores plaintext passwords is the kind of thing that gets
- * copied into the real implementation later.
- */
-const hashPassword = (password: string, salt: string) =>
-  scryptSync(password, salt, 32).toString("hex");
-
-const publicView = ({ id, email, createdAt }: AccountRecord): DemoAccount => ({ id, email, createdAt });
+// The key names the shape: the value that outlives a module reload may have
+// been written by an older version of this file, and must be checked, not
+// trusted.
+const globalStore = globalThis as typeof globalThis & { __commonGroundDemoStudents?: unknown };
+if (!(globalStore.__commonGroundDemoStudents instanceof Map)) globalStore.__commonGroundDemoStudents = new Map();
+const students = globalStore.__commonGroundDemoStudents as Map<string, StoredStudent>;
 
 export const demoStore = {
-  /** Null when the address already has an account. */
-  createAccount(email: string, password: string): DemoAccount | null {
-    const key = normaliseEmail(email);
-    if (!key || idsByEmail.has(key)) return null;
-    const salt = randomBytes(16).toString("hex");
-    const record: AccountRecord = {
-      id: randomUUID(),
-      email: key,
-      createdAt: new Date().toISOString(),
-      salt,
-      hash: hashPassword(password, salt),
-      student: initial(key),
-    };
-    accounts.set(record.id, record);
-    idsByEmail.set(key, record.id);
-    return publicView(record);
-  },
-
-  /** Null for an unknown address or a wrong password — the same null, on purpose. */
-  authenticate(email: string, password: string): DemoAccount | null {
-    const id = idsByEmail.get(normaliseEmail(email));
-    const record = id ? accounts.get(id) : undefined;
-    if (!record) return null;
-    const attempt = Buffer.from(hashPassword(password, record.salt), "hex");
-    const stored = Buffer.from(record.hash, "hex");
-    return attempt.length === stored.length && timingSafeEqual(attempt, stored) ? publicView(record) : null;
-  },
-
-  hasAccount(email: string): boolean {
-    return idsByEmail.has(normaliseEmail(email));
-  },
-
-  /** Null for a missing or unknown id — which is what a restart produces. */
+  /** This browser's student, made on first sight. Null only with no id at all. */
   get(id: string | null | undefined): StoredStudent | null {
-    return id ? accounts.get(id)?.student ?? null : null;
+    if (!id) return null;
+    let student = students.get(id);
+    if (!student) {
+      student = initial();
+      students.set(id, student);
+    }
+    return student;
   },
 
   set(id: string, next: Partial<StoredStudent>): StoredStudent {
-    const record = accounts.get(id);
-    if (!record) throw new Error("Not signed in");
-    record.student = { ...record.student, ...next };
-    return record.student;
+    const student = { ...demoStore.get(id)!, ...next };
+    students.set(id, student);
+    return student;
   },
 
-  /** Back to the seeded student, keeping the account. */
-  reset(id: string): StoredStudent | null {
-    const record = accounts.get(id);
-    if (!record) return null;
-    record.student = initial(record.email);
-    return record.student;
+  /** Back to the seeded student. */
+  reset(id: string): StoredStudent {
+    const student = initial();
+    students.set(id, student);
+    return student;
   },
 
-  /** How many accounts this server currently holds. For the status strip. */
+  /** How many browsers this server currently knows. For the status strip. */
   size(): number {
-    return accounts.size;
+    return students.size;
   },
 
   /** Tests only. */
   clear(): void {
-    accounts.clear();
-    idsByEmail.clear();
-    seedDemoLogin();
+    students.clear();
   },
 };
-
-function seedDemoLogin(): void {
-  if (!idsByEmail.has(normaliseEmail(DEMO_LOGIN.email))) {
-    demoStore.createAccount(DEMO_LOGIN.email, DEMO_LOGIN.password);
-  }
-}
-seedDemoLogin();

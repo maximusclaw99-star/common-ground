@@ -37,8 +37,8 @@ now has real (in-memory) accounts — see the 2026-09-19 evening session below.
 
 | Request | What changed |
 |---|---|
-| 1. Account before upload | `proxy.ts` gates the protected paths in demo mode too, on a `cg_demo` cookie (`src/lib/session/cookie.ts`). Sign-up/sign-in work without Supabase: `demoStore` holds accounts (scrypt-hashed passwords) and one student each. Landing CTA is "Make an account" when signed out. |
-| 2. Questionnaire kept other people's answers | Root cause was the single shared demo student. `demo-store.ts` is per account; `getSession()` reads the cookie; a stale id (after restart) is nobody and the page redirects to sign-in. "Start the questions over" on `/intake` (`restartQuestionsAction`) clears answers for this account only. Test: `demo-store.test.ts`. |
+| 1. Account before upload | Built, then **removed again in demo mode at the user's request** ("the log in is causing issues"). With Supabase configured the gate stands: `proxy.ts` redirects protected paths to `/sign-in`. In demo mode there is no sign-in at all: the proxy sets a random `cg_demo` cookie on first visit (`src/lib/session/cookie.ts`) and the auth pages redirect straight through. |
+| 2. Questionnaire kept other people's answers | Root cause was the single shared demo student. `demo-store.ts` is now one student per browser (per `cg_demo` id), pinned to `globalThis` so dev reloads don't wipe it; an unknown id (after a restart) just gets a fresh student. "Start the questions over" on `/intake` (`restartQuestionsAction`) clears answers for this browser only. Test: `demo-store.test.ts`. |
 | 3. No company question in intake | `target_companies` removed from `FIELDS`; `THEME_COPY.targets` reworded. The facts key stays and is written from the dashboard. |
 | 4. Boxes touching | `.tb-card` padding 20→24; new `.tb-cards` grid (24px gap, 32px at ≥768) and `.tb-stack` in `globals.css`; every card/panel grid uses them. NB `.tb-grid` is TAKEN by the design bundle (an absolute-positioned background) — never reuse that name. |
 | 5. Dashboard picks a company | `/dashboard` is a company picker (`src/lib/companies/pool.ts` counts people + openings per employer from the providers). Choosing persists to `target_companies` (`dashboard/actions.ts`) and lands on `/dashboard/[company]`, which ranks only people there, lists its openings, the outstanding questions, and a short "strong ties elsewhere" tail. Person page links back to its company. |
@@ -95,6 +95,11 @@ Do 3 and 5 together — they are one change (company choice moves from intake to
    `databricks-meta-llama-3-3-70b-instruct`) has never run against the live warehouse.
 
 ## Things learned the hard way (don't re-learn)
+
+- **`proxy.ts` must live in `src/`** when the app is under `src/app`. A root-level `proxy.ts` is
+  silently never registered (`middleware-manifest.json` stays empty, and `next build` prints no
+  "ƒ Proxy" line). It sat at the root from the first commit until 2026-09-19 evening, so every
+  "the proxy redirects…" claim before that was actually the page's own `redirect()` call.
 
 - React 19 lint: no ref writes during render, no setState in effects, no conditional hooks →
   `useSyncExternalStore` for clocks/support detection; split components instead of early returns
