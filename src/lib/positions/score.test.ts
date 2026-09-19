@@ -59,3 +59,11 @@ test("scores are deterministic for a fixed clock", () => {
   const b = rankPositions(student, positions, { now: NOW }).map((r) => r.fit.score);
   assert.deepEqual(a, b);
 });
+
+test("accounting is a vertical: audit and tax targets resolve to it", () => {
+  const acct = {
+    profile: { ...student.profile, targets: { roles: ["Audit Associate"], locations: [], industries: ["Public accounting"] } },
+    facts: { ...EMPTY_FACTS, target_function: "audit", target_roles: ["Tax Associate"] },
+  };
+  assert.equal(studentVerticals(acct)[0], "accounting");
+});

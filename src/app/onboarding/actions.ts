@@ -2,6 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { UnreadablePdfError, getResumeProvider } from "@/lib/resume";
+import { EMPTY_FACTS } from "@/lib/ai/schemas";
+import { deriveAll } from "@/lib/intake/derive";
+import { FIELDS } from "@/lib/intake/fields";
 import { demoStore } from "@/lib/session/demo-store";
 import { getSession } from "@/lib/session";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -48,7 +51,11 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
   }
 
   if (!isSupabaseConfigured()) {
-    demoStore.set({ profile });
+    // What the resume already told us counts for ranking right away; the
+    // questionnaire still asks the student to confirm each of these, because
+    // no meta entry is written here, so nothing is silently treated as answered.
+    const facts = { ...EMPTY_FACTS, ...deriveAll(FIELDS, profile) };
+    demoStore.set({ profile, facts });
     redirect("/onboarding/review");
   }
 

@@ -108,6 +108,7 @@ function toPerson(row: Record<string, unknown>, fetchedAt: string): Person {
     headline: str(row.headline),
     profileUrl: str(row.profile_url),
     photoUrl: str(row.photo_url),
+    email: str(row.email),
     currentCompany: String(row.current_company ?? ""),
     currentTitle: String(row.current_title ?? ""),
     currentFunction: str(row.current_function),

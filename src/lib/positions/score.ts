@@ -31,6 +31,7 @@ export interface PositionScore {
 }
 
 const VERTICAL_WORDS: Record<string, RegExp> = {
+  accounting: /\b(account|audit|tax|cpa|assurance|forensic)/i,
   swe: /\b(software|engineer(ing)?|developer|swe|backend|frontend|full[- ]?stack|ml|machine learning|data eng|sre|devops|security eng|cyber)/i,
   consulting: /\b(consult|advisory|strategy|analyst|business analyst|technology analyst|public sector)/i,
   finance: /\b(financ|banking|investment|trading|trader|quant|equity|asset|wealth|capital)/i,
