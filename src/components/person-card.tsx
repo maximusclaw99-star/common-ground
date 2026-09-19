@@ -1,9 +1,16 @@
 import Link from "next/link";
 import type { AffinityResult, Person } from "@/lib/affinity/types";
+import type { HomophilyResult } from "@/lib/homophily/scorer";
 import { Avatar } from "./avatar";
+import { HomophilyBadge } from "./homophily-badge";
 import { TierBadge } from "./tier-badge";
 
-export function PersonCard({ person, result }: { person: Person; result: AffinityResult }) {
+/**
+ * One person. With `homophily` set the card shows that score and its match
+ * drivers instead of the ladder tier and its opener — the same card, ranked
+ * by the other scorer.
+ */
+export function PersonCard({ person, result, homophily }: { person: Person; result: AffinityResult; homophily?: HomophilyResult }) {
   return (
     <Link href={`/people/${person.id}`} className="tb-card">
       <div className="flex items-start justify-between gap-[var(--space-12)]">
@@ -16,12 +23,18 @@ export function PersonCard({ person, result }: { person: Person; result: Affinit
             </p>
           </div>
         </div>
-        <TierBadge rank={result.rank} score={result.score} />
+        {homophily ? <HomophilyBadge result={homophily} /> : <TierBadge rank={result.rank} score={result.score} />}
       </div>
 
-      <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0" }}>
-        {result.evidence[0]?.label ?? "Nothing in common yet beyond wanting to work there."}
-      </p>
+      {homophily ? (
+        <ul className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-4)" }}>
+          {homophily.matchDrivers.map((d) => <li key={d}>&rarr; {d}</li>)}
+        </ul>
+      ) : (
+        <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0" }}>
+          {result.evidence[0]?.label ?? "Nothing in common yet beyond wanting to work there."}
+        </p>
+      )}
 
       {result.outreach.timing && (
         <p className="mono-micro" style={{ color: "var(--alert)", margin: "var(--space-12) 0 0" }}>

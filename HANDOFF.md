@@ -44,6 +44,8 @@ now has real (in-memory) accounts — see the 2026-09-19 evening session below.
 | 5. Dashboard picks a company | `/dashboard` is a company picker (`src/lib/companies/pool.ts` counts people + openings per employer from the providers). Choosing persists to `target_companies` (`dashboard/actions.ts`) and lands on `/dashboard/[company]`, which ranks only people there, lists its openings, the outstanding questions, and a short "strong ties elsewhere" tail. Person page links back to its company. |
 | 6. Logos | `src/lib/companies/registry.ts` (~80 employers, aliases, domains, sectors); `scripts/fetch-logos.ts` vendors PNGs into `public/logos/` + `manifest.json`; `CompanyLogo` shows a monogram when there is none. Google's favicon service is the source; 5 companies have none. |
 
+| 7. Homophily scorer (later request) | `src/lib/homophily/scorer.ts` is a line-for-line port of the user's `DynamicHomophilyScorer`; `adapter.ts` maps StoredStudent/Person onto it through the affinity canonicaliser. Weights live on `StoredStudent.homophilyWeights` (demo) / `student_profiles.homophily_weights` (migration `0004`). UI: `?rank=homophily` on `/dashboard/[company]` (toggle "Best opener" / "Most in common", weights form, cards show score + drivers); person page has an "Everything in common" panel. |
+
 Checks after: typecheck, lint, 154 tests, `next build` — see the session transcript for the exact output.
 
 ## The original request list (kept for context)

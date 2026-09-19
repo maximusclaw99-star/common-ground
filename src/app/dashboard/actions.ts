@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { companyInfo, sameCompany } from "@/lib/companies";
-import { getSession, saveFacts } from "@/lib/session";
+import { WEIGHT_LABELS, type HomophilyWeights } from "@/lib/homophily/scorer";
+import { getSession, saveFacts, saveHomophilyWeights } from "@/lib/session";
 
 const MAX_NAME = 80;
 
@@ -46,4 +47,26 @@ export async function dropCompany(formData: FormData): Promise<void> {
     revalidatePath("/jobs");
   }
   redirect("/dashboard");
+}
+
+/**
+ * The student's own weights for the homophily scorer: how much a shared
+ * employer, club, field, hometown or university should count. Whole numbers
+ * from 0 to 100; anything else falls back to what was stored.
+ */
+export async function saveWeightsAction(formData: FormData): Promise<void> {
+  const { student } = await getSession();
+  if (!student) redirect("/sign-in?next=/dashboard");
+
+  const next: HomophilyWeights = { ...student.homophilyWeights };
+  for (const { key } of WEIGHT_LABELS) {
+    const n = Number(formData.get(key));
+    if (Number.isInteger(n) && n >= 0 && n <= 100) next[key] = n;
+  }
+  await saveHomophilyWeights(next);
+
+  const raw = String(formData.get("returnTo") ?? "");
+  const returnTo = raw.startsWith("/") && !raw.startsWith("//") ? raw : "/dashboard";
+  revalidatePath(returnTo);
+  redirect(returnTo);
 }

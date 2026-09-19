@@ -3,6 +3,7 @@ import {
   AffinityFactsSchema, EMPTY_FACTS, FactsMetaSchema,
   type AffinityFacts, type FactsMeta, type StudentProfile,
 } from "@/lib/ai/schemas";
+import { DEFAULT_WEIGHTS, HomophilyWeightsSchema, type HomophilyWeights } from "@/lib/homophily/scorer";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { DEMO_COOKIE } from "./cookie";
@@ -64,6 +65,7 @@ export async function getSession(): Promise<Session> {
   // defaults, not crash a page.
   const facts = safeParse(AffinityFactsSchema, { ...EMPTY_FACTS, ...(studentRow?.affinity_facts ?? {}) }, EMPTY_FACTS);
   const meta = safeParse(FactsMetaSchema, studentRow?.affinity_facts_meta ?? {}, {} as FactsMeta);
+  const homophilyWeights = safeParse(HomophilyWeightsSchema, studentRow?.homophily_weights ?? DEFAULT_WEIGHTS, DEFAULT_WEIGHTS);
 
   return {
     demo: false,
@@ -71,6 +73,7 @@ export async function getSession(): Promise<Session> {
       profile, facts, meta,
       intakeCompletedAt: studentRow?.intake_completed_at ?? null,
       email: auth.user.email ?? null,
+      homophilyWeights,
     },
   };
 }
@@ -103,4 +106,20 @@ export async function saveFacts(facts: AffinityFacts, meta: FactsMeta, completed
 function safeParse<T>(schema: { safeParse(v: unknown): { success: boolean; data?: T } }, value: unknown, fallback: T): T {
   const result = schema.safeParse(value);
   return result.success && result.data !== undefined ? result.data : fallback;
+}
+
+/** The student's homophily weights. Validated here so a bad form post cannot store garbage. */
+export async function saveHomophilyWeights(weights: HomophilyWeights): Promise<void> {
+  const parsed = HomophilyWeightsSchema.parse(weights);
+  if (!isSupabaseConfigured()) {
+    const id = await demoAccountId();
+    if (!id) throw new Error("Not signed in");
+    demoStore.set(id, { homophilyWeights: parsed });
+    return;
+  }
+  const supabase = await createClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error("Not signed in");
+  await supabase.from("student_profiles").upsert(
+    { user_id: auth.user.id, homophily_weights: parsed }, { onConflict: "user_id" });
 }

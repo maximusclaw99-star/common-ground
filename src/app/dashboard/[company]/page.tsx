@@ -7,6 +7,8 @@ import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
 import { rankPeople } from "@/lib/affinity/score";
 import { KNOWN_COMPANIES, companyInfo, resolveCompanySlug, sameCompany } from "@/lib/companies";
 import { loadCompanyPool, peopleAt, positionsAt } from "@/lib/companies/pool";
+import { HomophilyWeightsForm } from "@/components/homophily-weights-form";
+import { rankPeopleByHomophily } from "@/lib/homophily";
 import { computeGaps } from "@/lib/intake/gaps";
 import { rankPositions } from "@/lib/positions";
 import { getSession } from "@/lib/session";
@@ -21,8 +23,14 @@ export const dynamic = "force-dynamic";
  * companies are still worth a message, they are just not what this page is
  * for.
  */
-export default async function CompanyPage({ params }: { params: Promise<{ company: string }> }) {
+export default async function CompanyPage({
+  params, searchParams,
+}: { params: Promise<{ company: string }>; searchParams: Promise<{ rank?: string }> }) {
   const { company: slug } = await params;
+  const { rank } = await searchParams;
+  // Two scorers, one page. The ladder finds the single best opener; the
+  // homophily scorer adds up everything shared, with the student's weights.
+  const byHomophily = rank === "homophily";
   const { student, demo } = await getSession();
   if (!student) redirect(`/sign-in?next=/dashboard/${slug}`);
 
@@ -43,6 +51,14 @@ export default async function CompanyPage({ params }: { params: Promise<{ compan
   const strong = results.filter((r) => r.rank <= 5);
   const timely = results.filter((r) => r.outreach.timing);
   const best = results[0];
+
+  const homophily = byHomophily ? rankPeopleByHomophily(student, here) : [];
+  const ladderById = new Map(results.map((r) => [r.personId, r]));
+  // What the main list shows, in the chosen order.
+  const listed = byHomophily
+    ? homophily.map((h) => ({ id: h.personId, result: ladderById.get(h.personId)!, homophily: h }))
+    : results.map((r) => ({ id: r.personId, result: r, homophily: undefined }));
+  const here_ = `/dashboard/${slug}`;
 
   // Strong ties elsewhere: a shared fraternity is a shared fraternity
   // wherever they work. Shown small, after the company's own people.
@@ -114,15 +130,32 @@ export default async function CompanyPage({ params }: { params: Promise<{ compan
       {results.length > 0 && (
         <section className="tb-band tb-band-top tb-layer">
           <div className="tb-wrap">
-            <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>
-              People at {info.name}
-            </h2>
-            <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
-              Strongest connection first &middot; every card names the fact that produced it
-            </p>
+            <div className="flex flex-wrap items-end justify-between gap-[var(--space-16)]" style={{ marginBottom: "var(--space-24)" }}>
+              <div>
+                <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>
+                  People at {info.name}
+                </h2>
+                <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: 0 }}>
+                  {byHomophily
+                    ? "Most in common first \u00b7 every shared factor adds its weight"
+                    : "Strongest connection first \u00b7 every card names the fact that produced it"}
+                </p>
+              </div>
+              <div className="flex gap-[var(--space-8)]" role="group" aria-label="Rank by">
+                <Link href={here_} className={`tb-btn tb-btn--sm mono-label${byHomophily ? "" : " tb-btn--solid"}`}
+                  aria-current={byHomophily ? undefined : "true"}>Best opener</Link>
+                <Link href={`${here_}?rank=homophily`} className={`tb-btn tb-btn--sm mono-label${byHomophily ? " tb-btn--solid" : ""}`}
+                  aria-current={byHomophily ? "true" : undefined}>Most in common</Link>
+              </div>
+            </div>
+            {byHomophily && (
+              <div style={{ marginBottom: "var(--space-24)" }}>
+                <HomophilyWeightsForm weights={student.homophilyWeights} returnTo={`${here_}?rank=homophily`} />
+              </div>
+            )}
             <div className="tb-cards tb-cards--2">
-              {results.slice(0, 120).map((r) => (
-                <PersonCard key={r.personId} person={byId.get(r.personId)!} result={r} />
+              {listed.slice(0, 120).map(({ id, result, homophily: h }) => (
+                <PersonCard key={id} person={byId.get(id)!} result={result} homophily={h} />
               ))}
             </div>
             {results.length > 120 && (
@@ -204,7 +237,10 @@ export default async function CompanyPage({ params }: { params: Promise<{ compan
         readings={[
           { label: "Company", value: info.name },
           { label: "People here", value: String(results.length) },
-          { label: "Strongest", value: best ? `Tier ${best.rank} / ${Math.round(best.score)}` : "None" },
+          { label: "Ranked by", value: byHomophily ? "homophily" : "ladder" },
+          { label: "Strongest", value: byHomophily
+              ? (homophily[0] ? `${homophily[0].totalScore} pts` : "None")
+              : (best ? `Tier ${best.rank} / ${Math.round(best.score)}` : "None") },
           { label: "Questions left", value: String(gaps.length) },
           { label: "Source", value: pool.peopleSource },
         ]}

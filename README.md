@@ -59,6 +59,15 @@ in `ladder.test.ts`, not hardcoded. The highest tier wins outright: the ladder o
 openers, not additive evidence. You open with one hook, and the rest make that same message
 warmer. Three mediocre overlaps must not beat one shared fraternity.
 
+**The homophily scorer is the second opinion.** `src/lib/homophily/scorer.ts` is a direct port of
+`DynamicHomophilyScorer`: five shared factors (past employer, organisation, academic focus,
+hometown, university), each worth a weight the student sets, added up, every firing factor named.
+Where the ladder asks "what is the single best opener", this asks "how much do we have in common,
+all told". On a company page, "Most in common" ranks by it and shows the weights form; the person
+page shows the total and its drivers. Both sides pass through the same canonicaliser first, so
+"VT" and "Virginia Polytechnic" still count as one university. `scorer.test.ts` runs the reference
+script's two contacts and requires 70 and 15 with the reference's exact reason strings.
+
 **Decay** decides whether a hit *survives*, not how far it slides. A four-day-old career fair
 should stop being the opener, not become a weaker one — so below the floor the hit is dropped and
 the person falls to whatever tier they otherwise match.
@@ -91,7 +100,8 @@ security keyed on `auth.uid()`. What is missing is a project to point it at. Unt
 2. Run the three files in `supabase/migrations/` **in order** in the project's SQL editor, or
    `supabase db push` with the CLI. `0001` creates the tables, the owner-only RLS policies, and the
    `handle_new_user` trigger that gives every new account its `profiles` row; `0002` creates the
-   private `documents` bucket; `0003` adds the questionnaire columns.
+   private `documents` bucket; `0003` adds the questionnaire columns; `0004` adds the homophily
+   weights column.
 3. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL`,
    `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` from Settings → API. Set the same
    three in Vercel (Settings → Environment Variables) and redeploy.

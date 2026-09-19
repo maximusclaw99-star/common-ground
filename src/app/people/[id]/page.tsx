@@ -6,6 +6,7 @@ import { TierBadge, TierLadder, tierColor } from "@/components/tier-badge";
 import { scoreAffinity } from "@/lib/affinity/score";
 import { getPeopleProvider } from "@/lib/people";
 import { companyInfo } from "@/lib/companies";
+import { scorePersonByHomophily } from "@/lib/homophily";
 import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,8 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
   if (!person) notFound();
 
   const result = scoreAffinity({ profile: student.profile, facts: student.facts }, person);
+  const homophily = scorePersonByHomophily(student, person);
+  const companyPath = person.currentCompany ? `/dashboard/${companyInfo(person.currentCompany).slug}` : "/dashboard";
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
@@ -114,6 +117,24 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
                 &gt; Where this lands
               </p>
               <TierLadder activeRank={result.rank} />
+            </div>
+
+            <div className="tb-panel">
+              <div className="flex flex-wrap items-center justify-between gap-[var(--space-12)]">
+                <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Everything in common</p>
+                <span className="mono-label" style={{ color: homophily.totalScore > 0 ? "var(--signal)" : "var(--ink-faint)" }}>
+                  {homophily.totalScore} pts
+                </span>
+              </div>
+              <ul className="body-sm" style={{ margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", color: "var(--ink-muted)", display: "grid", gap: "var(--space-8)" }}>
+                {homophily.matchDrivers.map((d) => <li key={d}>&rarr; {d}</li>)}
+              </ul>
+              <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-12) 0 0", textTransform: "none" }}>
+                Weighted by your settings.{" "}
+                <Link href={`${companyPath}?rank=homophily`} className="tb-link" style={{ color: "var(--ink)", textTransform: "none" }}>
+                  Change the weights
+                </Link>
+              </p>
             </div>
 
             {result.unlockable.length > 0 && (

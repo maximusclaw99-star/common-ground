@@ -1,5 +1,6 @@
 import { EMPTY_FACTS, type AffinityFacts, type FactsMeta, type StudentProfile } from "@/lib/ai/schemas";
 import { student as fixtureStudent } from "@/lib/affinity/__fixtures__/cast";
+import { DEFAULT_WEIGHTS, type HomophilyWeights } from "@/lib/homophily/scorer";
 
 /**
  * The demo-mode store: one student per browser, held in module memory.
@@ -21,6 +22,8 @@ export interface StoredStudent {
   meta: FactsMeta;
   intakeCompletedAt: string | null;
   email: string | null;
+  /** The student's own weights for the homophily scorer. */
+  homophilyWeights: HomophilyWeights;
 }
 
 /**
@@ -51,6 +54,7 @@ function seed(): StoredStudent {
     meta: {},
     intakeCompletedAt: null,
     email: null,
+    homophilyWeights: { ...DEFAULT_WEIGHTS },
   };
 }
 
@@ -72,6 +76,7 @@ function prefilled(): StoredStudent {
     meta,
     intakeCompletedAt: now,
     email: null,
+    homophilyWeights: { ...DEFAULT_WEIGHTS },
   };
 }
 
