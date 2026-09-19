@@ -1,7 +1,11 @@
 # Databricks data layer
 
-The warehouse behind Common Ground. Everything is mock; every person is synthetic. What matters is that each
-one carries the small, nameable things a coffee chat runs on — the same things `src/lib/affinity` scores:
+The warehouse behind Common Ground. Everything is mock; every person is synthetic. The pool is **1,100 Virginia Tech
+alumni** at 67 real employers — the Big Four, MBB, Booz Allen, Google, Microsoft, Databricks, Goldman, JPMorgan, Capital One
+and the rest — built so that a VT resume finds hooks: every student organization on the Gobbler Connect list
+(`data/vt_clubs_raw.txt`, 543 after dropping administrative units) has a couple of alumni. Employer names are real;
+the people, their `@<firm>.example.com` emails, and their photos are not. What matters is that each one carries the
+small, nameable things a coffee chat runs on — the same things `src/lib/affinity` scores:
 
 | Ladder tier | What the data carries | Example |
 |---|---|---|
@@ -17,9 +21,14 @@ one carries the small, nameable things a coffee chat runs on — the same things
 Fourteen people (`p9001`–`p9014`) are planted around the demo student in `src/lib/session/demo-store.ts` so the
 dashboard has a hook on every rung the moment `PEOPLE_PROVIDER=databricks` is set.
 
-Every person and student also carries a `photo_url` into `public/people/` — 200 randomuser.me portraits fetched once by
-`scripts/fetch_portraits.py` and committed, gender-matched to the generated first name, so the demo never depends on a
-third-party host. Swap `photo_for()` in the generator to DiceBear SVGs if photos of real models ever feel wrong.
+Every person and student carries a `photo_url` into `public/people/`: 200 randomuser.me portraits plus ~1,000 AI-generated
+faces (this-person-does-not-exist.com — nobody real), fetched once by `scripts/fetch_portraits.py`, resized to 128 px and
+committed so the demo never depends on a third-party host. The generator hands them out round-robin per gender, so almost
+nobody on a page shares a face.
+
+Verticals are `swe`, `consulting`, `finance`, `accounting`. A club that implies a vertical (Accounting Society, Cyber
+Security Club, FinTech Club, The Consulting Group) sends its alumni there; the rest are spread by weight. Big firms are
+weighted 3:1.5:1 over mid and small so the names you expect show up most.
 
 ## Turn it on in the app
 
