@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { extractProfile } from "@/lib/ai/extract-profile";
+import { UnreadablePdfError, getResumeProvider } from "@/lib/resume";
 import { demoStore } from "@/lib/session/demo-store";
 import { getSession } from "@/lib/session";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -23,21 +23,28 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
   if (file.type !== "application/pdf") return { error: "It needs to be a PDF." };
   if (file.size > 15 * 1024 * 1024) return { error: "That file is over 15 MB." };
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  // Checked before the bytes are read, so a resume is never taken from someone
+  // when nothing can be done with it.
+  const reader = getResumeProvider();
+  if (!reader.isReady()) {
     return {
-      error: "ANTHROPIC_API_KEY isn't set, so we can't read the resume yet. " +
-        "The demo student is already loaded — continue to the questions to see the flow.",
+      error: `${reader.notReadyReason} The demo student is already loaded — continue to the questions to see the flow.`,
     };
   }
 
-  const base64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+  const bytes = new Uint8Array(await file.arrayBuffer());
 
   let profile;
   try {
-    profile = await extractProfile({ documents: [{ kind: "resume", base64 }] });
+    profile = await reader.extract({ bytes, filename: file.name });
   } catch (error) {
-    console.error("[onboarding] extraction failed", error);
-    return { error: "We couldn't read that PDF. If it's a scan, a text-based export works better." };
+    console.error(`[onboarding] ${reader.name} extraction failed`, error);
+    // A scan is the student's problem to fix and worth saying precisely;
+    // anything else is ours, and they should not be handed a stack trace.
+    if (error instanceof UnreadablePdfError) return { error: error.message };
+    return {
+      error: "We couldn't read that resume. Nothing was saved — try again, or continue with the demo student.",
+    };
   }
 
   if (!isSupabaseConfigured()) {

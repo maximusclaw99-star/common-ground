@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
 import { FIELDS } from "@/lib/intake/fields";
+import { getResumeProvider } from "@/lib/resume";
 import { getSession } from "@/lib/session";
 import { UploadForm } from "./upload-form";
 
@@ -9,6 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function UploadPage() {
   const { demo, student } = await getSession();
   const derivable = FIELDS.filter((f) => f.resumeDerivable).length;
+  const reader = getResumeProvider();
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
@@ -49,7 +51,8 @@ export default async function UploadPage() {
         readings={[
           { label: "Accepts", value: "PDF / 15MB" },
           { label: "Fields from resume", value: `${derivable} of ${FIELDS.length}` },
-          { label: "Extractor", value: process.env.ANTHROPIC_API_KEY ? "Ready" : "No key" },
+          { label: "Reader", value: reader.name },
+          { label: "Credentials", value: reader.isReady() ? "Ready" : "Not set" },
         ]}
       />
     </div>
