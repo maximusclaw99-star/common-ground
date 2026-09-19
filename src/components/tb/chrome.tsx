@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { signOut } from "@/app/(auth)/actions";
 
 /** Square with an inscribed crosshair — the system's own geometry. */
 function Mark() {
@@ -13,9 +14,11 @@ export interface NavProps {
   current?: "people" | "openings" | "profile";
   signedIn?: boolean;
   cta?: { label: string; href: string } | null;
+  /** Whose account this is. Absent in demo mode, where there is no account. */
+  email?: string | null;
 }
 
-export function Nav({ current, signedIn, cta }: NavProps) {
+export function Nav({ current, signedIn, cta, email }: NavProps) {
   return (
     <nav className="tb-nav tb-band-bottom tb-layer mono-label">
       <Link className="tb-nav__brand title" href="/">
@@ -33,7 +36,22 @@ export function Nav({ current, signedIn, cta }: NavProps) {
         <div className="tb-nav__links" />
       )}
 
-      <div className="tb-nav__links" style={{ alignItems: "center", gap: "var(--space-24)" }}>
+      <div className="tb-nav__links" style={{ alignItems: "center", gap: "var(--space-16)" }}>
+        {email && (
+          <>
+            {/* The address is reassurance, not navigation — first thing to go
+                when the bar gets tight. The way out stays. */}
+            <span className="mono-micro hidden lg:inline"
+              style={{ color: "var(--ink-faint)", textTransform: "none" }}>
+              {email}
+            </span>
+            <form action={signOut}>
+              <button type="submit" className="tb-link mono-label" style={{ whiteSpace: "nowrap" }}>
+                Sign out
+              </button>
+            </form>
+          </>
+        )}
         {cta === null ? null : (
           <Link className="tb-btn tb-btn--sm mono-label" href={cta?.href ?? "/sign-in"}>
             {cta?.label ?? "Sign in"}

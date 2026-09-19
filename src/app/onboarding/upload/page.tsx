@@ -15,7 +15,7 @@ export default async function UploadPage() {
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
       {demo && <DemoStrip />}
-      <Nav signedIn={Boolean(student)} cta={null} />
+      <Nav signedIn={Boolean(student)} cta={null} email={demo ? null : student?.email} />
 
       <section className="tb-band tb-layer" style={{ flexGrow: 1 }}>
         <div className="tb-wrap" style={{ maxWidth: 620 }}>

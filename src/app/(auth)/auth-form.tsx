@@ -55,6 +55,12 @@ export function AuthForm({
 
         {state.error && <p className="body-sm" style={{ color: "var(--alert)", margin: 0 }}>{state.error}</p>}
 
+        {state.notice && (
+          <p className="body-sm tb-panel" style={{ margin: 0, color: "var(--ink-muted)" }}>
+            <span className="tb-led tb-led--live" aria-hidden /> {state.notice}
+          </p>
+        )}
+
         <button type="submit" disabled={pending} aria-disabled={pending}
           className="tb-btn tb-btn--solid mono-label" style={{ justifyContent: "center" }}>
           {pending ? "One moment" : signingUp ? "Create account" : "Sign in"}

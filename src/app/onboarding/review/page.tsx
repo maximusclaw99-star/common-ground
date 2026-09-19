@@ -19,7 +19,7 @@ export default async function ReviewPage() {
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
       {demo && <DemoStrip />}
-      <Nav signedIn cta={null} />
+      <Nav signedIn cta={null} email={demo ? null : student.email} />
 
       <section className="tb-band tb-layer">
         <div className="tb-wrap" style={{ maxWidth: 860 }}>

@@ -68,6 +68,29 @@ about clubs. Two rules carry most of the weight:
   student doesn't, the scorer emits an `unlockable`, and the question arrives saying *"we ask
   because Elena Cruz is from Richmond."*
 
+## Turning on accounts
+
+Every account path is already written — sign-up, sign-in, sign-out, per-user storage, and row-level
+security keyed on `auth.uid()`. What is missing is a project to point it at. Until there is one,
+`isSupabaseConfigured()` is false and the app runs the in-memory demo student instead.
+
+1. Create a free project at [supabase.com](https://supabase.com) (this needs your own login).
+2. Run the three files in `supabase/migrations/` **in order** in the project's SQL editor, or
+   `supabase db push` with the CLI. `0001` creates the tables, the owner-only RLS policies, and the
+   `handle_new_user` trigger that gives every new account its `profiles` row; `0002` creates the
+   private `documents` bucket; `0003` adds the questionnaire columns.
+3. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL`,
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` from Settings → API. Set the same
+   three in Vercel (Settings → Environment Variables) and redeploy.
+
+The anon key is meant to be public — RLS is what protects the data. The service role key bypasses
+RLS entirely and belongs only on the server.
+
+Supabase confirms email addresses by default, so `signUp` returns a user with **no session** and the
+form says to go and open the link. Turning that off (Authentication → Providers → Email → "Confirm
+email") makes sign-up log you straight in, which is the better setting for a demo where judges make
+accounts on the spot.
+
 ## Wiring up Databricks
 
 `src/lib/people/databricks.ts` is the only file that needs to change. Set `PEOPLE_PROVIDER=databricks`

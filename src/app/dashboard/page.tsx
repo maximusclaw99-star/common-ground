@@ -45,7 +45,7 @@ export default async function DashboardPage() {
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
       {demo && <DemoStrip />}
-      <Nav current="people" signedIn cta={null} />
+      <Nav current="people" signedIn cta={null} email={demo ? null : student.email} />
 
       <section className="tb-band tb-layer">
         <div className="tb-wrap">

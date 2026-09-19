@@ -32,7 +32,7 @@ export default async function IntakePage() {
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
       {demo && <DemoStrip />}
-      <Nav current="profile" signedIn cta={null} />
+      <Nav current="profile" signedIn cta={null} email={demo ? null : student.email} />
 
       <section className="tb-band tb-layer" style={{ flexGrow: 1 }}>
         <div className="tb-wrap" style={{ maxWidth: 760 }}>

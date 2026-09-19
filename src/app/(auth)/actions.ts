@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-export interface AuthState { error: string | null }
+export interface AuthState {
+  error: string | null;
+  /** Not a failure: something happened that the student has to act on. */
+  notice?: string | null;
+}
 
 async function authenticate(
   mode: "sign-in" | "sign-up",
@@ -21,12 +25,25 @@ async function authenticate(
   if (!email || !password) return { error: "Email and password are both needed." };
 
   const supabase = await createClient();
-  const { error } =
-    mode === "sign-up"
-      ? await supabase.auth.signUp({ email, password })
-      : await supabase.auth.signInWithPassword({ email, password });
 
+  if (mode === "sign-in") {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: error.message };
+    redirect(next);
+  }
+
+  const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) return { error: error.message };
+
+  // Supabase confirms addresses by default, and then hands back a user with
+  // no session. Redirecting on that would bounce straight off the proxy and
+  // land the student back here with nothing said — so say it.
+  if (!data.session) {
+    return {
+      error: null,
+      notice: `Check ${email} for a confirmation link. The account is not live until you open it.`,
+    };
+  }
   redirect(next);
 }
 
