@@ -1,0 +1,113 @@
+{
+  "statement_id": "captured-2026-09-19",
+  "status": {
+    "state": "SUCCEEDED"
+  },
+  "manifest": {
+    "schema": {
+      "columns": [
+        {
+          "name": "id",
+          "type_text": "STRING"
+        },
+        {
+          "name": "title",
+          "type_text": "STRING"
+        },
+        {
+          "name": "company",
+          "type_text": "STRING"
+        },
+        {
+          "name": "company_id",
+          "type_text": "STRING"
+        },
+        {
+          "name": "type",
+          "type_text": "STRING"
+        },
+        {
+          "name": "vertical",
+          "type_text": "STRING"
+        },
+        {
+          "name": "location",
+          "type_text": "STRING"
+        },
+        {
+          "name": "opens_on",
+          "type_text": "STRING"
+        },
+        {
+          "name": "closes_on",
+          "type_text": "STRING"
+        },
+        {
+          "name": "target_grad_years",
+          "type_text": "ARRAY<INT>"
+        },
+        {
+          "name": "description",
+          "type_text": "STRING"
+        },
+        {
+          "name": "posted_url",
+          "type_text": "STRING"
+        },
+        {
+          "name": "requirements",
+          "type_text": "ARRAY<STRUCT<requirement: STRING NOT NULL COMMENT 'Named requirement, e.g. Security+, Python, Excel modeling', kind: STRING NOT NULL COMMENT 'skill | certification | degree | experience', required: BOOLEAN COMMENT 'true = hard requirement, false = preferred'>>"
+        }
+      ]
+    }
+  },
+  "result": {
+    "data_array": [
+      [
+        "j001",
+        "Undergraduate Research Assistant - Systems",
+        "Ferrite AI",
+        "c007",
+        "research",
+        "swe",
+        "Atlanta, GA",
+        "2026-11-18",
+        "2027-01-07",
+        "[\"2027\",\"2028\",\"2029\"]",
+        "Ferrite AI is hiring a Undergraduate Research Assistant - Systems (research) based in Atlanta, GA. Join the swe team on high-impact work with direct mentorship. We favor candidates who reach out to current team members before applying.",
+        "https://jobs.example.com/c007/001",
+        "[{\"requirement\":\"Prior internship or shipped project\",\"kind\":\"experience\",\"required\":\"false\"},{\"requirement\":\"Machine Learning\",\"kind\":\"skill\",\"required\":\"false\"},{\"requirement\":\"Python\",\"kind\":\"skill\",\"required\":\"true\"},{\"requirement\":\"Spark\",\"kind\":\"skill\",\"required\":\"true\"},{\"requirement\":\"BS in Computer Science or related\",\"kind\":\"degree\",\"required\":\"true\"}]"
+      ],
+      [
+        "j026",
+        "New Grad Site Reliability Engineer",
+        "Sable Security",
+        "c013",
+        "full_time",
+        "swe",
+        "Arlington, VA",
+        "2027-03-27",
+        "2027-05-22",
+        "[\"2027\"]",
+        "Sable Security is hiring a New Grad Site Reliability Engineer (full time) based in Arlington, VA. Join the swe team on high-impact work with direct mentorship. We favor candidates who reach out to current team members before applying.",
+        "https://jobs.example.com/c013/026",
+        "[{\"requirement\":\"Distributed Systems\",\"kind\":\"skill\",\"required\":\"true\"},{\"requirement\":\"Spark\",\"kind\":\"skill\",\"required\":\"false\"},{\"requirement\":\"AWS Solutions Architect Associate\",\"kind\":\"certification\",\"required\":\"false\"},{\"requirement\":\"Git\",\"kind\":\"skill\",\"required\":\"true\"},{\"requirement\":\"BS in Computer Science or related\",\"kind\":\"degree\",\"required\":\"true\"}]"
+      ],
+      [
+        "j040",
+        "New Grad Software Engineer",
+        "Quillsoft",
+        "c005",
+        "full_time",
+        "swe",
+        "New York, NY",
+        "2027-04-20",
+        "2027-06-22",
+        "[\"2027\"]",
+        "Quillsoft is hiring a New Grad Software Engineer (full time) based in New York, NY. Join the swe team on high-impact work with direct mentorship. We favor candidates who reach out to current team members before applying.",
+        "https://jobs.example.com/c005/040",
+        "[{\"requirement\":\"Java\",\"kind\":\"skill\",\"required\":\"true\"},{\"requirement\":\"Prior internship or shipped project\",\"kind\":\"experience\",\"required\":\"true\"},{\"requirement\":\"Spark\",\"kind\":\"skill\",\"required\":\"true\"},{\"requirement\":\"BS in Computer Science or related\",\"kind\":\"degree\",\"required\":\"true\"}]"
+      ]
+    ]
+  }
+}
