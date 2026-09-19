@@ -91,3 +91,13 @@ Upload a Virginia Tech resume that names any club on the Gobbler Connect list an
 the resume's school, clubs and employers now count for scoring before the questionnaire (the questions still ask you to
 confirm them). Every club has at least two alumni in the pool, so "you were both in Accounting Society at Virginia Tech" is
 a hook a real student can hit, not just Sam.
+
+## In the app: the plan agent
+
+`/plan` → pick the Deloitte opening → **Build my plan**. Watch the trace: `skill_gaps()` → `learning_options("Security+")`
+→ `rewrite_resume()` → `finish`. Then the plan (each step is a real cert or course with cost and weeks) and the resume
+(every employer, title and date checked against the profile — the fabrication count is on screen).
+
+Talk track: the model reasons; the facts come from tables. The tool is a Unity Catalog function, the model is a
+Databricks endpoint, the trace lands in a Delta table you can query in Genie: "which certification does the agent
+recommend most?" That is the whole Databricks story in one screen, and the AI never touches outreach.
