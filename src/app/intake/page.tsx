@@ -1,67 +1,69 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Footer, Header } from "@/components/chrome";
+import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
 import { IntakeFlow } from "@/components/intake/intake-flow";
 import { rankPeople } from "@/lib/affinity/score";
 import { computeGaps, unroutedUncertainties } from "@/lib/intake/gaps";
 import { groupIntoSteps } from "@/lib/intake/steps";
+import { FIELDS } from "@/lib/intake/fields";
 import { getPeopleProvider } from "@/lib/people";
 import { getSession } from "@/lib/session";
 
-/**
- * Per-student, so never prerendered. In demo mode getSession() answers from
- * memory without touching cookies, which is enough for Next to treat this page
- * as static and bake one student's ranking into the build.
- */
 export const dynamic = "force-dynamic";
 
 export default async function IntakePage() {
   const { student, demo } = await getSession();
   if (!student) redirect("/sign-in?next=/intake");
 
-  // Demand-driven ordering: score the people we can already reach, so the
-  // questionnaire can say "we're asking because eleven people share this"
-  // rather than just asserting the question matters. Cheap, because the whole
-  // ranking is deterministic and in-memory.
+  // Demand-driven ordering: score the people we can already reach so each
+  // question can say who it would unlock, rather than merely asserting that it
+  // matters. Cheap, because the whole ranking is deterministic and in-memory.
   const people = await getPeopleProvider().getPeople({
-    companies: student.facts.target_companies,
-    limit: 400,
+    companies: student.facts.target_companies, limit: 400,
   });
   const { demand } = rankPeople({ profile: student.profile, facts: student.facts }, people);
 
   const gaps = computeGaps({
-    profile: student.profile,
-    facts: student.facts,
-    meta: student.meta,
-    demand,
+    profile: student.profile, facts: student.facts, meta: student.meta, demand,
   });
   const steps = groupIntoSteps(gaps);
+  const answered = FIELDS.length - gaps.length;
 
   return (
-    <div className="min-h-dvh">
-      <Header demo={demo} email={student.email} />
-      <main className="mx-auto max-w-3xl px-4 py-10">
-        {steps.length === 0 ? <NothingLeftToAsk /> : (
-          <IntakeFlow steps={steps} unrouted={unroutedUncertainties(student.profile)} />
-        )}
-      </main>
-      <Footer />
+    <div className="tb-page" style={{ minHeight: "100vh" }}>
+      {demo && <DemoStrip />}
+      <Nav current="profile" signedIn cta={null} />
+
+      <section className="tb-band tb-layer" style={{ flexGrow: 1 }}>
+        <div className="tb-wrap" style={{ maxWidth: 760 }}>
+          {steps.length === 0 ? <NothingLeftToAsk /> : (
+            <IntakeFlow steps={steps} unrouted={unroutedUncertainties(student.profile)} />
+          )}
+        </div>
+      </section>
+
+      <StatusFooter
+        live={!demo}
+        readings={[
+          { label: "Answered", value: `${answered} / ${FIELDS.length}` },
+          { label: "Outstanding", value: String(gaps.length) },
+          { label: "Screens", value: String(steps.length) },
+          { label: "Flagged", value: String(gaps.filter((g) => g.reason === "flagged_uncertain").length) },
+        ]}
+      />
     </div>
   );
 }
 
 function NothingLeftToAsk() {
   return (
-    <div className="card p-8 text-center">
-      <h1 className="text-[30px]">You&rsquo;re all caught up</h1>
-      <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-[var(--color-muted)]">
+    <div className="tb-panel" style={{ textAlign: "center" }}>
+      <h1 className="display-sm" style={{ textTransform: "uppercase", margin: 0 }}>All caught up</h1>
+      <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: "var(--space-16) auto var(--space-24)" }}>
         We have everything we can use. Come back after a career fair or a conference — those
-        connections only stay open for about 72 hours, so we&rsquo;ll ask again when they matter.
+        connections only stay open for about 72 hours, so we will ask again when they matter.
       </p>
-      <Link href="/dashboard"
-        className="focus-ring mt-6 inline-block rounded-xl bg-[var(--color-accent)] px-5 py-2.5 text-[15px] font-medium text-white">
-        See your people
-      </Link>
+      <Link className="tb-btn tb-btn--solid mono-label" href="/dashboard">See your people &#8599;</Link>
     </div>
   );
 }

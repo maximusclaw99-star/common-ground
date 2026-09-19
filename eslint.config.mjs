@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The design system is vendored: we consume it, we do not own its style.
+    // public/tb is a build artefact synced from it by scripts/sync-design.mjs.
+    "design/**",
+    "public/tb/**",
   ]),
 ]);
 

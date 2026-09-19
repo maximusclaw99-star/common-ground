@@ -6,8 +6,7 @@ import type { Field } from "@/lib/intake/types";
 import { MicButton } from "./mic-button";
 import { SpecificityMeter } from "./specificity-meter";
 
-const inputClass =
-  "focus-ring w-full rounded-lg border bg-[var(--color-surface)] px-3 py-2 text-[15px] placeholder:text-[var(--color-faint)]";
+const inputClass = "tb-field";
 
 /** Suggestions come from the same alias tables the matcher uses, so what a
  *  student picks is guaranteed to canonicalise. */
@@ -59,7 +58,7 @@ function ChipsInput({ field, value, onChange, onDictate, dictationBusy }: FieldI
   return (
     <div>
       {chips.length > 0 && (
-        <ul className="mb-2 flex flex-wrap gap-1.5">
+        <ul className="mb-[var(--space-12)] flex flex-wrap gap-[var(--space-8)]">
           {chips.map((chip) => (
             <li key={chip}>
               <button
@@ -155,11 +154,11 @@ function PairInput({ field, value, onChange, onDictate, dictationBusy }: FieldIn
   };
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-2">
-        <input className={`${inputClass} flex-1 min-w-[10rem]`} placeholder="from — cybersecurity"
+      <div className="flex flex-wrap items-center gap-[var(--space-12)]">
+        <input className={inputClass} style={{ flex: 1, minWidth: "10rem" }} placeholder="from — cybersecurity"
           value={pair.from ?? ""} onChange={(e) => set("from")(e.target.value)} />
-        <span className="text-[var(--color-faint)]" aria-hidden>→</span>
-        <input className={`${inputClass} flex-1 min-w-[10rem]`} placeholder="to — consulting"
+        <span className="mono-label" style={{ color: "var(--ink-faint)" }} aria-hidden>&rarr;</span>
+        <input className={inputClass} style={{ flex: 1, minWidth: "10rem" }} placeholder="to — consulting"
           value={pair.to ?? ""} onChange={(e) => set("to")(e.target.value)} />
       </div>
       {field.dictation && onDictate && <MicButton onTranscript={onDictate} busy={dictationBusy} />}
@@ -181,19 +180,19 @@ function EventListInput({ field, value, onChange, onDictate, dictationBusy }: Fi
     onChange(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
 
   return (
-    <div className="space-y-2">
+    <div className="grid gap-[var(--space-12)]">
       {rows.map((row, i) => (
-        <div key={i} className="flex flex-wrap items-center gap-2">
+        <div key={i} className="flex flex-wrap items-center gap-[var(--space-12)]">
           <input className={`${inputClass} flex-1 min-w-[12rem]`} placeholder="Event name"
             value={row.name} onChange={(e) => update(i, { name: e.target.value })} />
-          <select className={`${inputClass} w-auto`} value={row.kind}
+          <select className={inputClass} style={{ width: "auto" }} value={row.kind}
             onChange={(e) => update(i, { kind: e.target.value })}>
             {EVENT_KINDS.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
           </select>
-          <input type="date" className={`${inputClass} w-auto`} value={row.date.slice(0, 10)}
+          <input type="date" className={inputClass} style={{ width: "auto" }} value={row.date.slice(0, 10)}
             onChange={(e) => update(i, { date: e.target.value })} />
           <button type="button" onClick={() => onChange(rows.filter((_, j) => j !== i))}
-            className="focus-ring rounded-lg border px-2.5 py-2 text-[13px] text-[var(--color-muted)]">
+            className="tb-btn tb-btn--sm mono-label">
             Remove
           </button>
         </div>
@@ -201,7 +200,7 @@ function EventListInput({ field, value, onChange, onDictate, dictationBusy }: Fi
       <button
         type="button"
         onClick={() => onChange([...rows, { name: "", kind: "career_fair", date: new Date().toISOString().slice(0, 10), org: null }])}
-        className="focus-ring rounded-lg border px-3 py-1.5 text-[13px] hover:bg-[var(--color-raised)]"
+        className="tb-btn tb-btn--sm mono-label"
       >
         + Add an event
       </button>

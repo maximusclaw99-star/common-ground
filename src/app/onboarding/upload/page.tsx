@@ -1,45 +1,57 @@
 import Link from "next/link";
-import { Footer, Header } from "@/components/chrome";
+import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
+import { FIELDS } from "@/lib/intake/fields";
 import { getSession } from "@/lib/session";
 import { UploadForm } from "./upload-form";
 
-/**
- * Per-student, so never prerendered. In demo mode getSession() answers from
- * memory without touching cookies, which is enough for Next to treat this page
- * as static and bake one student's ranking into the build.
- */
 export const dynamic = "force-dynamic";
 
 export default async function UploadPage() {
   const { demo, student } = await getSession();
+  const derivable = FIELDS.filter((f) => f.resumeDerivable).length;
+
   return (
-    <div className="min-h-dvh">
-      <Header demo={demo} email={student?.email} />
-      <main className="mx-auto max-w-2xl px-4 py-12">
-        <h1 className="text-[34px] leading-tight">Start with your resume</h1>
-        <p className="mt-3 text-[16px] leading-relaxed text-[var(--color-muted)]">
-          Everything on it becomes something we can match you on — your school, your employers, the
-          clubs in your activities section. We only ask you questions your resume doesn&rsquo;t
-          already answer, so the more it says, the less we bother you.
-        </p>
+    <div className="tb-page" style={{ minHeight: "100vh" }}>
+      {demo && <DemoStrip />}
+      <Nav signedIn={Boolean(student)} cta={null} />
 
-        <div className="mt-8"><UploadForm /></div>
-
-        <p className="mt-6 text-[13px] leading-relaxed text-[var(--color-faint)]">
-          Stored privately and readable only by you. We never send it anywhere on your behalf.
-        </p>
-
-        <div className="mt-10 rule pt-6">
-          <p className="text-[14px] text-[var(--color-muted)]">
-            Don&rsquo;t have a PDF handy?{" "}
-            <Link href="/onboarding/review" className="focus-ring underline underline-offset-4">
-              Continue with what we already have
-            </Link>
-            .
+      <section className="tb-band tb-layer" style={{ flexGrow: 1 }}>
+        <div className="tb-wrap" style={{ maxWidth: 620 }}>
+          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Step one of two</p>
+          <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
+            Start with<br />your resume.
+          </h1>
+          <p className="body" style={{ color: "var(--ink-muted)", margin: "0 0 var(--space-32)" }}>
+            Everything on it becomes something we can match you on — your school, your employers,
+            the clubs in your activities section. {derivable} of our {FIELDS.length} questions can be
+            answered straight from it, so the more it says, the less we ask.
           </p>
+
+          <UploadForm />
+
+          <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-24) 0 0", textTransform: "none" }}>
+            &gt; Stored privately, readable only by you. We never send it anywhere on your behalf.
+          </p>
+
+          <div className="tb-rule" style={{ marginTop: "var(--space-32)", paddingTop: "var(--space-24)" }}>
+            <p className="body-sm" style={{ color: "var(--ink-muted)", margin: 0 }}>
+              No PDF handy?{" "}
+              <Link href="/onboarding/review" className="tb-link" style={{ color: "var(--ink)" }}>
+                Continue with what we have
+              </Link>
+            </p>
+          </div>
         </div>
-      </main>
-      <Footer />
+      </section>
+
+      <StatusFooter
+        live={!demo}
+        readings={[
+          { label: "Accepts", value: "PDF / 15MB" },
+          { label: "Fields from resume", value: `${derivable} of ${FIELDS.length}` },
+          { label: "Extractor", value: process.env.ANTHROPIC_API_KEY ? "Ready" : "No key" },
+        ]}
+      />
     </div>
   );
 }

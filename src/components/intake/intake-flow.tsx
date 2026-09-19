@@ -100,65 +100,75 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
 
   return (
     <div>
-      <ol className="mb-8 flex gap-1.5" aria-label="Progress">
+      <ol className="mb-[var(--space-24)] flex gap-[var(--space-4)]" aria-label="Progress">
         {steps.map((s, i) => (
           <li
             key={s.id}
-            className="h-1 flex-1 rounded-full transition-colors"
-            style={{ background: i <= safeIndex ? "var(--color-accent)" : "var(--color-line)" }}
+            className="h-[6px] flex-1"
+            style={{
+              background: i < safeIndex ? "var(--ink)" : i === safeIndex ? "var(--signal)" : "transparent",
+              border: "var(--border-1) solid var(--rule-strong)",
+            }}
             aria-current={i === safeIndex ? "step" : undefined}
           />
         ))}
       </ol>
 
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="text-[32px] leading-tight">{step.title}</h1>
-        <span className="text-[13px] text-[var(--color-faint)]">
-          Step {safeIndex + 1} of {steps.length} · {humanEstimate(step.estimatedSeconds)}
-        </span>
-      </div>
-      <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--color-muted)]">{step.subtitle}</p>
+      <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>
+        &gt; Step {safeIndex + 1} of {steps.length} &middot; {humanEstimate(step.estimatedSeconds)}
+      </p>
+      <h1 className="display-sm" style={{ textTransform: "uppercase", margin: "var(--space-12) 0" }}>
+        {step.title}
+      </h1>
+      <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>{step.subtitle}</p>
       {remaining > 0 && (
-        <p className="mt-1 text-[13px] text-[var(--color-accent)]">
-          {remaining} more {remaining === 1 ? "person" : "people"} we can reach once you finish these.
+        <p className="mono-label" style={{ color: "var(--signal)", margin: "var(--space-12) 0 0" }}>
+          <span className="tb-led tb-led--live" aria-hidden /> {remaining} more{" "}
+          {remaining === 1 ? "person" : "people"} unlocked by this screen
         </p>
       )}
 
-      <div className="mt-8 space-y-7">
+      <div className="mt-[var(--space-32)] grid gap-[var(--space-32)]">
         {step.fields.map((gap) => {
           const id = gap.field.id;
           const isSkipped = Boolean(skipped[id]);
           return (
-            <section key={id} className={isSkipped ? "opacity-50" : ""}>
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <label className="text-[17px]" htmlFor={id}>
+            <section key={id} style={isSkipped ? { opacity: 0.45 } : undefined}>
+              <div className="flex flex-wrap items-baseline justify-between gap-[var(--space-12)]">
+                <label className="title" style={{ textTransform: "uppercase" }} htmlFor={id}>
                   {gap.field.question}
-                  {gap.field.required && <span className="ml-1.5 text-[13px] text-[var(--color-accent)]">required</span>}
+                  {gap.field.required && (
+                    <span className="mono-micro" style={{ marginLeft: 8, color: "var(--alert)" }}>required</span>
+                  )}
                 </label>
                 {gap.field.skipLabel && (
                   <button
                     type="button"
                     onClick={() => setSkipped((s) => ({ ...s, [id]: !s[id] }))}
-                    className="focus-ring rounded-lg border px-2.5 py-1 text-[12px] text-[var(--color-muted)] hover:bg-[var(--color-raised)]"
+                    className="tb-btn tb-btn--sm mono-label"
                   >
-                    {isSkipped ? "Actually, let me answer" : gap.field.skipLabel}
+                    {isSkipped ? "Let me answer" : gap.field.skipLabel}
                   </button>
                 )}
               </div>
 
-              <p className="mb-3 mt-1 max-w-2xl text-[13px] leading-relaxed text-[var(--color-muted)]">
+              <p className="body-sm tb-copy" style={{ color: "var(--ink-muted)", margin: "var(--space-8) 0 var(--space-16)" }}>
                 {gap.field.help}
               </p>
 
               {gap.uncertaintyNote && (
-                <p className="mb-3 rounded-lg border border-[var(--color-accent-line)] bg-[var(--color-accent-soft)] px-3 py-2 text-[13px] text-[var(--color-muted)]">
-                  <span className="font-medium text-[var(--color-accent)]">We weren&rsquo;t sure: </span>
+                <p className="body-sm" style={{
+                  margin: "0 0 var(--space-16)", padding: "var(--space-12)",
+                  background: "var(--canvas-raised)", border: "var(--border-1) solid var(--rule-strong)",
+                  color: "var(--ink-muted)",
+                }}>
+                  <span className="mono-label" style={{ color: "var(--alert)" }}>We were not sure &mdash; </span>
                   {gap.uncertaintyNote}
                 </p>
               )}
               {gap.demandExamples.length > 0 && (
-                <p className="mb-3 text-[13px] text-[var(--color-muted)]">
-                  We ask because {gap.demandExamples[0].replace(/\.$/, "")}
+                <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-16)", textTransform: "none" }}>
+                  &gt; We ask because {gap.demandExamples[0].replace(/\.$/, "")}
                   {gap.demandCount > 1 && ` — and ${gap.demandCount - 1} other${gap.demandCount > 2 ? "s" : ""}`}.
                 </p>
               )}
@@ -173,7 +183,9 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
                     dictationBusy={busyField === id}
                   />
                   {REASON_NOTE[gap.reason] && (
-                    <p className="mt-2 text-[12px] text-[var(--color-faint)]">{REASON_NOTE[gap.reason]}</p>
+                    <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-8) 0 0", textTransform: "none" }}>
+                      {REASON_NOTE[gap.reason]}
+                    </p>
                   )}
                 </>
               )}
@@ -182,31 +194,31 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
         })}
 
         {last && unrouted.length > 0 && (
-          <section className="rule pt-6">
-            <p className="text-[15px]">Anything else we got wrong?</p>
-            <ul className="mt-2 space-y-1 text-[13px] text-[var(--color-muted)]">
-              {unrouted.map((note) => <li key={note}>• {note}</li>)}
+          <section className="tb-rule" style={{ paddingTop: "var(--space-24)" }}>
+            <p className="mono-label" style={{ margin: 0 }}>Anything else we got wrong?</p>
+            <ul className="body-sm" style={{ margin: "var(--space-8) 0 0", padding: 0, listStyle: "none", color: "var(--ink-muted)" }}>
+              {unrouted.map((note) => <li key={note}>&gt; {note}</li>)}
             </ul>
           </section>
         )}
       </div>
 
-      {error && <p className="mt-6 text-[14px] text-[var(--color-accent)]">{error}</p>}
+      {error && <p className="mono-label" style={{ color: "var(--alert)", marginTop: "var(--space-24)" }}>{error}</p>}
 
-      <div className="mt-10 flex flex-wrap items-center gap-3 rule pt-6">
+      <div className="tb-rule mt-[var(--space-48)] flex flex-wrap items-center gap-[var(--space-16)]" style={{ paddingTop: "var(--space-24)" }}>
         {safeIndex > 0 && (
-          <button type="button" onClick={() => setIndex((i) => i - 1)}
-            className="focus-ring rounded-xl border px-4 py-2.5 text-[15px] hover:bg-[var(--color-raised)]">
+          <button type="button" onClick={() => setIndex((i) => i - 1)} className="tb-btn mono-label">
             Back
           </button>
         )}
         <button
           type="button"
           disabled={saving || missingRequired.length > 0}
+          aria-disabled={saving || missingRequired.length > 0}
           onClick={() => advance(answersForStep())}
-          className="focus-ring rounded-xl bg-[var(--color-accent)] px-5 py-2.5 text-[15px] font-medium text-white disabled:opacity-45"
+          className="tb-btn tb-btn--solid mono-label"
         >
-          {saving ? "Saving…" : last ? "Finish and show me people" : "Continue"}
+          {saving ? "Saving" : last ? "Finish \u2197" : "Continue"}
         </button>
 
         {step.optional && (
@@ -218,15 +230,15 @@ export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted:
             onClick={() => advance(step.fields.map((gap) => ({
               fieldId: gap.field.id, value: emptyFor(gap), source: "answer" as const, confidence: 1,
             })))}
-            className="focus-ring rounded-xl px-3 py-2.5 text-[14px] text-[var(--color-muted)] hover:text-[var(--color-ink)]"
+            className="tb-btn mono-label"
           >
             Skip these
           </button>
         )}
 
         {missingRequired.length > 0 && (
-          <span className="text-[13px] text-[var(--color-faint)]">
-            {missingRequired[0].field.question} is needed to rank anyone.
+          <span className="mono-micro" style={{ color: "var(--ink-faint)", textTransform: "none" }}>
+            &gt; {missingRequired[0].field.question} is needed to rank anyone.
           </span>
         )}
       </div>

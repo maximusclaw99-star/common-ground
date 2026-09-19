@@ -1,0 +1,19 @@
+<!-- @dsCard group="Content" height=180 subtitle="Character-stepped reveal with a blinking caret" -->
+<div class="tb-root" style="padding:var(--space-32)">
+  <div id="tw" class="mono-lead" style="color:var(--ink-muted);min-height:48px">
+    <span class="tb-type tb-type--nocaret" style="--tb-chars:27">&gt; scanning 1,284 commits...</span><br />
+    <span class="tb-type" style="--tb-chars:28;--tb-delay:1300ms">&gt; 3 exploitable paths found_</span>
+  </div>
+  <button id="replay" class="tb-btn tb-btn--sm mono-label" type="button" style="margin-top:var(--space-24)">Replay</button>
+  <p class="mono-micro" style="color:var(--ink-faint);margin:var(--space-16) 0 0">
+    Duration is derived: <code>--tb-chars</code> &times; 45ms, stepped once per character.
+  </p>
+  <script>
+    document.getElementById('replay').addEventListener('click', function () {
+      var host = document.getElementById('tw');
+      var clone = host.cloneNode(true);
+      host.parentNode.replaceChild(clone, host);
+      clone.id = 'tw';
+    });
+  </script>
+</div>

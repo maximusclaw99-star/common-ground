@@ -1,0 +1,17 @@
+<!-- @dsCard group="Foundations" height=280 subtitle="Cursor-tracking crosshair with a live coordinate readout" -->
+<div class="tb-root" id="ch-host" style="position:relative;overflow:hidden;min-height:280px">
+  <div class="tb-grid"></div>
+  <div class="tb-layer" style="padding:var(--space-32);height:100%;display:flex;align-items:center;min-height:280px">
+    <div>
+      <p class="display-sm" style="margin:0 0 var(--space-16);text-transform:uppercase">Move the cursor</p>
+      <p class="body-sm" style="margin:0;max-width:var(--copy-max);color:var(--ink-muted)">
+        Two hairlines, a dot and a readout, in `rule` and `ink-subtle`. It measures nothing real.
+        It is there so the page behaves like a surface that knows it is being looked at.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    TB.crosshair(document.getElementById('ch-host'));
+  </script>
+</div>

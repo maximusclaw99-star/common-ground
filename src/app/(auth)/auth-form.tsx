@@ -17,50 +17,53 @@ export function AuthForm({
 
   return (
     <div className="mx-auto w-full max-w-sm">
-      <h1 className="text-[30px] leading-tight">
+      <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>
+        &gt; {signingUp ? "New account" : "Returning"}
+      </p>
+      <h1 className="display-sm" style={{ textTransform: "uppercase", margin: "var(--space-12) 0" }}>
         {signingUp ? "Make an account" : "Welcome back"}
       </h1>
-      <p className="mt-2 text-[15px] leading-relaxed text-[var(--color-muted)]">
+      <p className="body" style={{ color: "var(--ink-muted)", margin: 0 }}>
         {signingUp
           ? "Your resume and your answers stay yours. We never post, message or apply as you."
           : "Pick up where you left off."}
       </p>
 
       {demo && (
-        <div className="mt-5 rounded-lg border border-[var(--color-accent-line)] bg-[var(--color-accent-soft)] p-4 text-[14px] leading-relaxed">
-          <p className="text-[var(--color-muted)]">
-            No database is configured, so accounts don&rsquo;t exist yet — the app is running in
-            demo mode with one student already loaded.
+        <div className="tb-panel" style={{ marginTop: "var(--space-24)" }}>
+          <p className="mono-label" style={{ color: "var(--alert)", margin: 0 }}>
+            <span className="tb-led tb-led--alert" aria-hidden /> No database configured
           </p>
-          <Link href="/onboarding/upload" className="focus-ring mt-3 inline-block font-medium text-[var(--color-accent)]">
-            Skip straight in →
+          <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 var(--space-16)" }}>
+            Accounts do not exist yet. The app is running in demo mode with one student loaded.
+          </p>
+          <Link href="/onboarding/upload" className="tb-btn tb-btn--sm mono-label">
+            Skip straight in &#8599;
           </Link>
         </div>
       )}
 
-      <form action={formAction} className="mt-6 space-y-4">
+      <form action={formAction} className="mt-[var(--space-32)] grid gap-[var(--space-20)]">
         <input type="hidden" name="next" value={next} />
         <Labelled label="Email">
-          <input name="email" type="email" autoComplete="email" required
-            className="focus-ring w-full rounded-lg border bg-[var(--color-surface)] px-3 py-2 text-[15px]" />
+          <input name="email" type="email" autoComplete="email" required className="tb-field" />
         </Labelled>
         <Labelled label="Password" hint={signingUp ? "At least six characters." : undefined}>
           <input name="password" type="password" minLength={6}
-            autoComplete={signingUp ? "new-password" : "current-password"} required
-            className="focus-ring w-full rounded-lg border bg-[var(--color-surface)] px-3 py-2 text-[15px]" />
+            autoComplete={signingUp ? "new-password" : "current-password"} required className="tb-field" />
         </Labelled>
 
-        {state.error && <p className="text-[14px] text-[var(--color-accent)]">{state.error}</p>}
+        {state.error && <p className="body-sm" style={{ color: "var(--alert)", margin: 0 }}>{state.error}</p>}
 
-        <button type="submit" disabled={pending}
-          className="focus-ring w-full rounded-xl bg-[var(--color-accent)] px-4 py-2.5 text-[15px] font-medium text-white disabled:opacity-50">
-          {pending ? "One moment…" : signingUp ? "Create account" : "Sign in"}
+        <button type="submit" disabled={pending} aria-disabled={pending}
+          className="tb-btn tb-btn--solid mono-label" style={{ justifyContent: "center" }}>
+          {pending ? "One moment" : signingUp ? "Create account" : "Sign in"}
         </button>
       </form>
 
-      <p className="mt-6 text-[14px] text-[var(--color-muted)]">
+      <p className="mono-micro" style={{ color: "var(--ink-faint)", marginTop: "var(--space-24)", textTransform: "none" }}>
         {signingUp ? "Already have one? " : "New here? "}
-        <Link href={signingUp ? "/sign-in" : "/sign-up"} className="focus-ring underline underline-offset-4">
+        <Link href={signingUp ? "/sign-in" : "/sign-up"} className="tb-link" style={{ color: "var(--ink)" }}>
           {signingUp ? "Sign in" : "Make an account"}
         </Link>
       </p>
@@ -71,9 +74,13 @@ export function AuthForm({
 function Labelled({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[14px]">{label}</span>
+      <span className="mono-label block" style={{ marginBottom: "var(--space-8)" }}>{label}</span>
       {children}
-      {hint && <span className="mt-1 block text-[12px] text-[var(--color-faint)]">{hint}</span>}
+      {hint && (
+        <span className="mono-micro block" style={{ marginTop: "var(--space-8)", color: "var(--ink-faint)", textTransform: "none" }}>
+          {hint}
+        </span>
+      )}
     </label>
   );
 }

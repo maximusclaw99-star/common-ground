@@ -1,6 +1,10 @@
 import Link from "next/link";
-import { Footer, Wordmark } from "@/components/chrome";
+import { Nav, StatusFooter, Ticker } from "@/components/tb/chrome";
+import { Hero } from "@/components/tb/hero";
+import { LiveClock } from "@/components/tb/live-clock";
 import { TierLadder } from "@/components/tier-badge";
+import { IN_SCOPE_RANKS, TIERS } from "@/lib/affinity/tiers";
+import { FIELDS } from "@/lib/intake/fields";
 import { getSession } from "@/lib/session";
 
 /**
@@ -12,103 +16,107 @@ export const dynamic = "force-dynamic";
 
 export default async function LandingPage() {
   const { demo } = await getSession();
-  const startHref = demo ? "/onboarding/upload" : "/sign-up";
+  const start = demo ? "/onboarding/upload" : "/sign-up";
 
   return (
-    <div className="min-h-dvh">
-      <header className="mx-auto flex max-w-5xl items-center justify-between px-4 py-5">
-        <Wordmark />
-        <div className="flex items-center gap-3 text-[14px]">
-          <Link href="/sign-in" className="focus-ring rounded-lg px-3 py-1.5 text-[var(--color-muted)] hover:text-[var(--color-ink)]">
-            Sign in
-          </Link>
-          <Link href={startHref} className="focus-ring rounded-lg bg-[var(--color-ink)] px-3.5 py-1.5 text-[var(--color-paper)]">
-            Get started
-          </Link>
+    <div className="tb-page" style={{ minHeight: "100vh" }}>
+      <Ticker items={[
+        "Recruiters stopped reading cold applications. They still answer people they have something in common with.",
+        "Internships open a year early. The students who get them started talking long before the posting went up.",
+      ]} />
+      <Nav cta={{ label: "Sign in", href: "/sign-in" }} />
+
+      <Hero
+        picture="/hands.png"
+        marble="/marble.png"
+        head={<>Eleven people,<br />not a thousand<br />applications.</>}
+        lines={[
+          `> ranking ${TIERS.filter((t) => t.inScope).length} kinds of common ground...`,
+          "> 2 require data we refuse to collect_",
+        ]}
+        note="Two minutes &middot; We only ask what your resume does not already say"
+      >
+        <Link className="tb-btn tb-btn--solid mono-label" href={start}>Upload your resume &#8599;</Link>
+        <Link className="tb-btn mono-label" href="#ladder">See the ladder</Link>
+      </Hero>
+
+      <section className="tb-band tb-band-top tb-layer">
+        <div className="tb-wrap grid gap-[var(--space-32)] md:grid-cols-3">
+          <Point n="01" title="We read your resume first">
+            Everything on it becomes a signal we can match on. Then we ask, once, for what a resume
+            never carries: where you grew up, which clubs you are actually in, the jump you are
+            trying to make.
+          </Point>
+          <Point n="02" title="We rank people, not postings">
+            Eleven levels of common ground, strongest first. A shared fraternity beats a shared
+            industry. The scoring is deterministic, so every result shows the exact fact that
+            produced it.
+          </Point>
+          <Point n="03" title="You send the message">
+            We draft an opening line from the thing you genuinely share, and say what to ask. We
+            never send anything, and we never write as you.
+          </Point>
         </div>
-      </header>
+      </section>
 
-      <main className="mx-auto max-w-5xl px-4">
-        <section className="py-16 sm:py-24">
-          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-[var(--color-accent-line)] bg-[var(--color-accent-soft)] px-3 py-1 text-[13px] text-[var(--color-accent)]">
-            Start in your first year, not the week applications open
-          </p>
-          <h1 className="max-w-3xl text-[44px] leading-[1.05] sm:text-[60px]">
-            Everyone else is sending a thousand applications.
-            <br />
-            You only need to reach{" "}
-            <span className="text-[var(--color-accent)]">eleven people</span>.
-          </h1>
-          <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-[var(--color-muted)]">
-            Recruiters are drowning in AI-written applications, and they have stopped reading them.
-            What still works is the thing it always did: a message from someone who shares your
-            school, your fraternity, your hometown, or the exact career move you are trying to make.
-            We find those people. You write to them.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href={startHref} className="focus-ring rounded-xl bg-[var(--color-accent)] px-5 py-3 text-[15px] font-medium text-white">
-              Upload your resume
-            </Link>
-            <span className="text-[14px] text-[var(--color-faint)]">
-              Two minutes. We only ask for what your resume doesn&rsquo;t already say.
-            </span>
-          </div>
-        </section>
-
-        <section className="grid gap-4 sm:grid-cols-3">
-          <Point
-            title="We read your resume first"
-            body="Everything on it becomes a signal we can match on. Then we ask you — once — for the things a resume never carries: where you grew up, which clubs you're actually in, the jump you're trying to make."
-          />
-          <Point
-            title="We rank people, not postings"
-            body="Eleven levels of commonality, strongest first. A shared fraternity beats a shared industry, and a shared industry beats wanting the job. The ranking is deterministic, so you can see exactly why someone surfaced."
-          />
-          <Point
-            title="You send the message"
-            body="We draft a first line from the thing you genuinely share and tell you what to ask. We never send anything, and we never pretend to be you."
-          />
-        </section>
-
-        <section className="mt-20 grid gap-10 sm:grid-cols-[1.1fr_1fr]">
+      <section id="ladder" className="tb-band tb-band-top tb-layer">
+        <div className="tb-wrap grid gap-[var(--space-32)] md:grid-cols-[1fr_1.1fr]">
           <div>
-            <h2 className="text-[30px] leading-tight">Not all connections are worth the same</h2>
-            <p className="mt-4 text-[15px] leading-relaxed text-[var(--color-muted)]">
-              Most tools treat &ldquo;works at your target company&rdquo; as a match. It is the
-              weakest signal there is. This is the ladder we actually rank on, strongest first — and
-              the two rungs we deliberately leave off.
-            </p>
-            <p className="mt-4 text-[15px] leading-relaxed text-[var(--color-muted)]">
-              The top two rungs need your private LinkedIn connection graph. Collecting that would
-              mean holding data on people who never signed up for this, so we don&rsquo;t.
-            </p>
+            <p className="mono-label" style={{ color: "var(--ink-subtle)" }}>&gt; The ladder</p>
+            <h2 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
+              Not all<br />connections<br />are worth<br />the same.
+            </h2>
+            <div className="tb-copy body" style={{ color: "var(--ink-muted)" }}>
+              <p>
+                Most tools treat &ldquo;works at your target company&rdquo; as a match. It is the
+                weakest signal on this list. We rank on {IN_SCOPE_RANKS.length} levels, and we ask{" "}
+                {FIELDS.length} questions at most to fill them in — fewer the more your resume says.
+              </p>
+              <p style={{ marginBottom: 0 }}>
+                The two greyed rungs need your private LinkedIn connection graph. Collecting it
+                would mean holding data on people who never signed up here, so we do not.
+              </p>
+            </div>
           </div>
-          <div className="card p-3">
-            <TierLadder />
-          </div>
-        </section>
+          <div className="tb-panel"><TierLadder /></div>
+        </div>
+      </section>
 
-        <section className="mt-20 mb-8 card p-8 text-center">
-          <h2 className="text-[28px]">Internships open a year early.</h2>
-          <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-[var(--color-muted)]">
-            The students who get them started talking to people long before the posting went up.
-            That is the entire advantage, and it is available to you right now.
+      <section className="tb-band tb-band-top tb-layer">
+        <div className="tb-wrap" style={{ textAlign: "center" }}>
+          <h2 className="display-md" style={{ textTransform: "uppercase", margin: 0 }}>
+            Start in your first year.
+          </h2>
+          <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: "var(--space-16) auto var(--space-32)" }}>
+            Not the week applications open. The advantage is entirely in having talked to people
+            before the posting went up, and it is available to you right now.
           </p>
-          <Link href={startHref} className="focus-ring mt-6 inline-block rounded-xl bg-[var(--color-ink)] px-5 py-3 text-[15px] font-medium text-[var(--color-paper)]">
-            Start with your resume
-          </Link>
-        </section>
-      </main>
-      <Footer />
+          <Link className="tb-btn tb-btn--solid mono-label" href={start}>Upload your resume &#8599;</Link>
+        </div>
+      </section>
+
+      <StatusFooter
+        live={!demo}
+        readings={[
+          { label: "Tiers ranked", value: String(IN_SCOPE_RANKS.length) },
+          { label: "Tiers refused", value: String(TIERS.filter((t) => !t.inScope).length) },
+          { label: "Questions", value: `${FIELDS.length} max` },
+          { label: "UTC", value: <LiveClock zone="utc" /> },
+          { label: "Local", value: <LiveClock /> },
+        ]}
+      />
     </div>
   );
 }
 
-function Point({ title, body }: { title: string; body: string }) {
+function Point({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
   return (
-    <div className="card p-5">
-      <h3 className="text-[19px]">{title}</h3>
-      <p className="mt-2 text-[14px] leading-relaxed text-[var(--color-muted)]">{body}</p>
+    <div>
+      <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: 0 }}>{n}</p>
+      <h3 className="title" style={{ textTransform: "uppercase", margin: "var(--space-8) 0 var(--space-12)" }}>
+        {title}
+      </h3>
+      <p className="body-sm" style={{ color: "var(--ink-muted)", margin: 0 }}>{children}</p>
     </div>
   );
 }

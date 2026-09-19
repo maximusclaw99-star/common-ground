@@ -1,5 +1,11 @@
 import { TIERS } from "@/lib/affinity/tiers";
 
+/**
+ * Tier colour is meaning, not decoration — the ladder IS the product, so a
+ * connection's strength should be legible before any text is read. The scale
+ * runs through the system's own two status hues rather than adding a palette:
+ * `signal` at the top, `alert` at the bottom.
+ */
 export function tierColor(rank: number): string {
   return `var(--tier-${rank})`;
 }
@@ -8,12 +14,23 @@ export function TierBadge({ rank, score }: { rank: number; score?: number }) {
   const tier = TIERS.find((t) => t.rank === rank);
   return (
     <span
-      className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-medium text-white"
-      style={{ background: tierColor(rank) }}
+      className="mono-label"
       title={tier?.label}
+      style={{
+        display: "inline-flex", alignItems: "center", gap: "var(--space-8)",
+        border: `var(--border-2) solid ${tierColor(rank)}`,
+        color: tierColor(rank),
+        padding: "var(--space-4) var(--space-10)",
+        borderRadius: "var(--radius-none)",
+        whiteSpace: "nowrap",
+      }}
     >
-      <span className="opacity-80">Tier {rank}</span>
-      {score !== undefined && <span className="tabular-nums">{Math.round(score)}</span>}
+      Tier {rank}
+      {score !== undefined && (
+        <span style={{ color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>
+          {Math.round(score)}
+        </span>
+      )}
     </span>
   );
 }
@@ -26,30 +43,40 @@ export function TierBadge({ rank, score }: { rank: number; score?: number }) {
  */
 export function TierLadder({ activeRank }: { activeRank?: number }) {
   return (
-    <ol className="space-y-1">
+    <ol style={{ margin: 0, padding: 0, listStyle: "none" }}>
       {TIERS.map((tier) => {
         const active = tier.rank === activeRank;
         return (
           <li
             key={tier.id}
-            className={`flex gap-3 rounded-lg px-3 py-2 text-[13px] transition-colors ${
-              active ? "bg-[var(--color-raised)]" : ""
-            } ${tier.inScope ? "" : "opacity-45"}`}
+            style={{
+              display: "flex", gap: "var(--space-12)",
+              padding: "var(--space-8) 0",
+              borderTop: tier.rank === 1 ? "none" : "var(--border-1) solid var(--rule)",
+              opacity: tier.inScope ? 1 : 0.42,
+              background: active ? "var(--canvas)" : "transparent",
+            }}
           >
+            <span className="mono-micro" style={{ color: "var(--ink-faint)", minWidth: 18, paddingTop: 3 }}>
+              {String(tier.rank).padStart(2, "0")}
+            </span>
             <span
-              className="mt-[3px] h-2.5 w-2.5 shrink-0 rounded-full"
-              style={{ background: tier.inScope ? tierColor(tier.rank) : "var(--color-faint)" }}
+              aria-hidden
+              style={{
+                width: 8, height: 8, marginTop: 6, flexShrink: 0,
+                background: tier.inScope ? tierColor(tier.rank) : "var(--ink-faint)",
+              }}
             />
-            <div className="min-w-0">
-              <p className={active ? "font-medium" : ""}>
+            <div style={{ minWidth: 0 }}>
+              <p className="mono-label" style={{ margin: 0, color: active ? "var(--ink)" : "var(--ink-muted)" }}>
                 {tier.label}
                 {!tier.inScope && (
-                  <span className="ml-2 rounded border px-1.5 py-0.5 text-[11px] text-[var(--color-faint)]">
-                    not collected
+                  <span className="mono-micro" style={{ marginLeft: 8, color: "var(--ink-faint)" }}>
+                    &mdash; not collected
                   </span>
                 )}
               </p>
-              <p className="mt-0.5 text-[var(--color-muted)]">
+              <p className="body-sm" style={{ margin: "2px 0 0", color: "var(--ink-subtle)", textTransform: "none" }}>
                 {tier.inScope ? tier.blurb : tier.guidance}
               </p>
             </div>

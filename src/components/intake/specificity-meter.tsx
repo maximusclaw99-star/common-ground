@@ -13,23 +13,26 @@ export function SpecificityMeter({ values }: { values: string[] }) {
   const weak = scored.filter((s) => s.score < SPECIFIC_ENOUGH);
 
   return (
-    <div className="mt-3 space-y-1.5">
+    <div className="mt-[var(--space-12)] grid gap-[var(--space-8)]">
       {scored.map(({ value, score }) => (
-        <div key={value} className="flex items-center gap-2.5 text-[12px]">
-          <div className="h-1 w-20 shrink-0 overflow-hidden rounded-full bg-[var(--color-raised)]">
+        <div key={value} className="mono-micro flex items-center gap-[var(--space-12)]">
+          <span style={{ width: 28, color: "var(--ink-faint)", fontVariantNumeric: "tabular-nums" }}>
+            {score.toFixed(2)}
+          </span>
+          <div style={{ height: 6, width: 80, flexShrink: 0, border: "var(--border-1) solid var(--rule)" }}>
             <div
-              className="h-full rounded-full transition-all"
               style={{
+                height: "100%",
                 width: `${Math.round(score * 100)}%`,
-                background: score >= SPECIFIC_ENOUGH ? "var(--color-good)" : "var(--color-accent)",
+                background: score >= SPECIFIC_ENOUGH ? "var(--signal)" : "var(--alert)",
               }}
             />
           </div>
-          <span className="truncate text-[var(--color-muted)]">{value}</span>
+          <span className="truncate" style={{ color: "var(--ink-muted)", textTransform: "none" }}>{value}</span>
         </div>
       ))}
       {weak.length > 0 && (
-        <p className="pt-1 text-[12px] text-[var(--color-muted)]">
+        <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-4) 0 0" }}>
           {weak.length === scored.length ? "These are" : `${weak.length} of these is`} still broad
           enough that half your industry shares it. Naming the problem — or who you solve it for —
           finds you a much better person.
