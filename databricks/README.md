@@ -117,3 +117,20 @@ docs/demo.md                queries to run live
 
 No tokens live in this repo. Every script reads from the environment; the pre-commit hook refuses anything that
 looks like one. `make check-secrets` scans the tree.
+
+## The plan agent
+
+`/plan` in the app. Pick an opening; a Databricks-hosted model (Llama 3.3 70B, tool calling through Model Serving's
+chat endpoint) decides which tools to call and returns a plan with its trace:
+
+| Tool | Where it runs | What it is |
+|---|---|---|
+| `skill_gaps` | app (`src/lib/positions/gaps.ts`) | the posting's skills/certs the student lacks; in-progress certs marked as such |
+| `learning_options(requirement)` | **Unity Catalog function** over `learning_catalog` (45 real certs and courses, cost, hours, weeks, URL) | how to close one gap, cheapest-and-fastest first |
+| `rewrite_resume` | Databricks chat → Roman's `TailoredResumeSchema` + `findFabrications()` | the resume for this role, from the confirmed profile only, retried once with the check's findings |
+| `finish` | — | the ordered plan |
+
+Every run is written to `workspace.jobsearch.agent_runs` with its full trace, so Genie can answer "what did the agent
+recommend most often" or "how many fabrications did the check catch". If the model is unavailable the same tools run
+in a fixed order and the page says so; mock mode does the same without a model. `databricks/sql/04_agent.sql` +
+`data/learning_catalog.json` are the warehouse side; `make load` installs them.

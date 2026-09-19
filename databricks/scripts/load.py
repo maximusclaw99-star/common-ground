@@ -79,6 +79,16 @@ def insert_fallback(db: Databricks, table: str, batch: int = 200) -> None:
     print(f"    {table}: {len(rows)} rows via INSERT")
 
 
+def load_learning_catalog(db: Databricks) -> None:
+    """The catalog is small and hand-written, so it is inserted from its JSON rather than staged in the volume."""
+    rows = json.loads((ROOT / "data" / "learning_catalog.json").read_text(encoding="utf-8"))
+    cols = ["id", "requirement", "kind", "title", "provider", "cost_usd", "hours", "weeks", "format", "url", "note"]
+    db.sql("TRUNCATE TABLE workspace.jobsearch.learning_catalog")
+    values = ",\n".join("(" + ", ".join(sql_literal(r.get(c), c) for c in cols) + ")" for r in rows)
+    db.sql(f"INSERT INTO workspace.jobsearch.learning_catalog ({', '.join(cols)}) VALUES\n{values}")
+    print(f"    learning_catalog: {len(rows)} rows")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--skip-generate", action="store_true", help="don't re-run data/generate_mock.py")
@@ -126,6 +136,9 @@ def main() -> None:
     db.sql_file(str(SQL / "02_views.sql"))
     print("materialized match tables")
     db.sql_file(str(SQL / "03_materialize.sql"))
+    print("plan agent: catalog, tool function, run log")
+    db.sql_file(str(SQL / "04_agent.sql"))
+    load_learning_catalog(db)
 
     print("row counts")
     for t in TABLES:
