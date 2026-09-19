@@ -63,9 +63,16 @@ export const student: ScorableStudent = {
   },
 };
 
+/** Portraits from public/people (randomuser.me set, fetched by databricks/scripts/fetch_portraits.py). */
+const PHOTOS: Record<string, string> = {
+  p2: "/people/women-44.jpg", p3: "/people/women-68.jpg", p4: "/people/men-32.jpg", p5: "/people/women-21.jpg",
+  p7: "/people/men-75.jpg", p8: "/people/women-90.jpg", p9: "/people/men-11.jpg", p10: "/people/women-57.jpg",
+  p11: "/people/men-86.jpg", p12: "/people/men-52.jpg", p13: "/people/women-12.jpg",
+};
+
 /** Defaults so each fixture below states only what makes it interesting. */
 const base = (id: string, fullName: string): Person => ({
-  id, fullName, headline: null, profileUrl: null,
+  id, fullName, headline: null, profileUrl: null, photoUrl: PHOTOS[id] ?? null,
   currentCompany: "", currentTitle: "", currentFunction: null,
   currentIndustry: null, currentSeniority: null,
   location: null, hometown: null, highSchool: null, communities: [],

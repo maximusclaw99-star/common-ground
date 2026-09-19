@@ -241,5 +241,6 @@ SELECT id,
        coalesce(posts,       CAST(array() AS ARRAY<STRUCT<id: STRING, kind: STRING, title: STRING, excerpt: STRING, topics: ARRAY<STRING>, url: STRING, publishedAt: STRING>>)) AS posts,
        coalesce(events,      CAST(array() AS ARRAY<STRUCT<name: STRING, kind: STRING, date: STRING, org: STRING>>)) AS events,
        openness_to_chat,
-       vertical
+       vertical,
+       photo_url
 FROM workspace.jobsearch.people;

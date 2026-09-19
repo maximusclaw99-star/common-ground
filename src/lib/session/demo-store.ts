@@ -45,11 +45,34 @@ function seed(): StoredStudent {
   };
 }
 
+/**
+ * DEMO_PREFILL=1 seeds the demo student with the fully answered questionnaire
+ * from the fixture instead of an empty one, so the dashboard is interesting
+ * without walking the questions live. Off by default: the questionnaire is
+ * the demo, and this exists for rehearsal-free showings only.
+ */
+function prefilled(): StoredStudent {
+  const meta: FactsMeta = {};
+  const now = new Date().toISOString();
+  for (const key of Object.keys(fixtureStudent.facts)) {
+    meta[key] = { source: "answer", confidence: 1, raw: null, updatedAt: now };
+  }
+  return {
+    profile: fixtureStudent.profile,
+    facts: { ...fixtureStudent.facts },
+    meta,
+    intakeCompletedAt: now,
+    email: "sam.rivera@vt.edu",
+  };
+}
+
+const initial = () => (process.env.DEMO_PREFILL === "1" ? prefilled() : seed());
+
 let current: StoredStudent | null = null;
 
 export const demoStore = {
   get(): StoredStudent {
-    current ??= seed();
+    current ??= initial();
     return current;
   },
   set(next: Partial<StoredStudent>): StoredStudent {
@@ -57,7 +80,7 @@ export const demoStore = {
     return current;
   },
   reset(): StoredStudent {
-    current = seed();
+    current = initial();
     return current;
   },
 };

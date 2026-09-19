@@ -70,3 +70,17 @@ Talk track: the questionnaire captures intent in the student's own words; Vector
 SELECT title, company, tailored_resume
 FROM workspace.jobsearch.tailor_resume('s005', 'j026');
 ```
+
+## In the app: the openings page
+
+Open `/jobs` as Sam Rivera (`PEOPLE_PROVIDER=databricks`). Top of the page is the best-fit opening with its hard
+requirements and, when the model answers inside 8 seconds, one line of `ai_query` advice on the headline gap. Below,
+every window grouped by the month it opens, soonest first — the "start early" positioning made visible.
+
+Talk track: the same four tables and the same weights as the Genie question "what internships open in the next 30 days
+for class of 2028 SWE students?" — the app and the warehouse never disagree.
+
+## In the app: rehearsal-free demo
+
+`DEMO_PREFILL=1` seeds Sam with a fully answered questionnaire so the dashboard ranks on every tier without walking
+the questions live. Leave it unset to demo the questionnaire itself.

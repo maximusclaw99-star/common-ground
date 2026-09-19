@@ -5,6 +5,8 @@ import { PersonCard } from "@/components/person-card";
 import { rankPeople } from "@/lib/affinity/score";
 import { computeGaps } from "@/lib/intake/gaps";
 import { getPeopleProvider } from "@/lib/people";
+import { getPositionsProvider, rankPositions } from "@/lib/positions";
+import { windowLabel } from "@/components/opening-row";
 import { getSession } from "@/lib/session";
 
 /**
@@ -29,6 +31,16 @@ export default async function DashboardPage() {
   const strong = results.filter((r) => r.rank <= 5);
   const timely = results.filter((r) => r.outreach.timing);
   const best = results[0];
+
+  // The three soonest windows worth the student's attention. Never blocks the
+  // page: if the openings provider fails, the people ranking still renders.
+  const nextWindows = await getPositionsProvider()
+    .getPositions({ companies: student.facts.target_companies, limit: 400 })
+    .then((positions) => rankPositions({ profile: student.profile, facts: student.facts }, positions)
+      .filter((r) => r.fit.windowStatus !== "closed" && r.fit.score >= 45)
+      .sort((a, b) => a.position.opensOn.localeCompare(b.position.opensOn) || b.fit.score - a.fit.score)
+      .slice(0, 3))
+    .catch((err) => { console.warn("[dashboard] openings unavailable", err instanceof Error ? err.message : err); return []; });
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
@@ -91,6 +103,29 @@ export default async function DashboardPage() {
               </p>
             </div>
             <Link className="tb-btn mono-label" href="/intake">Answer them &#8599;</Link>
+          </div>
+        </section>
+      )}
+
+      {nextWindows.length > 0 && (
+        <section className="tb-band tb-band-top tb-layer">
+          <div className="tb-wrap tb-panel">
+            <div className="flex flex-wrap items-center justify-between gap-[var(--space-16)]">
+              <p className="mono-label" style={{ margin: 0 }}>&gt; Next windows</p>
+              <Link className="tb-link mono-label" href="/jobs">All openings &#8599;</Link>
+            </div>
+            <ul style={{ margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-8)" }}>
+              {nextWindows.map(({ position, fit }) => (
+                <li key={position.id} className="flex flex-wrap items-baseline justify-between gap-[var(--space-12)]">
+                  <span className="body-sm" style={{ margin: 0 }}>
+                    {position.title} <span style={{ color: "var(--ink-faint)" }}>&middot; {position.company}</span>
+                  </span>
+                  <span className="mono-micro" style={{ color: fit.windowStatus === "upcoming" ? "var(--ink-faint)" : "var(--alert)", whiteSpace: "nowrap" }}>
+                    {windowLabel(fit)} &middot; {position.opensOn}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       )}

@@ -1,70 +1,150 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
+import { OpeningRow } from "@/components/opening-row";
 import companies from "@/../data/companies.seed.json";
+import { getPositionsProvider, headlineGap, positionGaps, rankPositions, studentVerticals } from "@/lib/positions";
+import { mockAdvice, skillGapAdvice } from "@/lib/positions/advice";
 import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
+const MONTH = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+const monthOf = (iso: string) => MONTH.format(new Date(iso + "T00:00:00Z"));
+
 /**
- * The openings half of the product. The nightly ATS poller and the entry-level
- * classifier that fill this already exist in src/lib/{ats,jobs}; what is not
- * built yet is the browsing UI on top of them, and claiming otherwise on an
- * empty page would be worse than saying so.
+ * The openings half of the product: what opens, when, scored for this
+ * student, with what stands in the way. Grouped by the month the window
+ * opens, soonest first, because "start early" is the whole positioning —
+ * a sophomore who sees September's internship windows in September is
+ * months ahead of one who looks in spring.
  */
 export default async function JobsPage() {
   const { student, demo } = await getSession();
   if (!student) redirect("/sign-in?next=/jobs");
 
-  const targets = student.facts.target_companies;
-  const boards = (companies as { ats: string }[]);
-  const byAts = boards.reduce<Record<string, number>>((acc, c) => {
-    acc[c.ats] = (acc[c.ats] ?? 0) + 1;
-    return acc;
-  }, {});
+  const provider = getPositionsProvider();
+  const scorable = { profile: student.profile, facts: student.facts };
+  const positions = await provider.getPositions({ companies: student.facts.target_companies, limit: 400 });
+  const ranked = rankPositions(scorable, positions);
+  const verticals = studentVerticals(scorable);
+
+  const gapsById = new Map(ranked.map((r) => [r.position.id, positionGaps(scorable, r.position)]));
+
+  // The one AI line on the page: advice for the top opening's headline gap.
+  // Mock mode shows a fixed example; the warehouse call is raced against a
+  // deadline and simply absent if it loses.
+  const top = ranked.find((r) => r.fit.windowStatus !== "closed") ?? ranked[0];
+  const topGap = top ? headlineGap(gapsById.get(top.position.id) ?? []) : null;
+  const advice = top && topGap
+    ? provider.name === "mock" ? mockAdvice(topGap) : await skillGapAdvice(top.position, topGap)
+    : null;
+
+  const open = ranked.filter((r) => r.fit.windowStatus !== "closed");
+  const soon = open.filter((r) => r.fit.windowStatus === "open" || r.fit.windowStatus === "opens_soon");
+  const months: { month: string; rows: typeof ranked }[] = [];
+  for (const r of [...open].sort((a, b) => a.position.opensOn.localeCompare(b.position.opensOn) || b.fit.score - a.fit.score)) {
+    const month = monthOf(r.position.opensOn);
+    const group = months.find((m) => m.month === month) ?? (months.push({ month, rows: [] }), months[months.length - 1]);
+    group.rows.push(r);
+  }
+  const closed = ranked.filter((r) => r.fit.windowStatus === "closed");
+  const boards = companies as { ats: string }[];
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
       {demo && <DemoStrip />}
       <Nav current="openings" signedIn cta={null} />
 
-      <section className="tb-band tb-layer" style={{ flexGrow: 1 }}>
-        <div className="tb-wrap" style={{ maxWidth: 720 }}>
-          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Openings</p>
-          <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
-            Ingested.<br />Not yet drawn.
-          </h1>
-          <p className="body" style={{ color: "var(--ink-muted)", margin: "0 0 var(--space-32)" }}>
-            We poll the applicant tracking systems behind {boards.length} employers every morning and
-            keep the entry-level roles with the date each one opened. Connections come first though:
-            a posting you find through a person is worth more than one you find first.
+      <section className="tb-band tb-layer">
+        <div className="tb-wrap">
+          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>
+            &gt; Openings from {provider.name} provider
           </p>
+          <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
+            {open.length} window{open.length === 1 ? "" : "s"},<br />soonest first.
+          </h1>
+          <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
+            {soon.length > 0
+              ? `${soon.length} ${soon.length === 1 ? "is" : "are"} open or open inside 60 days. A posting you reach through a person is worth more than one you find first — check who you know there before you apply.`
+              : verticals.length
+                ? "Nothing opens in the next 60 days for what you told us. The ones below are further out; the people page is where the work is now."
+                : "Tell us what you want to do and these sharpen. Until then, every launch vertical is shown."}
+          </p>
+        </div>
+      </section>
 
-          <div className="tb-panel">
-            <p className="mono-label" style={{ margin: 0 }}>Status</p>
-            <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0" }}>
-              The ingest pipeline is built and tested — Greenhouse, Lever, Ashby and Workday, with
-              closure detection that refuses to mark a role closed just because a poll failed. The
-              browsing UI on top of it is the next thing we build.
+      {top && (
+        <section className="tb-band tb-band-top tb-layer">
+          <div className="tb-wrap">
+            <p className="mono-label" style={{ color: "var(--signal)", margin: "0 0 var(--space-8)" }}>
+              <span className="tb-led tb-led--live" aria-hidden /> Best fit right now
             </p>
-            {targets.length > 0 && (
-              <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-16) 0 0", textTransform: "none" }}>
-                &gt; Starting with: {targets.join(", ")}
+            <OpeningRow ranked={top} gaps={gapsById.get(top.position.id) ?? []} advice={advice} />
+            {topGap && !advice && provider.name !== "mock" && (
+              <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-8) 0 0", textTransform: "none" }}>
+                Advice on closing the {topGap.requirement} gap did not come back in time; reload to try again.
               </p>
             )}
-            <Link href="/dashboard" className="tb-btn tb-btn--sm mono-label" style={{ marginTop: "var(--space-24)" }}>
-              Go to your people &#8599;
-            </Link>
           </div>
+        </section>
+      )}
+
+      {months.map(({ month, rows }) => (
+        <section key={month} className="tb-band tb-band-top tb-layer">
+          <div className="tb-wrap">
+            <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>{month}</h2>
+            <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
+              {rows.length} window{rows.length === 1 ? "" : "s"} open{rows.length === 1 ? "s" : ""} this month
+            </p>
+            <div className="grid gap-[var(--space-16)] md:grid-cols-2">
+              {rows.map((r) => (
+                <OpeningRow key={r.position.id} ranked={r} gaps={gapsById.get(r.position.id) ?? []} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ))}
+
+      {closed.length > 0 && (
+        <section className="tb-band tb-band-top tb-layer">
+          <div className="tb-wrap">
+            <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>Missed</h2>
+            <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
+              Closed this cycle. Shown so next year&rsquo;s date is not a surprise.
+            </p>
+            <div className="grid gap-[var(--space-16)] md:grid-cols-2">
+              {closed.map((r) => (
+                <OpeningRow key={r.position.id} ranked={r} gaps={gapsById.get(r.position.id) ?? []} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="tb-band tb-band-top tb-layer">
+        <div className="tb-wrap tb-panel">
+          <p className="mono-label" style={{ margin: 0 }}>Where these come from</p>
+          <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0" }}>
+            Today: the {provider.name === "mock" ? "bundled demo postings" : "workspace.jobsearch warehouse"}. Next: the
+            nightly poll of the applicant tracking systems behind {boards.length} employers — Greenhouse, Lever, Ashby and
+            Workday, with closure detection that refuses to mark a role closed just because a poll failed. That ingest is
+            built and tested; wiring it into this page is the remaining step.
+          </p>
+          <Link href="/dashboard" className="tb-btn tb-btn--sm mono-label" style={{ marginTop: "var(--space-24)" }}>
+            Who you know at these &#8599;
+          </Link>
         </div>
       </section>
 
       <StatusFooter
         live={!demo}
         readings={[
-          { label: "Boards", value: String(boards.length) },
-          ...Object.entries(byAts).map(([ats, n]) => ({ label: ats, value: String(n) })),
-          { label: "Poll", value: "07:00 daily" },
+          { label: "Openings", value: String(ranked.length) },
+          { label: "Open / soon", value: String(soon.length) },
+          { label: "Verticals", value: verticals.length ? verticals.join(", ") : "all" },
+          { label: "Advice", value: advice ? "1 call" : "none" },
+          { label: "Source", value: provider.name },
         ]}
       />
     </div>

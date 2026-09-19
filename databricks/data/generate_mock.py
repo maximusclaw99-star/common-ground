@@ -2,6 +2,9 @@
 """
 Deterministic mock-data generator for Common Ground.
 
+Every person and student gets a photo_url into public/people/ (randomuser.me portraits, fetched once by
+scripts/fetch_portraits.py), gender-matched to the generated first name.
+
 Everything here is synthetic. People, schools' club names, and URLs are fabricated (URLs point at
 example.com). Company names are a mix of fictional employers and the two real hackathon sponsors,
 Deloitte and Databricks, because the demo student targets them. Re-running with the same SEED
@@ -315,18 +318,36 @@ def gen_companies(rng: random.Random) -> list[dict]:
     return rows
 
 
+PORTRAITS_PER_GENDER = 100  # public/people/{men,women}-{0..99}.jpg, fetched by scripts/fetch_portraits.py
+
+
+def photo_for(pid: str, gender: str) -> str:
+    """Deterministic portrait per id, spread evenly over the 100 per gender. Ids are p0001.. / s001.."""
+    n = (int("".join(ch for ch in pid if ch.isdigit())) * 37) % PORTRAITS_PER_GENDER
+    return f"/people/{gender}-{n}.jpg"
+
+
+def gendered_name(rng: random.Random, fake: Faker) -> tuple[str, str]:
+    gender = rng.choice(["men", "women"])
+    first = fake.first_name_male() if gender == "men" else fake.first_name_female()
+    return f"{first} {fake.last_name()}", gender
+
+
 def person_row(rng: random.Random, fake: Faker, pid: str, company: dict, *, school: str, grad_year: int,
                title: str | None = None, hometown: str | None = None, high_school: str | None = None,
                clubs: list[str] | None = None, communities: list[str] | None = None, interests: list[str] | None = None,
                projects: list[str] | None = None, prior_roles: list[dict] | None = None, programs: list[str] | None = None,
                clients: list[str] | None = None, posts: list[dict] | None = None, events: list[dict] | None = None,
-               major: str | None = None, name: str | None = None, openness: float | None = None) -> dict:
+               major: str | None = None, name: str | None = None, gender: str | None = None,
+               openness: float | None = None) -> dict:
     vertical = company["vertical"]
     title, function = (title, next((f for t, f in TITLES[vertical] if t == title), vertical)) if title else rng.choice(TITLES[vertical])
     hometown = hometown or rng.choice(list(HOMETOWNS))
     high_school = high_school or rng.choice(HOMETOWNS[hometown])
     major = major or rng.choice(MAJORS[vertical])
-    name = name or fake.name()
+    if name is None:
+        name, gender = gendered_name(rng, fake)
+    gender = gender or rng.choice(["men", "women"])
     clubs = clubs if clubs is not None else pick(rng, SCHOOLS[school], rng.choice([1, 1, 2])) + (
         [rng.choice(CROSS_SCHOOL_ORGS)] if rng.random() < 0.25 else [])
     communities = communities if communities is not None else pick(rng, COMMUNITIES, rng.choice([0, 1, 1, 2]))
@@ -367,6 +388,7 @@ def person_row(rng: random.Random, fake: Faker, pid: str, company: dict, *, scho
         "vertical": vertical, "location": rng.choice(LOCATIONS),
         "openness_to_chat": openness if openness is not None else round(rng.betavariate(3, 2), 2),
         "linkedin_url": f"https://www.example.com/in/{slug(name)}-{pid}",
+        "photo_url": photo_for(pid, gender),
     }
 
 
@@ -392,57 +414,57 @@ def plant_sam_rivera_cast(rng: random.Random, fake: Faker, companies: list[dict]
     P = lambda pid, comp, **kw: out.append(person_row(rng, fake, pid, comp, **kw))  # noqa: E731
 
     # Tier 2: same school + same org.
-    P("p9001", deloitte, school=vt, grad_year=2018, title="Manager", name="Dana Whitfield", hometown="Roanoke, VA",
+    P("p9001", deloitte, school=vt, grad_year=2018, title="Manager", name="Dana Whitfield", gender="women", hometown="Roanoke, VA",
       clubs=["Beta Alpha Psi", "Club Rowing"], programs=["Deloitte Analyst Program"], clients=["CMS"], openness=0.92)
-    P("p9002", databricks, school=vt, grad_year=2021, title="Solutions Architect", name="Jordan Okafor", hometown="Fairfax, VA",
+    P("p9002", databricks, school=vt, grad_year=2021, title="Solutions Architect", name="Jordan Okafor", gender="men", hometown="Fairfax, VA",
       clubs=["Consulting Club", "VT Hackers"], programs=["Databricks University"], interests=["responsible AI", "gravel cycling", "chess"],
       posts=[{"id": "post-9002", "kind": "article", "title": "Responsible AI in public-sector delivery: a field checklist",
               "excerpt": None, "topics": ["responsible AI", "public sector"], "url": "https://www.example.com/posts/9002",
               "publishedAt": iso_days_ago(12)}], openness=0.9)
     # Tier 3: same school + made the cybersecurity -> consulting jump.
-    P("p9003", deloitte, school=vt, grad_year=2016, title="Senior Manager, Technology Consulting", name="Priya Raman",
+    P("p9003", deloitte, school=vt, grad_year=2016, title="Senior Manager, Technology Consulting", name="Priya Raman", gender="women",
       hometown="Arlington, VA", clubs=["Marching Band"],
       prior_roles=[{"company": "MITRE", "title": "Cybersecurity Analyst", "function": "cybersecurity", "industry": "defense",
                     "seniority": "analyst", "startYear": 2016, "endYear": 2019, "clients": [], "programs": []}],
       programs=["Deloitte Cyber Academy"], clients=["Department of Veterans Affairs"], openness=0.8)
     # Tier 4: shared employer (Acme Analytics) and shared client (CMS).
-    P("p9004", deloitte, school="University of Virginia", grad_year=2019, title="Consultant", name="Marcus Bell",
+    P("p9004", deloitte, school="University of Virginia", grad_year=2019, title="Consultant", name="Marcus Bell", gender="men",
       hometown="Charlotte, NC",
       prior_roles=[{"company": "Acme Analytics", "title": "Data Analyst", "function": "analytics", "industry": None,
                     "seniority": "analyst", "startYear": 2019, "endYear": 2023, "clients": ["CMS"], "programs": ["Acme Analytics Summer Program"]}],
       clients=["CMS", "IRS"], openness=0.85)
     # Tier 5: same high school; same hometown; same community.
-    P("p9005", databricks, school="Georgia Tech", grad_year=2020, title="Software Engineer", name="Lena Park",
+    P("p9005", databricks, school="Georgia Tech", grad_year=2020, title="Software Engineer", name="Lena Park", gender="women",
       hometown="Richmond, VA", high_school="Deep Run High School", communities=["Young Life"],
       interests=["Formula 1", "sourdough baking"], openness=0.88)
-    P("p9006", deloitte, school="UT Austin", grad_year=2017, title="Cyber Risk Consultant", name="Tomás Herrera",
+    P("p9006", deloitte, school="UT Austin", grad_year=2017, title="Cyber Risk Consultant", name="Tomás Herrera", gender="men",
       hometown="Austin, TX", communities=["Army ROTC", "Eagle Scouts"], interests=["public-sector technology", "fly fishing"],
       programs=["Deloitte Cyber Academy"], openness=0.75)
-    P("p9007", by_name["Juniper Public Sector"], school="NYU", grad_year=2015, title="Manager", name="Aisha Rahman",
+    P("p9007", by_name["Juniper Public Sector"], school="NYU", grad_year=2015, title="Manager", name="Aisha Rahman", gender="women",
       hometown="Richmond, VA", high_school="Godwin High School", communities=["Habitat for Humanity"], openness=0.7)
     # Tier 7: a specific shared interest (responsible AI for public-sector clients).
-    P("p9008", deloitte, school="University of Michigan", grad_year=2014, title="Director", name="Owen Castellano",
+    P("p9008", deloitte, school="University of Michigan", grad_year=2014, title="Director", name="Owen Castellano", gender="men",
       hometown="Detroit, MI", interests=["responsible AI", "public-sector technology", "backcountry skiing"],
       projects=["built a responsible-AI checklist for public-sector clients"], clients=["USDA"], openness=0.6)
     # Tier 8: a fresh, engageable post (3 days old).
-    P("p9009", databricks, school="UIUC", grad_year=2019, title="ML Engineer", name="Grace Lindqvist", hometown="Naperville, IL",
+    P("p9009", databricks, school="UIUC", grad_year=2019, title="ML Engineer", name="Grace Lindqvist", gender="women", hometown="Naperville, IL",
       posts=[{"id": "post-9009", "kind": "talk", "title": "Lightning talk at Data + AI Summit on measuring drift in public-sector ML",
               "excerpt": None, "topics": ["responsible AI", "MLOps"], "url": "https://www.example.com/posts/9009",
               "publishedAt": iso_days_ago(3)}], openness=0.82)
     # Tier 9: same event yesterday (Deloitte Tech Case Competition), and a career-fair from the same week.
-    P("p9010", deloitte, school="Purdue", grad_year=2022, title="Analyst", name="Chris Nakamura", hometown="Indianapolis, IN",
+    P("p9010", deloitte, school="Purdue", grad_year=2022, title="Analyst", name="Chris Nakamura", gender="men", hometown="Indianapolis, IN",
       events=[make_event(rng, 1, ("Deloitte Tech Case Competition", "case_competition", "Deloitte"))],
       programs=["Deloitte Analyst Program"], openness=0.95)
-    P("p9011", databricks, school="Carnegie Mellon University", grad_year=2023, title="University Recruiter", name="Sofia Almeida",
+    P("p9011", databricks, school="Carnegie Mellon University", grad_year=2023, title="University Recruiter", name="Sofia Almeida", gender="women",
       hometown="Pittsburgh, PA", events=[make_event(rng, 4, ("Virginia Tech Fall Career Fair", "career_fair", "Virginia Tech"))],
       openness=0.97)
     # Tier 10: exactly one step ahead (associate -> Sam targets analyst).
-    P("p9012", deloitte, school="University of Pennsylvania", grad_year=2023, title="Consultant", name="Ethan Moreau",
+    P("p9012", deloitte, school="University of Pennsylvania", grad_year=2023, title="Consultant", name="Ethan Moreau", gender="men",
       hometown="Philadelphia, PA", programs=["Deloitte Analyst Program"], openness=0.78)
     # Tier 11-13 filler at target companies so the list has an honest bottom.
-    P("p9013", databricks, school="UC Berkeley", grad_year=2011, title="Engineering Manager", name="Rachel Stein",
+    P("p9013", databricks, school="UC Berkeley", grad_year=2011, title="Engineering Manager", name="Rachel Stein", gender="women",
       hometown="San Jose, CA", communities=[], interests=["houseplants"], projects=[], posts=[], events=[], openness=0.4)
-    P("p9014", deloitte, school="NYU", grad_year=2009, title="Partner", name="Victor Adeyemi", hometown="Brooklyn, NY",
+    P("p9014", deloitte, school="NYU", grad_year=2009, title="Partner", name="Victor Adeyemi", gender="men", hometown="Brooklyn, NY",
       communities=[], interests=["Premier League"], projects=[], posts=[], events=[], openness=0.3)
     return out
 
@@ -503,7 +525,7 @@ def gen_students(rng: random.Random, fake: Faker, n: int) -> list[dict]:
         high_school = rng.choice(HOMETOWNS[hometown])
         target_companies = [c[0] for c in pick(rng, COMPANIES[primary], 2)]
         events = [make_event(rng)] if rng.random() < 0.5 else []
-        name = fake.name()
+        name, gender = gendered_name(rng, fake)
         resume = (
             f"{name}\n{school} - B.S. {major}, expected {grad_year}\n\n"
             f"SKILLS: {', '.join(skills)}\nCERTIFICATIONS: {', '.join(certs) if certs else 'None yet'}\n"
@@ -531,6 +553,7 @@ def gen_students(rng: random.Random, fake: Faker, n: int) -> list[dict]:
             "skills": skills, "certifications": certs, "interests": interests, "projects": projects,
             "hometown": hometown, "high_school": high_school, "clubs": clubs, "communities": communities, "events": events,
             "resume_text": resume, "questionnaire_answers": json.dumps(questionnaire),
+            "photo_url": photo_for(f"s{i:03d}", gender),
             "created_at": datetime(2026, 8, rng.randint(15, 31), rng.randint(8, 22), rng.randint(0, 59), tzinfo=timezone.utc).isoformat(),
         })
     return rows

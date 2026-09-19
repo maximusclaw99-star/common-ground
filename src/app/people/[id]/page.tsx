@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
+import { Avatar } from "@/components/avatar";
 import { TierBadge, TierLadder, tierColor } from "@/components/tier-badge";
 import { scoreAffinity } from "@/lib/affinity/score";
 import { getPeopleProvider } from "@/lib/people";
@@ -29,13 +30,16 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
         <div className="tb-wrap">
           <Link className="tb-link mono-label" href="/dashboard">&larr; All people</Link>
           <div className="mt-[var(--space-16)] flex flex-wrap items-start justify-between gap-[var(--space-16)]">
-            <div>
-              <h1 className="display-md" style={{ textTransform: "uppercase", margin: 0 }}>
-                {person.fullName}
-              </h1>
-              <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: "var(--space-12) 0 0" }}>
-                {person.currentTitle} &middot; {person.currentCompany}
-              </p>
+            <div className="flex items-center gap-[var(--space-16)]">
+              <Avatar name={person.fullName} src={person.photoUrl} size={72} />
+              <div>
+                <h1 className="display-md" style={{ textTransform: "uppercase", margin: 0 }}>
+                  {person.fullName}
+                </h1>
+                <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: "var(--space-12) 0 0" }}>
+                  {person.currentTitle} &middot; {person.currentCompany}
+                </p>
+              </div>
             </div>
             <TierBadge rank={result.rank} score={result.score} />
           </div>

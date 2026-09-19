@@ -35,7 +35,7 @@ FROM (SELECT id, name, headline, company, company_id, title, school, major,
              transform(events, e -> named_struct('name', CAST(e.name AS STRING), 'kind', CAST(e.kind AS STRING),
                                                  'date', CAST(e.date AS STRING), 'org', CAST(e.org AS STRING))) AS events,
              vertical, location,
-             CAST(openness_to_chat AS DOUBLE) AS openness_to_chat, linkedin_url
+             CAST(openness_to_chat AS DOUBLE) AS openness_to_chat, linkedin_url, photo_url
       FROM '/Volumes/workspace/jobsearch/seed/people.jsonl')
 FILEFORMAT = JSON
 COPY_OPTIONS ('force' = 'true');
@@ -71,7 +71,7 @@ FROM (SELECT id, name, email, school, major, CAST(grad_year AS INT) AS grad_year
              CAST(communities AS ARRAY<STRING>) AS communities,
              transform(events, e -> named_struct('name', CAST(e.name AS STRING), 'kind', CAST(e.kind AS STRING),
                                                  'date', CAST(e.date AS STRING), 'org', CAST(e.org AS STRING))) AS events,
-             resume_text, questionnaire_answers,
+             resume_text, questionnaire_answers, photo_url,
              CAST(created_at AS TIMESTAMP) AS created_at
       FROM '/Volumes/workspace/jobsearch/seed/students.jsonl')
 FILEFORMAT = JSON

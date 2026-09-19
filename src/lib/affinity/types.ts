@@ -72,6 +72,8 @@ export interface Person {
   fullName: string;
   headline: string | null;
   profileUrl: string | null;
+  /** Headshot, or null for initials. A path under public/ or a full URL. */
+  photoUrl: string | null;
 
   currentCompany: string;
   currentTitle: string;

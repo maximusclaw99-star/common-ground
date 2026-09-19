@@ -2,70 +2,70 @@
   "heroes": [
     {
       "student": "s001",
-      "person": "p0195",
-      "company": "Deloitte",
-      "shared_club": "GT Consulting Club",
-      "shared_high_school": "Fairfax High School",
-      "position": "j070"
+      "person": "p0212",
+      "company": "Beacon Strategy Partners",
+      "shared_club": "Yellow Jacket Robotics",
+      "shared_high_school": "Cherry Creek High School",
+      "position": "j078"
     },
     {
       "student": "s002",
-      "person": "p0158",
-      "company": "Argent Payments",
-      "shared_club": "Haas Investment Group",
-      "shared_high_school": "Westlake High School",
-      "position": "j001"
+      "person": "p0098",
+      "company": "Sable Security",
+      "shared_club": "Blueprint",
+      "shared_high_school": "Patrick Henry High School",
+      "position": "j039"
     },
     {
       "student": "s003",
-      "person": "p0141",
-      "company": "Northwind Systems",
-      "shared_club": "Solar Car Team",
-      "shared_high_school": "Pioneer High School",
-      "position": "j037"
+      "person": "p0292",
+      "company": "Sable Security",
+      "shared_club": "Texas Rocketry",
+      "shared_high_school": "Washington-Liberty High School",
+      "position": "j039"
     },
     {
       "student": "s004",
-      "person": "p0141",
-      "company": "Northwind Systems",
-      "shared_club": "Michigan Hackers",
-      "shared_high_school": "Myers Park High School",
-      "position": "j037"
+      "person": "p0195",
+      "company": "Sable Security",
+      "shared_club": "Texas Investment Club",
+      "shared_high_school": "Edina High School",
+      "position": "j039"
     },
     {
       "student": "s005",
-      "person": "p0195",
-      "company": "Deloitte",
-      "shared_club": "Illini Solar Car",
-      "shared_high_school": "Yorktown High School",
+      "person": "p0037",
+      "company": "Keystone Operations Group",
+      "shared_club": "b01lers CTF",
+      "shared_high_school": "Southwest High School",
       "position": "j070"
     }
   ],
   "gaps": [
     {
       "student": "s006",
-      "position": "j038",
+      "position": "j035",
       "missing_certification": "Databricks Data Engineer Associate"
     },
     {
       "student": "s007",
-      "position": "j005",
-      "missing_certification": "Databricks Data Engineer Associate"
+      "position": "j073",
+      "missing_certification": "Tableau Desktop Specialist"
     },
     {
       "student": "s008",
-      "position": "j067",
-      "missing_certification": "Databricks Data Analyst Associate"
+      "position": "j034",
+      "missing_certification": "AWS Solutions Architect Associate"
     },
     {
       "student": "s009",
-      "position": "j003",
-      "missing_certification": "Security+"
+      "position": "j066",
+      "missing_certification": "PMP"
     },
     {
       "student": "s010",
-      "position": "j040",
-      "missing_certification": "CKA (Kubernetes)"
+      "position": "j075",
+      "missing_certification": "PMP"
     }
   ],
   "sam_rivera_cast": [
