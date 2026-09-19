@@ -29,7 +29,7 @@ TABLES = ["companies", "people", "positions", "position_requirements", "students
 # Column order + SQL type used only by the INSERT fallback.
 FALLBACK_COLUMNS = {
     "companies": ["id", "name", "vertical", "size", "hq", "careers_url"],
-    "people": ["id", "name", "headline", "company", "company_id", "title", "school", "major", "grad_year",
+    "people": ["id", "name", "email", "headline", "company", "company_id", "title", "school", "major", "grad_year",
                "function", "industry", "seniority", "hometown", "high_school", "clubs", "communities", "interests",
                "projects", "education", "roles", "posts", "events", "vertical", "location", "openness_to_chat", "linkedin_url",
                "photo_url"],

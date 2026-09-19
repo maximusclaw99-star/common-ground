@@ -223,6 +223,7 @@ COMMENT 'People in the shape the web app Person type expects (src/lib/affinity/t
 AS
 SELECT id,
        name                AS full_name,
+       email,
        headline,
        linkedin_url        AS profile_url,
        company             AS current_company,

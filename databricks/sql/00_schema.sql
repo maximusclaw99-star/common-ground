@@ -12,7 +12,7 @@ CREATE VOLUME IF NOT EXISTS workspace.jobsearch.seed
 CREATE OR REPLACE TABLE workspace.jobsearch.companies (
   id            STRING NOT NULL COMMENT 'Company id, e.g. c001',
   name          STRING NOT NULL COMMENT 'Fictional company name',
-  vertical      STRING NOT NULL COMMENT 'swe | consulting | finance',
+  vertical      STRING NOT NULL COMMENT 'swe | consulting | finance | accounting',
   size          STRING          COMMENT 'small | mid | large',
   hq            STRING          COMMENT 'Headquarters city',
   careers_url   STRING          COMMENT 'Fake careers page URL (example.com)',
@@ -24,6 +24,7 @@ COMMENT 'Employers with open positions. Fictional names.';
 CREATE OR REPLACE TABLE workspace.jobsearch.people (
   id                 STRING NOT NULL COMMENT 'Person id, e.g. p0001',
   name               STRING NOT NULL COMMENT 'Synthetic full name',
+  email              STRING          COMMENT 'Synthetic work email at <firm>.example.com; shown, never sent to',
   headline           STRING          COMMENT 'LinkedIn-style headline: title at company | school year',
   company            STRING          COMMENT 'Employer name (denormalized for readability)',
   company_id         STRING          COMMENT 'FK to companies.id',
@@ -48,7 +49,7 @@ CREATE OR REPLACE TABLE workspace.jobsearch.people (
                                      COMMENT 'Recent posts, talks, papers. publishedAt is ISO 8601; relevance decays over ~30 days.',
   events             ARRAY<STRUCT<name: STRING, kind: STRING, date: STRING, org: STRING>>
                                      COMMENT 'Recent events attended. date is ISO 8601; relevance decays over ~72 hours.',
-  vertical           STRING          COMMENT 'swe | consulting | finance',
+  vertical           STRING          COMMENT 'swe | consulting | finance | accounting',
   location           STRING          COMMENT 'Current work location',
   openness_to_chat   DOUBLE          COMMENT '0-1 likelihood they take a coffee chat with a student',
   linkedin_url       STRING          COMMENT 'Fake profile URL (example.com)',
@@ -57,14 +58,14 @@ CREATE OR REPLACE TABLE workspace.jobsearch.people (
   CONSTRAINT people_company_fk FOREIGN KEY (company_id) REFERENCES workspace.jobsearch.companies (id)
 )
 USING DELTA
-COMMENT 'Mock professional network (stand-in for LinkedIn data). Every row is synthetic. Carries the small nameable things a coffee chat runs on: high school, communities, specific interests, programmes, recent posts and events.';
+COMMENT 'Mock professional network: synthetic Virginia Tech alumni at real employers, a couple per student organization. Carries the small nameable things a coffee chat runs on: high school, communities, specific interests, programmes, recent posts and events.';
 
 CREATE OR REPLACE TABLE workspace.jobsearch.positions (
   id                 STRING NOT NULL COMMENT 'Position id, e.g. j001',
   company_id         STRING NOT NULL COMMENT 'FK to companies.id',
   title              STRING NOT NULL COMMENT 'Role title',
   type               STRING NOT NULL COMMENT 'internship | full_time | research',
-  vertical           STRING NOT NULL COMMENT 'swe | consulting | finance',
+  vertical           STRING NOT NULL COMMENT 'swe | consulting | finance | accounting',
   location           STRING          COMMENT 'Role location or Remote',
   opens_on           DATE            COMMENT 'Date applications open',
   closes_on          DATE            COMMENT 'Date applications close',
@@ -96,7 +97,7 @@ CREATE OR REPLACE TABLE workspace.jobsearch.students (
   school                 STRING          COMMENT 'Current school',
   major                  STRING          COMMENT 'Declared major',
   grad_year              INT             COMMENT 'Expected graduation year',
-  target_verticals       ARRAY<STRING>   COMMENT 'Verticals they want: swe | consulting | finance',
+  target_verticals       ARRAY<STRING>   COMMENT 'Verticals they want: swe | consulting | finance | accounting',
   target_companies       ARRAY<STRING>   COMMENT 'Companies they named in the questionnaire',
   skills                 ARRAY<STRING>   COMMENT 'Self-reported skills from resume + questionnaire',
   certifications         ARRAY<STRING>   COMMENT 'Certifications they hold',

@@ -11,7 +11,7 @@ COPY_OPTIONS ('force' = 'true');
 
 TRUNCATE TABLE workspace.jobsearch.people;
 COPY INTO workspace.jobsearch.people
-FROM (SELECT id, name, headline, company, company_id, title, school, major,
+FROM (SELECT id, name, email, headline, company, company_id, title, school, major,
              CAST(grad_year AS INT) AS grad_year,
              function, industry, seniority, hometown, high_school,
              CAST(clubs AS ARRAY<STRING>) AS clubs,
