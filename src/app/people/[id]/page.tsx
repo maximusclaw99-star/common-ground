@@ -15,7 +15,7 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
   if (!student) redirect(`/sign-in?next=/people/${id}`);
 
   const provider = getPeopleProvider();
-  const people = await provider.getPeople({ companies: student.facts.target_companies, limit: 400 });
+  const people = await provider.getPeople({ companies: student.facts.target_companies, limit: 2000 });
   const person = people.find((p) => p.id === id);
   if (!person) notFound();
 
@@ -39,6 +39,11 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
                 <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: "var(--space-12) 0 0" }}>
                   {person.currentTitle} &middot; {person.currentCompany}
                 </p>
+                {person.email && (
+                  <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-8) 0 0", textTransform: "none" }}>
+                    {person.email}
+                  </p>
+                )}
               </div>
             </div>
             <TierBadge rank={result.rank} score={result.score} />

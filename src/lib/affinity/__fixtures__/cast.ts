@@ -72,7 +72,7 @@ const PHOTOS: Record<string, string> = {
 
 /** Defaults so each fixture below states only what makes it interesting. */
 const base = (id: string, fullName: string): Person => ({
-  id, fullName, headline: null, profileUrl: null, photoUrl: PHOTOS[id] ?? null,
+  id, fullName, headline: null, profileUrl: null, photoUrl: PHOTOS[id] ?? null, email: null,
   currentCompany: "", currentTitle: "", currentFunction: null,
   currentIndustry: null, currentSeniority: null,
   location: null, hometown: null, highSchool: null, communities: [],

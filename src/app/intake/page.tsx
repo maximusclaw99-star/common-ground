@@ -19,7 +19,7 @@ export default async function IntakePage() {
   // question can say who it would unlock, rather than merely asserting that it
   // matters. Cheap, because the whole ranking is deterministic and in-memory.
   const people = await getPeopleProvider().getPeople({
-    companies: student.facts.target_companies, limit: 400,
+    companies: student.facts.target_companies, limit: 2000,
   });
   const { demand } = rankPeople({ profile: student.profile, facts: student.facts }, people);
 

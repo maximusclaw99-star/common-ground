@@ -84,3 +84,10 @@ for class of 2028 SWE students?" — the app and the warehouse never disagree.
 
 `DEMO_PREFILL=1` seeds Sam with a fully answered questionnaire so the dashboard ranks on every tier without walking
 the questions live. Leave it unset to demo the questionnaire itself.
+
+## In the app: your own resume
+
+Upload a Virginia Tech resume that names any club on the Gobbler Connect list and the dashboard ranks on it immediately —
+the resume's school, clubs and employers now count for scoring before the questionnaire (the questions still ask you to
+confirm them). Every club has at least two alumni in the pool, so "you were both in Accounting Society at Virginia Tech" is
+a hook a real student can hit, not just Sam.

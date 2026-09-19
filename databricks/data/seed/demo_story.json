@@ -2,70 +2,70 @@
   "heroes": [
     {
       "student": "s001",
-      "person": "p0212",
-      "company": "Beacon Strategy Partners",
-      "shared_club": "Yellow Jacket Robotics",
-      "shared_high_school": "Cherry Creek High School",
-      "position": "j078"
+      "person": "p0926",
+      "company": "McKinsey & Company",
+      "shared_club": "Students for Justice in Palestine",
+      "shared_high_school": "Langley High School",
+      "position": "j066"
     },
     {
       "student": "s002",
-      "person": "p0098",
-      "company": "Sable Security",
-      "shared_club": "Blueprint",
-      "shared_high_school": "Patrick Henry High School",
-      "position": "j039"
+      "person": "p0157",
+      "company": "Datadog",
+      "shared_club": "Management Society",
+      "shared_high_school": "Loudoun County High School",
+      "position": "j030"
     },
     {
       "student": "s003",
-      "person": "p0292",
-      "company": "Sable Security",
-      "shared_club": "Texas Rocketry",
-      "shared_high_school": "Washington-Liberty High School",
-      "position": "j039"
+      "person": "p0060",
+      "company": "Datadog",
+      "shared_club": "Students for Sensible Drug Policy",
+      "shared_high_school": "Myers Park High School",
+      "position": "j030"
     },
     {
       "student": "s004",
-      "person": "p0195",
-      "company": "Sable Security",
-      "shared_club": "Texas Investment Club",
-      "shared_high_school": "Edina High School",
-      "position": "j039"
+      "person": "p0632",
+      "company": "Datadog",
+      "shared_club": "Amateur Radio Association",
+      "shared_high_school": "Langley High School",
+      "position": "j030"
     },
     {
       "student": "s005",
-      "person": "p0037",
-      "company": "Keystone Operations Group",
-      "shared_club": "b01lers CTF",
-      "shared_high_school": "Southwest High School",
-      "position": "j070"
+      "person": "p0011",
+      "company": "PwC",
+      "shared_club": "Her Campus at Virginia Tech",
+      "shared_high_school": "Westlake High School",
+      "position": "j147"
     }
   ],
   "gaps": [
     {
       "student": "s006",
-      "position": "j035",
-      "missing_certification": "Databricks Data Engineer Associate"
+      "position": "j124",
+      "missing_certification": "FMVA"
     },
     {
       "student": "s007",
-      "position": "j073",
-      "missing_certification": "Tableau Desktop Specialist"
+      "position": "j011",
+      "missing_certification": "CKA (Kubernetes)"
     },
     {
       "student": "s008",
-      "position": "j034",
-      "missing_certification": "AWS Solutions Architect Associate"
+      "position": "j067",
+      "missing_certification": "PMP"
     },
     {
       "student": "s009",
-      "position": "j066",
-      "missing_certification": "PMP"
+      "position": "j137",
+      "missing_certification": "CFE"
     },
     {
       "student": "s010",
-      "position": "j075",
-      "missing_certification": "PMP"
+      "position": "j118",
+      "missing_certification": "FMVA"
     }
   ],
   "sam_rivera_cast": [

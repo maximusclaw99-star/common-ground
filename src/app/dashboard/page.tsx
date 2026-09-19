@@ -21,7 +21,7 @@ export default async function DashboardPage() {
   if (!student) redirect("/sign-in?next=/dashboard");
 
   const provider = getPeopleProvider();
-  const people = await provider.getPeople({ companies: student.facts.target_companies, limit: 400 });
+  const people = await provider.getPeople({ companies: student.facts.target_companies, limit: 2000 });
   const { results, demand } = rankPeople({ profile: student.profile, facts: student.facts }, people);
   const byId = new Map(people.map((p) => [p.id, p]));
 
@@ -131,10 +131,15 @@ export default async function DashboardPage() {
             Everyone
           </h2>
           <div className="grid gap-[var(--space-16)] md:grid-cols-2">
-            {results.map((r) => (
+            {results.slice(0, 120).map((r) => (
               <PersonCard key={r.personId} person={byId.get(r.personId)!} result={r} />
             ))}
           </div>
+          {results.length > 120 && (
+            <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-16) 0 0", textTransform: "none" }}>
+              Showing the top 120 of {results.length}. Everyone below this line shares at most an industry with you.
+            </p>
+          )}
         </div>
       </section>
 

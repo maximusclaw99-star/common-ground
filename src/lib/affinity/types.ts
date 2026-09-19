@@ -74,6 +74,8 @@ export interface Person {
   profileUrl: string | null;
   /** Headshot, or null for initials. A path under public/ or a full URL. */
   photoUrl: string | null;
+  /** Work email when the source has one. Shown, never sent to — the product's whole point. */
+  email: string | null;
 
   currentCompany: string;
   currentTitle: string;
