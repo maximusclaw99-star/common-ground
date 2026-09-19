@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...but the template MUST ship: it is the only record of which variables a
+# teammate needs to set, and `.env*` above silently swallows it.
+!.env.example
 
 # vercel
 .vercel

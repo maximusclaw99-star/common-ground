@@ -1,0 +1,243 @@
+[
+  {
+    "name": "PwC (Experienced)",
+    "slug": "pwc",
+    "ats": "workday",
+    "workdayHost": "wd3",
+    "workdaySite": "Global_Experienced_Careers",
+    "sector": "consulting",
+    "active": true
+  },
+  {
+    "name": "Accenture",
+    "slug": "accenture",
+    "ats": "workday",
+    "workdayHost": "wd103",
+    "workdaySite": "AccentureCareers",
+    "sector": "consulting",
+    "active": true
+  },
+  {
+    "name": "PwC (Campus)",
+    "slug": "pwc",
+    "ats": "workday",
+    "workdayHost": "wd3",
+    "workdaySite": "Global_Campus_Careers",
+    "sector": "consulting",
+    "active": true
+  },
+  {
+    "name": "Guidehouse",
+    "slug": "guidehouse",
+    "ats": "workday",
+    "workdayHost": "wd1",
+    "workdaySite": "External",
+    "sector": "consulting",
+    "active": true
+  },
+  {
+    "name": "Huron Consulting",
+    "slug": "huron",
+    "ats": "workday",
+    "workdayHost": "wd1",
+    "workdaySite": "HuronCareers",
+    "sector": "consulting",
+    "active": true
+  },
+  {
+    "name": "Databricks",
+    "slug": "databricks",
+    "ats": "greenhouse",
+    "sector": "data",
+    "active": true
+  },
+  {
+    "name": "Stripe",
+    "slug": "stripe",
+    "ats": "greenhouse",
+    "sector": "fintech",
+    "active": true
+  },
+  {
+    "name": "Anthropic",
+    "slug": "anthropic",
+    "ats": "greenhouse",
+    "sector": "ai",
+    "active": true
+  },
+  {
+    "name": "Datadog",
+    "slug": "datadog",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "MongoDB",
+    "slug": "mongodb",
+    "ats": "greenhouse",
+    "sector": "data",
+    "active": true
+  },
+  {
+    "name": "Cloudflare",
+    "slug": "cloudflare",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Elastic",
+    "slug": "elastic",
+    "ats": "greenhouse",
+    "sector": "data",
+    "active": true
+  },
+  {
+    "name": "Palantir",
+    "slug": "palantir",
+    "ats": "lever",
+    "sector": "data",
+    "active": true
+  },
+  {
+    "name": "Braze",
+    "slug": "braze",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Samsara",
+    "slug": "samsara",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Scale AI",
+    "slug": "scaleai",
+    "ats": "greenhouse",
+    "sector": "ai",
+    "active": true
+  },
+  {
+    "name": "Affirm",
+    "slug": "affirm",
+    "ats": "greenhouse",
+    "sector": "fintech",
+    "active": true
+  },
+  {
+    "name": "Fivetran",
+    "slug": "fivetran",
+    "ats": "greenhouse",
+    "sector": "data",
+    "active": true
+  },
+  {
+    "name": "Reddit",
+    "slug": "reddit",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Robinhood",
+    "slug": "robinhood",
+    "ats": "greenhouse",
+    "sector": "fintech",
+    "active": true
+  },
+  {
+    "name": "Figma",
+    "slug": "figma",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Klaviyo",
+    "slug": "klaviyo",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Twilio",
+    "slug": "twilio",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Instacart",
+    "slug": "instacart",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Asana",
+    "slug": "asana",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Gusto",
+    "slug": "gusto",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Vercel",
+    "slug": "vercel",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Chime",
+    "slug": "chime",
+    "ats": "greenhouse",
+    "sector": "fintech",
+    "active": true
+  },
+  {
+    "name": "Sigma Computing",
+    "slug": "sigmacomputing",
+    "ats": "greenhouse",
+    "sector": "data",
+    "active": true
+  },
+  {
+    "name": "Discord",
+    "slug": "discord",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "Amplitude",
+    "slug": "amplitude",
+    "ats": "greenhouse",
+    "sector": "data",
+    "active": true
+  },
+  {
+    "name": "Airtable",
+    "slug": "airtable",
+    "ats": "greenhouse",
+    "sector": "tech",
+    "active": true
+  },
+  {
+    "name": "RTI International",
+    "slug": "rti",
+    "ats": "greenhouse",
+    "sector": "research",
+    "active": true
+  }
+]
