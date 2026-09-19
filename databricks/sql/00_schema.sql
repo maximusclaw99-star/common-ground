@@ -52,6 +52,7 @@ CREATE OR REPLACE TABLE workspace.jobsearch.people (
   location           STRING          COMMENT 'Current work location',
   openness_to_chat   DOUBLE          COMMENT '0-1 likelihood they take a coffee chat with a student',
   linkedin_url       STRING          COMMENT 'Fake profile URL (example.com)',
+  photo_url          STRING          COMMENT 'Headshot path served by the web app, e.g. /people/women-42.jpg',
   CONSTRAINT people_pk PRIMARY KEY (id),
   CONSTRAINT people_company_fk FOREIGN KEY (company_id) REFERENCES workspace.jobsearch.companies (id)
 )
@@ -109,6 +110,7 @@ CREATE OR REPLACE TABLE workspace.jobsearch.students (
                                          COMMENT 'Recent events attended (career fairs, case competitions)',
   resume_text            STRING          COMMENT 'Plain-text resume as uploaded',
   questionnaire_answers  STRING          COMMENT 'JSON string of the onboarding questionnaire answers',
+  photo_url              STRING          COMMENT 'Headshot path served by the web app',
   created_at             TIMESTAMP       COMMENT 'Account creation time',
   CONSTRAINT students_pk PRIMARY KEY (id)
 )

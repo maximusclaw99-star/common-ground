@@ -31,13 +31,14 @@ FALLBACK_COLUMNS = {
     "companies": ["id", "name", "vertical", "size", "hq", "careers_url"],
     "people": ["id", "name", "headline", "company", "company_id", "title", "school", "major", "grad_year",
                "function", "industry", "seniority", "hometown", "high_school", "clubs", "communities", "interests",
-               "projects", "education", "roles", "posts", "events", "vertical", "location", "openness_to_chat", "linkedin_url"],
+               "projects", "education", "roles", "posts", "events", "vertical", "location", "openness_to_chat", "linkedin_url",
+               "photo_url"],
     "positions": ["id", "company_id", "title", "type", "vertical", "location", "opens_on", "closes_on",
                   "target_grad_years", "description", "posted_url"],
     "position_requirements": ["position_id", "requirement", "kind", "required"],
     "students": ["id", "name", "email", "school", "major", "grad_year", "target_verticals", "target_companies", "skills",
                  "certifications", "interests", "projects", "hometown", "high_school", "clubs", "communities", "events",
-                 "resume_text", "questionnaire_answers", "created_at"],
+                 "resume_text", "questionnaire_answers", "photo_url", "created_at"],
     "connection_paths": ["student_id", "person_id", "path_type", "strength", "detail"],
 }
 DATE_COLS = {"opens_on", "closes_on"}
