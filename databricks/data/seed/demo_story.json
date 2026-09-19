@@ -1,0 +1,87 @@
+{
+  "heroes": [
+    {
+      "student": "s001",
+      "person": "p0195",
+      "company": "Deloitte",
+      "shared_club": "GT Consulting Club",
+      "shared_high_school": "Fairfax High School",
+      "position": "j070"
+    },
+    {
+      "student": "s002",
+      "person": "p0158",
+      "company": "Argent Payments",
+      "shared_club": "Haas Investment Group",
+      "shared_high_school": "Westlake High School",
+      "position": "j001"
+    },
+    {
+      "student": "s003",
+      "person": "p0141",
+      "company": "Northwind Systems",
+      "shared_club": "Solar Car Team",
+      "shared_high_school": "Pioneer High School",
+      "position": "j037"
+    },
+    {
+      "student": "s004",
+      "person": "p0141",
+      "company": "Northwind Systems",
+      "shared_club": "Michigan Hackers",
+      "shared_high_school": "Myers Park High School",
+      "position": "j037"
+    },
+    {
+      "student": "s005",
+      "person": "p0195",
+      "company": "Deloitte",
+      "shared_club": "Illini Solar Car",
+      "shared_high_school": "Yorktown High School",
+      "position": "j070"
+    }
+  ],
+  "gaps": [
+    {
+      "student": "s006",
+      "position": "j038",
+      "missing_certification": "Databricks Data Engineer Associate"
+    },
+    {
+      "student": "s007",
+      "position": "j005",
+      "missing_certification": "Databricks Data Engineer Associate"
+    },
+    {
+      "student": "s008",
+      "position": "j067",
+      "missing_certification": "Databricks Data Analyst Associate"
+    },
+    {
+      "student": "s009",
+      "position": "j003",
+      "missing_certification": "Security+"
+    },
+    {
+      "student": "s010",
+      "position": "j040",
+      "missing_certification": "CKA (Kubernetes)"
+    }
+  ],
+  "sam_rivera_cast": [
+    "p9001",
+    "p9002",
+    "p9003",
+    "p9004",
+    "p9005",
+    "p9006",
+    "p9007",
+    "p9008",
+    "p9009",
+    "p9010",
+    "p9011",
+    "p9012",
+    "p9013",
+    "p9014"
+  ]
+}

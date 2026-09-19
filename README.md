@@ -42,7 +42,8 @@ table as greyed rows with the reason — a better answer than a list that quietl
 ```
 src/lib/affinity/   the scorer. Deterministic, pure, no LLM in the hot path.
 src/lib/intake/     the questionnaire. Computed from what the resume left out.
-src/lib/people/     the provider seam — mock today, Databricks tomorrow.
+src/lib/people/     the provider seam — mock by default, Databricks with PEOPLE_PROVIDER=databricks.
+databricks/         the warehouse: schema, mock people with coffee-chat hooks, matching views, Genie, loader.
 src/lib/ai/         Claude: resume extraction, job matching, answer structuring, tailoring.
 src/lib/ats/        Greenhouse / Lever / Ashby / Workday ingestion (tested, not yet on a page).
 ```
