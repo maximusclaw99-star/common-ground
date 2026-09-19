@@ -12,18 +12,22 @@ import { TypedLines } from "./typewriter";
  * Headlines are broken by hand; a display line is never left to wrap.
  */
 export function Hero({
-  head, lines, note, children,
+  head, lines, note, children, picture, marble,
 }: {
   head: React.ReactNode;
   lines: string[];
   note?: string;
   children?: React.ReactNode;
+  /** A picture for the relief's subject, in place of the procedural one. */
+  picture?: string;
+  /** A faint paper-marbling texture under the grid. */
+  marble?: string;
 }) {
   const pageRef = useRef<HTMLElement>(null);
 
   return (
     <section ref={pageRef} className="tb-page" style={{ position: "relative", flexGrow: 1 }}>
-      <HeroLayers pageRef={pageRef} />
+      <HeroLayers pageRef={pageRef} picture={picture} marble={marble} />
       <div className="tb-hero tb-layer">
         <div className="tb-hero__inner">
           <h1 className="display-md tb-hero__head">{head}</h1>

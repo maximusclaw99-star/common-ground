@@ -71,7 +71,7 @@ function NavLink({ href, active, children }: { href: string; active?: boolean; c
   );
 }
 
-export interface Diagnostic { label: string; value: string }
+export interface Diagnostic { label: string; value: React.ReactNode }
 
 /**
  * The diagnostic strip. One per page.

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Nav, StatusFooter, Ticker } from "@/components/tb/chrome";
 import { Hero } from "@/components/tb/hero";
+import { LiveClock } from "@/components/tb/live-clock";
 import { TierLadder } from "@/components/tier-badge";
 import { IN_SCOPE_RANKS, TIERS } from "@/lib/affinity/tiers";
 import { FIELDS } from "@/lib/intake/fields";
@@ -26,6 +27,8 @@ export default async function LandingPage() {
       <Nav cta={{ label: "Sign in", href: "/sign-in" }} />
 
       <Hero
+        picture="/hands.png"
+        marble="/marble.png"
         head={<>Eleven people,<br />not a thousand<br />applications.</>}
         lines={[
           `> ranking ${TIERS.filter((t) => t.inScope).length} kinds of common ground...`,
@@ -98,7 +101,8 @@ export default async function LandingPage() {
           { label: "Tiers ranked", value: String(IN_SCOPE_RANKS.length) },
           { label: "Tiers refused", value: String(TIERS.filter((t) => !t.inScope).length) },
           { label: "Questions", value: `${FIELDS.length} max` },
-          { label: "Outreach", value: "Human" },
+          { label: "UTC", value: <LiveClock zone="utc" /> },
+          { label: "Local", value: <LiveClock /> },
         ]}
       />
     </div>

@@ -108,6 +108,36 @@ body {
   a.tb-card:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-brutal); }
 
   .tb-rule { border-top: var(--border-1) solid var(--rule); }
+
+  /* The reference page's paper marbling: under the grid, multiplied into the
+     canvas, faint enough that the grid still reads as the baseline. */
+  .tb-marble {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-size: cover;
+    background-position: center;
+    mix-blend-mode: multiply;
+    opacity: 0.8;
+  }
+
+  /* The readout at the point the two hands meet. */
+  .tb-contact {
+    position: absolute;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    color: var(--signal);
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+  .tb-contact[data-on] { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
