@@ -1,5 +1,5 @@
 import { IN_SCOPE_RANKS, tierWeight } from "@/lib/affinity/tiers";
-import { COMPANY_OPTIONS, MAJOR_OPTIONS, ROLE_OPTIONS } from "./options";
+import { MAJOR_OPTIONS, ROLE_OPTIONS } from "./options";
 import type { Field } from "./types";
 
 export const SENIORITY_OPTIONS = [
@@ -153,14 +153,9 @@ export const FIELDS: readonly Field[] = Object.freeze<Field[]>([
   },
 
   // ------------------------------------------------------------- targets
-  {
-    id: "target_companies", path: "target_companies", theme: "targets",
-    question: "Which companies are you targeting?",
-    help: "Pick at least three. Not listed? Type it and press Enter.",
-    placeholder: "Search companies, or type your own",
-    input: "chips", options: COMPANY_OPTIONS, minAnswers: 3,
-    tiers: [10, 11], resumeDerivable: false, required: true, dictation: true,
-  },
+  // Which COMPANIES the student is going after is deliberately not a question
+  // here. The questionnaire is about the person; the company is chosen on the
+  // dashboard, one at a time, and written to `target_companies` from there.
   {
     id: "target_roles", path: "target_roles", theme: "targets",
     question: "What roles are you going for?",

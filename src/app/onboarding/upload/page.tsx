@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
 import { FIELDS } from "@/lib/intake/fields";
 import { getResumeProvider } from "@/lib/resume";
@@ -9,13 +10,16 @@ export const dynamic = "force-dynamic";
 
 export default async function UploadPage() {
   const { demo, student } = await getSession();
+  // The proxy already turns strangers away; this catches a session cookie
+  // whose account no longer exists (demo mode after a restart).
+  if (!student) redirect("/sign-up?next=/onboarding/upload");
   const derivable = FIELDS.filter((f) => f.resumeDerivable).length;
   const reader = getResumeProvider();
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
       {demo && <DemoStrip />}
-      <Nav signedIn={Boolean(student)} cta={null} email={demo ? null : student?.email} />
+      <Nav signedIn cta={null} email={demo ? null : student.email} />
 
       <section className="tb-band tb-layer" style={{ flexGrow: 1 }}>
         <div className="tb-wrap" style={{ maxWidth: 620 }}>

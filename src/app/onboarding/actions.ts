@@ -6,7 +6,7 @@ import { EMPTY_FACTS } from "@/lib/ai/schemas";
 import { deriveAll } from "@/lib/intake/derive";
 import { FIELDS } from "@/lib/intake/fields";
 import { demoStore } from "@/lib/session/demo-store";
-import { getSession } from "@/lib/session";
+import { demoAccountId, getSession } from "@/lib/session";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
@@ -51,11 +51,13 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
   }
 
   if (!isSupabaseConfigured()) {
+    const id = await demoAccountId();
+    if (!id || !demoStore.get(id)) return { error: "Your session expired — sign in again." };
     // What the resume already told us counts for ranking right away; the
     // questionnaire still asks the student to confirm each of these, because
     // no meta entry is written here, so nothing is silently treated as answered.
     const facts = { ...EMPTY_FACTS, ...deriveAll(FIELDS, profile) };
-    demoStore.set({ profile, facts });
+    demoStore.set(id, { profile, facts });
     redirect("/onboarding/review");
   }
 

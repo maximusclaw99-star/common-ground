@@ -1,6 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { EMPTY_FACTS } from "@/lib/ai/schemas";
 import { structureAnswer } from "@/lib/ai/structure-answer";
 import { applyAnswers, type Answer } from "@/lib/intake/answers";
 import { fieldById } from "@/lib/intake/fields";
@@ -53,4 +55,17 @@ export async function saveAnswersAction(
     console.error("[intake] could not save answers", error);
     return { ok: false, error: error instanceof Error ? error.message : "unknown" };
   }
+}
+
+/**
+ * Clears this student's answers and starts the questionnaire again. Only the
+ * answers: the resume and the companies they picked on the dashboard stay.
+ */
+export async function restartQuestionsAction(): Promise<void> {
+  const { student } = await getSession();
+  if (!student) redirect("/sign-in?next=/intake");
+  await saveFacts({ ...EMPTY_FACTS, target_companies: student.facts.target_companies }, {}, false);
+  revalidatePath("/intake");
+  revalidatePath("/dashboard");
+  redirect("/intake");
 }

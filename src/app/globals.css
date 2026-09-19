@@ -137,14 +137,36 @@ body {
 
   /* A card that sits proud of the page. shadow-brutal-lg is the only shadow
      permitted at rest. */
+  /* Cards sit in grids with a 24px gutter (see .tb-cards), never 16: with a
+     1px rule on every side, anything tighter reads as one box with lines
+     through it rather than separate boxes. */
   .tb-card {
     display: block;
     background: var(--canvas);
     border: var(--border-1) solid var(--rule-strong);
     border-radius: var(--radius-none);
-    padding: var(--space-20);
+    padding: var(--space-24);
     transition: transform 100ms ease, box-shadow 100ms ease;
   }
+
+  /* The one grid cards and panels live in. The gutter is a token so every
+     page agrees, and it grows with the viewport so two columns at 768px do
+     not press together. */
+  .tb-cards {
+    display: grid;
+    gap: var(--space-24);
+  }
+  @media (min-width: 768px) {
+    .tb-cards { gap: var(--space-32); }
+    .tb-cards--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tb-cards--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1024px) {
+    .tb-cards--3-lg { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  /* Panels stacked in one band, rather than one panel per band. */
+  .tb-stack { display: grid; gap: var(--space-24); }
   a.tb-card:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-brutal); }
 
   .tb-rule { border-top: var(--border-1) solid var(--rule); }

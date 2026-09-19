@@ -14,12 +14,15 @@ import { getSession } from "@/lib/session";
 export const dynamic = "force-dynamic";
 
 export default async function LandingPage() {
-  const { demo } = await getSession();
-  const start = demo ? "/onboarding/upload" : "/sign-up";
+  const { demo, student } = await getSession();
+  // An account comes first, in every mode: the resume and the answers belong
+  // to someone, and that someone has to exist before anything is uploaded.
+  const start = student ? "/onboarding/upload" : "/sign-up";
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
-      <Nav cta={{ label: "Sign in", href: "/sign-in" }} />
+      <Nav signedIn={Boolean(student)} email={demo ? null : student?.email}
+        cta={student ? null : { label: "Sign in", href: "/sign-in" }} />
 
       <Hero
         picture="/hands.png"
@@ -28,7 +31,7 @@ export default async function LandingPage() {
         lines={[`> ranking ${TIERS.filter((t) => t.inScope).length} kinds of common ground_`]}
         note="Two minutes &middot; We only ask what your resume does not already say"
       >
-        <Link className="tb-btn tb-btn--solid mono-label" href={start}>Upload your resume &#8599;</Link>
+        <Link className="tb-btn tb-btn--solid mono-label" href={start}>{student ? "Upload your resume" : "Make an account"} &#8599;</Link>
       </Hero>
 
       <section className="tb-band tb-band-top tb-layer">

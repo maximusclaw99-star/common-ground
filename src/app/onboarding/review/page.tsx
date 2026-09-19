@@ -53,7 +53,7 @@ export default async function ReviewPage() {
       )}
 
       <section className="tb-band tb-band-top tb-layer">
-        <div className="tb-wrap grid gap-[var(--space-24)] md:grid-cols-2" style={{ maxWidth: 860 }}>
+        <div className="tb-wrap tb-cards tb-cards--2" style={{ maxWidth: 860 }}>
           <Facts title="You" items={[
             ["Name", profile.full_name], ["School", a.school_raw ?? profile.school],
             ["Graduating", profile.grad_date], ["Work authorisation", profile.work_auth],

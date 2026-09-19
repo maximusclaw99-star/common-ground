@@ -8,6 +8,7 @@ import { groupIntoSteps } from "@/lib/intake/steps";
 import { FIELDS } from "@/lib/intake/fields";
 import { getPeopleProvider } from "@/lib/people";
 import { getSession } from "@/lib/session";
+import { restartQuestionsAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,18 @@ export default async function IntakePage() {
         <div className="tb-wrap" style={{ maxWidth: 760 }}>
           {steps.length === 0 ? <NothingLeftToAsk /> : (
             <IntakeFlow steps={steps} unrouted={unroutedUncertainties(student.profile)} />
+          )}
+          {answered > 0 && (
+            <form action={restartQuestionsAction} className="tb-rule" style={{ marginTop: "var(--space-48)", paddingTop: "var(--space-16)" }}>
+              <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: 0, textTransform: "none" }}>
+                Answers are yours alone and stay saved.{" "}
+                <button type="submit" className="tb-link mono-micro"
+                  style={{ background: "none", border: 0, padding: 0, cursor: "pointer", textTransform: "none" }}>
+                  Start the questions over
+                </button>
+                {" "}if you want a clean run.
+              </p>
+            </form>
           )}
         </div>
       </section>

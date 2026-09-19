@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { DEMO_COOKIE, isProtectedPath } from "@/lib/session/cookie";
 
 /**
  * Next.js 16 renamed `middleware.ts` to `proxy.ts`. A file named
@@ -10,11 +11,23 @@ import { NextResponse, type NextRequest } from "next/server";
  */
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
+  const path = request.nextUrl.pathname;
 
-  // Demo mode: with no Supabase project configured there is no session to
-  // refresh and no sign-in to redirect to, so every route is open. The header
-  // says so on every page.
+  const toSignIn = () => {
+    const url = request.nextUrl.clone();
+    url.pathname = "/sign-in";
+    url.search = "";
+    url.searchParams.set("next", path);
+    return NextResponse.redirect(url);
+  };
+
+  // Demo mode: no Supabase project, so accounts live in the server's memory
+  // and the session is a cookie holding one's id. The proxy cannot see that
+  // memory, only whether the cookie is there; a stale id (after a restart)
+  // gets past here and is turned away by the page, which finds nobody behind
+  // it and redirects to sign-in itself.
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    if (isProtectedPath(path) && !request.cookies.get(DEMO_COOKIE)?.value) return toSignIn();
     return response;
   }
 
@@ -39,16 +52,7 @@ export async function proxy(request: NextRequest) {
   // client creation and this call.
   const { data } = await supabase.auth.getClaims();
 
-  const path = request.nextUrl.pathname;
-  const PROTECTED = ["/dashboard", "/onboarding", "/intake", "/jobs", "/people", "/profile"];
-  const isProtected = PROTECTED.some((p) => path.startsWith(p));
-
-  if (!data?.claims && isProtected) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/sign-in";
-    url.searchParams.set("next", path);
-    return NextResponse.redirect(url);
-  }
+  if (!data?.claims && isProtectedPath(path)) return toSignIn();
 
   return response;
 }

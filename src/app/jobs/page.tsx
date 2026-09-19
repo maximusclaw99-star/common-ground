@@ -94,7 +94,7 @@ export default async function JobsPage() {
             <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
               {rows.length} window{rows.length === 1 ? "" : "s"} open{rows.length === 1 ? "s" : ""} this month
             </p>
-            <div className="grid gap-[var(--space-16)] md:grid-cols-2">
+            <div className="tb-cards tb-cards--2">
               {rows.map((r) => (
                 <OpeningRow key={r.position.id} ranked={r} gaps={gapsById.get(r.position.id) ?? []} />
               ))}
@@ -110,7 +110,7 @@ export default async function JobsPage() {
             <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
               Closed this cycle.
             </p>
-            <div className="grid gap-[var(--space-16)] md:grid-cols-2">
+            <div className="tb-cards tb-cards--2">
               {closed.map((r) => (
                 <OpeningRow key={r.position.id} ranked={r} gaps={gapsById.get(r.position.id) ?? []} />
               ))}

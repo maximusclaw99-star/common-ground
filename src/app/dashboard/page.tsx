@@ -1,46 +1,36 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { CompanyLogo } from "@/components/company-logo";
 import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
-import { PersonCard } from "@/components/person-card";
-import { rankPeople } from "@/lib/affinity/score";
+import { companyInfo, sameCompany } from "@/lib/companies";
+import { loadCompanyPool, type CompanySummary } from "@/lib/companies/pool";
 import { computeGaps } from "@/lib/intake/gaps";
-import { getPeopleProvider } from "@/lib/people";
-import { getPositionsProvider, rankPositions } from "@/lib/positions";
-import { windowLabel } from "@/components/opening-row";
 import { getSession } from "@/lib/session";
+import { chooseCompany, dropCompany } from "./actions";
 
-/**
- * Per-student, so never prerendered. In demo mode getSession() answers from
- * memory without touching cookies, which is enough for Next to treat this page
- * as static and bake one student's ranking into the build.
- */
+/** Per-student, so never prerendered. */
 export const dynamic = "force-dynamic";
 
+/**
+ * The dashboard opens on a choice, not a list. The student picks the company
+ * they want to apply to; only then do they see who to write to there. Ranking
+ * everyone at every company at once — what this page did before — buried the
+ * one question a student actually has, which is "who do I know at Deloitte".
+ */
 export default async function DashboardPage() {
   const { student, demo } = await getSession();
   if (!student) redirect("/sign-in?next=/dashboard");
 
-  const provider = getPeopleProvider();
-  const people = await provider.getPeople({ companies: student.facts.target_companies, limit: 2000 });
-  const { results, demand } = rankPeople({ profile: student.profile, facts: student.facts }, people);
-  const byId = new Map(people.map((p) => [p.id, p]));
+  const chosen = student.facts.target_companies;
+  const pool = await loadCompanyPool(chosen);
+  const gaps = computeGaps({ profile: student.profile, facts: student.facts, meta: student.meta });
 
-  const gaps = computeGaps({
-    profile: student.profile, facts: student.facts, meta: student.meta, demand,
+  const isChosen = (name: string) => chosen.some((c) => sameCompany(c, name));
+  const mine: CompanySummary[] = chosen.map((name) => {
+    const found = pool.companies.find((c) => sameCompany(c.name, name));
+    return found ?? { ...companyInfo(name), people: 0, openings: 0 };
   });
-  const strong = results.filter((r) => r.rank <= 5);
-  const timely = results.filter((r) => r.outreach.timing);
-  const best = results[0];
-
-  // The three soonest windows worth the student's attention. Never blocks the
-  // page: if the openings provider fails, the people ranking still renders.
-  const nextWindows = await getPositionsProvider()
-    .getPositions({ companies: student.facts.target_companies, limit: 400 })
-    .then((positions) => rankPositions({ profile: student.profile, facts: student.facts }, positions)
-      .filter((r) => r.fit.windowStatus !== "closed" && r.fit.score >= 45)
-      .sort((a, b) => a.position.opensOn.localeCompare(b.position.opensOn) || b.fit.score - a.fit.score)
-      .slice(0, 3))
-    .catch((err) => { console.warn("[dashboard] openings unavailable", err instanceof Error ? err.message : err); return []; });
+  const others = pool.companies.filter((c) => !isChosen(c.name));
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
@@ -49,96 +39,83 @@ export default async function DashboardPage() {
 
       <section className="tb-band tb-layer">
         <div className="tb-wrap">
+          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Your dashboard</p>
           <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
-            {results.length} people,<br />strongest first.
+            Pick a company.<br />Then meet the people.
           </h1>
           <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
-            {strong.length > 0
-              ? `${strong.length} share a school, an organisation, an employer or a hometown with you. Start there.`
-              : "Nothing above a shared industry yet. The questions below would change that."}
+            One at a time. Choose where you want to apply and we rank everyone there by what you
+            genuinely have in common with them.
           </p>
         </div>
       </section>
 
-      {timely.length > 0 && (
+      {mine.length > 0 && (
         <section className="tb-band tb-band-top tb-layer">
           <div className="tb-wrap">
-            <p className="mono-label" style={{ color: "var(--alert)", margin: "0 0 var(--space-8)" }}>
-              <span className="tb-led tb-led--alert" aria-hidden /> Window closing
-            </p>
             <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>
-              Write to these first
+              Your companies
             </h2>
-            <p className="body-sm tb-copy" style={{ color: "var(--ink-muted)", margin: "0 0 var(--space-24)" }}>
-              {timely[0].outreach.timing}.
+            <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
+              {mine.length} chosen &middot; openings here rank higher for you
             </p>
-            <div className="grid gap-[var(--space-16)] md:grid-cols-2">
-              {timely.map((r) => <PersonCard key={r.personId} person={byId.get(r.personId)!} result={r} />)}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {gaps.length > 0 && (
-        <section className="tb-band tb-band-top tb-layer">
-          <div className="tb-wrap tb-panel flex flex-wrap items-center justify-between gap-[var(--space-16)]">
-            <div className="tb-copy">
-              <p className="mono-label" style={{ margin: 0 }}>
-                {gaps.length} question{gaps.length === 1 ? "" : "s"} outstanding
-              </p>
-              <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-8) 0 0" }}>
-                {gaps[0].demandCount > 0 ? (
-                  <>
-                    Next: &ldquo;{gaps[0].field.question}&rdquo; &mdash; {gaps[0].demandCount}{" "}
-                    {gaps[0].demandCount === 1 ? "person" : "people"} here would move up if we knew.
-                  </>
-                ) : (
-                  "Each one adds people we can find."
-                )}
-              </p>
-            </div>
-            <Link className="tb-btn mono-label" href="/intake">Answer them &#8599;</Link>
-          </div>
-        </section>
-      )}
-
-      {nextWindows.length > 0 && (
-        <section className="tb-band tb-band-top tb-layer">
-          <div className="tb-wrap tb-panel">
-            <div className="flex flex-wrap items-center justify-between gap-[var(--space-16)]">
-              <p className="mono-label" style={{ margin: 0 }}>&gt; Next windows</p>
-              <Link className="tb-link mono-label" href="/jobs">All openings &#8599;</Link>
-            </div>
-            <ul style={{ margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-8)" }}>
-              {nextWindows.map(({ position, fit }) => (
-                <li key={position.id} className="flex flex-wrap items-baseline justify-between gap-[var(--space-12)]">
-                  <span className="body-sm" style={{ margin: 0 }}>
-                    {position.title} <span style={{ color: "var(--ink-faint)" }}>&middot; {position.company}</span>
-                  </span>
-                  <span className="mono-micro" style={{ color: fit.windowStatus === "upcoming" ? "var(--ink-faint)" : "var(--alert)", whiteSpace: "nowrap" }}>
-                    {windowLabel(fit)} &middot; {position.opensOn}
-                  </span>
-                </li>
+            <div className="tb-cards tb-cards--2 tb-cards--3-lg">
+              {mine.map((c) => (
+                <CompanyCard key={c.slug} company={c} chosen />
               ))}
-            </ul>
+            </div>
           </div>
         </section>
       )}
 
       <section className="tb-band tb-band-top tb-layer">
         <div className="tb-wrap">
-          <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-24)" }}>
-            Everyone
+          <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>
+            {mine.length ? "Add another" : "Where we can find people"}
           </h2>
-          <div className="grid gap-[var(--space-16)] md:grid-cols-2">
-            {results.slice(0, 120).map((r) => (
-              <PersonCard key={r.personId} person={byId.get(r.personId)!} result={r} />
-            ))}
-          </div>
-          {results.length > 120 && (
-            <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-16) 0 0", textTransform: "none" }}>
-              Showing the top 120 of {results.length}. Everyone below this line shares at most an industry with you.
+          <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
+            {others.length} compan{others.length === 1 ? "y" : "ies"} with someone to write to &middot; most people first
+          </p>
+          {others.length > 0 ? (
+            <div className="tb-cards tb-cards--2 tb-cards--3-lg">
+              {others.map((c) => (
+                <CompanyCard key={c.slug} company={c} />
+              ))}
+            </div>
+          ) : (
+            <p className="body-sm" style={{ color: "var(--ink-muted)", margin: 0 }}>
+              Every company we can reach is already on your list.
             </p>
+          )}
+        </div>
+      </section>
+
+      <section className="tb-band tb-band-top tb-layer">
+        <div className="tb-wrap tb-stack">
+          <form action={chooseCompany} className="tb-panel">
+            <p className="mono-label" style={{ margin: 0 }}>Somewhere else?</p>
+            <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-8) 0 var(--space-16)" }}>
+              Name it and we will look. If we have nobody there yet, the page says so rather than guessing.
+            </p>
+            <div className="flex flex-wrap items-center gap-[var(--space-12)]">
+              <input name="company" type="text" required maxLength={80} autoComplete="organization"
+                placeholder="Company name" className="tb-field" style={{ flex: "1 1 240px", width: "auto" }} />
+              <button type="submit" className="tb-btn tb-btn--solid mono-label">Go &#8599;</button>
+            </div>
+          </form>
+
+          {gaps.length > 0 && (
+            <div className="tb-panel flex flex-wrap items-center justify-between gap-[var(--space-16)]">
+              <div className="tb-copy">
+                <p className="mono-label" style={{ margin: 0 }}>
+                  {gaps.length} question{gaps.length === 1 ? "" : "s"} outstanding
+                </p>
+                <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-8) 0 0" }}>
+                  Next: &ldquo;{gaps[0].field.question}&rdquo; &mdash; each answer finds more people at every company.
+                </p>
+              </div>
+              <Link className="tb-btn mono-label" href="/intake">Answer them &#8599;</Link>
+            </div>
           )}
         </div>
       </section>
@@ -146,13 +123,68 @@ export default async function DashboardPage() {
       <StatusFooter
         live={!demo}
         readings={[
-          { label: "People", value: String(results.length) },
-          { label: "Strongest", value: best ? `Tier ${best.rank} / ${Math.round(best.score)}` : "None" },
-          { label: "Above tier 5", value: String(strong.length) },
-          { label: "Questions left", value: String(gaps.length) },
-          { label: "Source", value: provider.name },
+          { label: "Companies", value: String(pool.companies.length) },
+          { label: "Chosen", value: String(chosen.length) },
+          { label: "People", value: String(pool.people.length) },
+          { label: "Openings", value: String(pool.positions.length) },
+          { label: "Source", value: pool.peopleSource },
         ]}
       />
     </div>
+  );
+}
+
+/**
+ * One company. The whole card is the button that chooses it, because a card
+ * with a separate "choose" link makes the student read two things to do one.
+ * Chosen companies link straight to their page and carry a quiet remove.
+ */
+function CompanyCard({ company, chosen = false }: { company: CompanySummary; chosen?: boolean }) {
+  const counts = (
+    <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-12) 0 0", textTransform: "none" }}>
+      {company.people} {company.people === 1 ? "person" : "people"} &middot; {company.openings} opening{company.openings === 1 ? "" : "s"}
+    </p>
+  );
+  const identity = (
+    <div className="flex min-w-0 items-center gap-[var(--space-12)]">
+      <CompanyLogo name={company.name} size={40} />
+      <div className="min-w-0">
+        <p className="title truncate" style={{ textTransform: "uppercase", margin: 0 }}>{company.name}</p>
+        <p className="mono-micro truncate" style={{ color: "var(--ink-faint)", margin: "var(--space-4) 0 0" }}>
+          {company.sector ?? "Chosen by you"}
+        </p>
+      </div>
+    </div>
+  );
+
+  if (chosen) {
+    return (
+      <article className="tb-card" style={{ position: "relative" }}>
+        <Link href={`/dashboard/${company.slug}`} className="block" style={{ color: "inherit", textDecoration: "none" }}>
+          {identity}
+          {counts}
+          <p className="mono-label" style={{ color: "var(--signal)", margin: "var(--space-16) 0 0" }}>
+            See the people &#8599;
+          </p>
+        </Link>
+        <form action={dropCompany} style={{ position: "absolute", top: "var(--space-12)", right: "var(--space-12)" }}>
+          <input type="hidden" name="company" value={company.name} />
+          <button type="submit" className="tb-link mono-micro" aria-label={`Remove ${company.name}`}
+            style={{ background: "none", border: 0, cursor: "pointer", color: "var(--ink-faint)" }}>
+            Remove
+          </button>
+        </form>
+      </article>
+    );
+  }
+
+  return (
+    <form action={chooseCompany}>
+      <input type="hidden" name="company" value={company.name} />
+      <button type="submit" className="tb-card" style={{ width: "100%", textAlign: "left", cursor: "pointer", color: "inherit", font: "inherit" }}>
+        {identity}
+        {counts}
+      </button>
+    </form>
   );
 }

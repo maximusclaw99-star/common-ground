@@ -20,7 +20,7 @@ export const THEME_COPY: Readonly<Record<Theme, { title: string; subtitle: strin
   work:    { title: "Where you've worked", subtitle: "Shared work context is a credible reason to write to someone you've never met." },
   roots:   { title: "Where you're from", subtitle: "The most underrated section here. People answer messages from home." },
   craft:   { title: "What you actually work on", subtitle: "The narrower you go, the better the person we can find you." },
-  targets: { title: "Who you're going after", subtitle: "We'll go find people at every one of these." },
+  targets: { title: "Where you're headed", subtitle: "Roles and level only. You pick companies on your dashboard, after this." },
   timely:  { title: "Anything recent", subtitle: "Some connections only stay open for a few days." },
 };
 

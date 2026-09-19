@@ -1,17 +1,25 @@
+import { cookies } from "next/headers";
 import {
   AffinityFactsSchema, EMPTY_FACTS, FactsMetaSchema,
   type AffinityFacts, type FactsMeta, type StudentProfile,
 } from "@/lib/ai/schemas";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { DEMO_COOKIE } from "./cookie";
 import { demoStore, type StoredStudent } from "./demo-store";
 
 export type { StoredStudent };
 
 export interface Session {
-  /** Null when nobody is signed in. Always set in demo mode. */
+  /** Null when nobody is signed in — in demo mode too, now that it has accounts. */
   student: StoredStudent | null;
   demo: boolean;
+}
+
+/** Demo mode's "who is this": the account id in the session cookie, if any. */
+export async function demoAccountId(): Promise<string | null> {
+  const jar = await cookies();
+  return jar.get(DEMO_COOKIE)?.value ?? null;
 }
 
 /**
@@ -20,7 +28,9 @@ export interface Session {
  * whether it came from Postgres or from memory.
  */
 export async function getSession(): Promise<Session> {
-  if (!isSupabaseConfigured()) return { student: demoStore.get(), demo: true };
+  if (!isSupabaseConfigured()) {
+    return { student: demoStore.get(await demoAccountId()), demo: true };
+  }
 
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
@@ -65,9 +75,16 @@ export async function getSession(): Promise<Session> {
   };
 }
 
+/**
+ * Writes the questionnaire's output. `completed` only ever sets the
+ * completion stamp — it never clears one, so saving a company choice from the
+ * dashboard cannot un-finish the questionnaire.
+ */
 export async function saveFacts(facts: AffinityFacts, meta: FactsMeta, completed = false): Promise<void> {
   if (!isSupabaseConfigured()) {
-    demoStore.set({ facts, meta, intakeCompletedAt: completed ? new Date().toISOString() : null });
+    const id = await demoAccountId();
+    if (!id || !demoStore.get(id)) throw new Error("Not signed in");
+    demoStore.set(id, { facts, meta, ...(completed ? { intakeCompletedAt: new Date().toISOString() } : {}) });
     return;
   }
 

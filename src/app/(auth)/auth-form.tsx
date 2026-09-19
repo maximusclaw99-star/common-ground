@@ -25,22 +25,18 @@ export function AuthForm({
       </h1>
       <p className="body" style={{ color: "var(--ink-muted)", margin: 0 }}>
         {signingUp
-          ? "We never post, message or apply as you."
+          ? "Your resume and answers are yours alone. We never post, message or apply as you."
           : "Pick up where you left off."}
       </p>
 
       {demo && (
-        <div className="tb-panel" style={{ marginTop: "var(--space-24)" }}>
-          <p className="mono-label" style={{ color: "var(--alert)", margin: 0 }}>
-            <span className="tb-led tb-led--alert" aria-hidden /> No database configured
-          </p>
-          <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 var(--space-16)" }}>
-            Accounts do not exist yet. The app is running in demo mode with one student loaded.
-          </p>
-          <Link href="/onboarding/upload" className="tb-btn tb-btn--sm mono-label">
-            Skip straight in &#8599;
-          </Link>
-        </div>
+        <p className="body-sm tb-panel" style={{ marginTop: "var(--space-24)", color: "var(--ink-muted)" }}>
+          <span className="mono-label" style={{ color: "var(--alert)" }}>
+            <span className="tb-led tb-led--alert" aria-hidden /> Demo mode &mdash;{" "}
+          </span>
+          accounts live in this server&rsquo;s memory and are cleared when it restarts. Any address
+          works; nothing is sent to it.
+        </p>
       )}
 
       <form action={formAction} className="mt-[var(--space-32)] grid gap-[var(--space-20)]">

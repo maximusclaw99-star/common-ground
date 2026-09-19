@@ -6,5 +6,5 @@ export default async function SignInPage({
   searchParams,
 }: { searchParams: Promise<{ next?: string }> }) {
   const { next } = await searchParams;
-  return <AuthForm mode="sign-in" action={signIn} next={next ?? "/dashboard"} demo={!isSupabaseConfigured()} />;
+  return <AuthForm mode="sign-in" action={signIn} next={next?.startsWith("/") ? next : "/dashboard"} demo={!isSupabaseConfigured()} />;
 }

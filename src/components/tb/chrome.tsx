@@ -28,7 +28,7 @@ export function Nav({ current, signedIn, cta, email }: NavProps) {
 
       {signedIn ? (
         <div className="tb-nav__links">
-          <NavLink href="/dashboard" active={current === "people"}>People</NavLink>
+          <NavLink href="/dashboard" active={current === "people"}>Dashboard</NavLink>
           <NavLink href="/jobs" active={current === "openings"}>Openings</NavLink>
           <NavLink href="/intake" active={current === "profile"}>Profile</NavLink>
         </div>
@@ -115,7 +115,7 @@ export function DemoStrip() {
     <div className="tb-band-bottom tb-layer mono-micro"
       style={{ padding: "var(--space-8) var(--space-24)", color: "var(--ink-faint)", textTransform: "uppercase" }}>
       <span className="tb-led tb-led--alert" aria-hidden="true" />{" "}
-      No database configured &mdash; answers persist until the server restarts
+      No database configured &mdash; accounts and answers live in this server&rsquo;s memory until it restarts
     </div>
   );
 }

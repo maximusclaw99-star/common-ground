@@ -9,9 +9,15 @@ npm install
 npm run dev     # http://localhost:3000 — runs in demo mode with no config at all
 ```
 
-With no `.env.local`, the app runs in **demo mode**: one student is loaded in memory, every screen
-works, and a banner says so on every page. Copy `.env.example` to `.env.local` to turn on real
+With no `.env.local`, the app runs in **demo mode**: accounts and answers live in the server's
+memory, every screen works, and a banner says so on every page. You still make an account first —
+any address, nothing is sent to it — and each account gets its own student, so two browsers never
+see each other's answers. A restart clears them. Copy `.env.example` to `.env.local` to turn on real
 accounts and persistence.
+
+The flow is: make an account → upload a resume → answer only the questions the resume left open
+(about you, never about companies) → **dashboard**, where you pick one company at a time and see
+who to write to there.
 
 ## The ladder
 
@@ -58,6 +64,13 @@ warmer. Three mediocre overlaps must not beat one shared fraternity.
 should stop being the opener, not become a weaker one — so below the floor the hit is dropped and
 the person falls to whatever tier they otherwise match.
 
+**Companies are chosen, not asked.** The questionnaire is about the person. Which companies to go
+after is picked on the dashboard, one at a time, and written to `target_companies` from there; the
+company page then ranks only the people who work there (plus a short tail of strong ties elsewhere).
+`src/lib/companies/registry.ts` knows ~80 employers by name, alias, sector and domain, and
+`npx tsx scripts/fetch-logos.ts` vendors their logos into `public/logos/` so no page makes a
+third-party image request. Unknown companies get a monogram.
+
 **The questionnaire is computed, not static.** `computeGaps` runs the field registry against what
 extraction produced and asks only for the rest. A student who lists their clubs is never asked
 about clubs. Two rules carry most of the weight:
@@ -72,7 +85,8 @@ about clubs. Two rules carry most of the weight:
 
 Every account path is already written — sign-up, sign-in, sign-out, per-user storage, and row-level
 security keyed on `auth.uid()`. What is missing is a project to point it at. Until there is one,
-`isSupabaseConfigured()` is false and the app runs the in-memory demo student instead.
+`isSupabaseConfigured()` is false and accounts live in `src/lib/session/demo-store.ts` instead: the
+same sign-up form, a session cookie holding the account id, one student per account, gone on restart.
 
 1. Create a free project at [supabase.com](https://supabase.com) (this needs your own login).
 2. Run the three files in `supabase/migrations/` **in order** in the project's SQL editor, or

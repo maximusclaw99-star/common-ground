@@ -5,6 +5,7 @@ import { Avatar } from "@/components/avatar";
 import { TierBadge, TierLadder, tierColor } from "@/components/tier-badge";
 import { scoreAffinity } from "@/lib/affinity/score";
 import { getPeopleProvider } from "@/lib/people";
+import { companyInfo } from "@/lib/companies";
 import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +29,10 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
 
       <section className="tb-band tb-layer">
         <div className="tb-wrap">
-          <Link className="tb-link mono-label" href="/dashboard">&larr; All people</Link>
+          <Link className="tb-link mono-label"
+            href={person.currentCompany ? `/dashboard/${companyInfo(person.currentCompany).slug}` : "/dashboard"}>
+            &larr; {person.currentCompany ? `Everyone at ${companyInfo(person.currentCompany).name}` : "Your dashboard"}
+          </Link>
           <div className="mt-[var(--space-16)] flex flex-wrap items-start justify-between gap-[var(--space-16)]">
             <div className="flex items-center gap-[var(--space-16)]">
               <Avatar name={person.fullName} src={person.photoUrl} size={72} />
