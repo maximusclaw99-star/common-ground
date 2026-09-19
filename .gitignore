@@ -42,3 +42,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Synced from design/terminal-brutalist by scripts/sync-design.mjs
+/public/tb/
+/src/styles/tb-bundle.generated.css

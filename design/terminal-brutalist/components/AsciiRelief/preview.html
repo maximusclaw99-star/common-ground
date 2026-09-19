@@ -1,0 +1,40 @@
+<!-- @dsCard group="Foundations" height=400 subtitle="Any image resampled into a monospace coverage field" -->
+<div class="tb-root" style="position:relative;overflow:hidden;min-height:400px">
+  <div class="tb-grid"></div>
+  <div class="tb-ascii" id="relief"></div>
+
+  <div class="tb-layer" style="padding:var(--space-32);height:100%;display:flex;flex-direction:column;justify-content:space-between;min-height:400px">
+    <div>
+      <p class="display-sm" style="margin:0 0 var(--space-16);text-transform:uppercase">Relief layer</p>
+      <p class="body-sm" style="margin:0;max-width:var(--copy-max);color:var(--ink-muted)">
+        One glyph per cell, chosen from a 23-step coverage ramp. The source here is drawn in
+        code, so the layer ships as maths rather than as an image.
+      </p>
+    </div>
+    <div class="mono-micro" style="color:var(--ink-faint);display:flex;gap:var(--space-24);flex-wrap:wrap">
+      <span>Cell: 7&times;11</span>
+      <span>Ramp: 23</span>
+      <span>Alpha: <span id="a-read">0.26</span></span>
+      <label style="display:flex;align-items:center;gap:var(--space-8)">
+        Density
+        <input id="a-range" type="range" min="6" max="60" value="26" style="accent-color:var(--ink)" />
+      </label>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var host = document.getElementById('relief');
+      var src = TB.reliefSource({ seed: 0.6 });
+      var layer = TB.asciiRelief(host, { source: src, cell: 7, ratio: 1.6, alpha: 0.26 });
+      var range = document.getElementById('a-range');
+      var read = document.getElementById('a-read');
+      range.addEventListener('input', function () {
+        var a = range.value / 100;
+        read.textContent = a.toFixed(2);
+        layer.destroy();
+        layer = TB.asciiRelief(host, { source: src, cell: 7, ratio: 1.6, alpha: a });
+      });
+    })();
+  </script>
+</div>

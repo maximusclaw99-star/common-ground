@@ -16,28 +16,32 @@ export function MicButton({
   if (!supported) return null;
 
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-2">
+    <div className="mt-[var(--space-12)] flex flex-wrap items-center gap-[var(--space-12)]">
       <button
         type="button"
         onClick={listening ? stop : start}
         disabled={busy}
         aria-pressed={listening}
-        className={`focus-ring inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-[13px] transition-colors disabled:opacity-50 ${
-          listening
-            ? "border-[var(--color-accent-line)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
-            : "hover:bg-[var(--color-raised)]"
-        }`}
+        className="tb-btn tb-btn--sm mono-label"
       >
         <span
-          className={`h-2 w-2 rounded-full ${listening ? "animate-pulse bg-[var(--color-accent)]" : "bg-[var(--color-faint)]"}`}
+          className={listening ? "tb-led tb-led--live" : undefined}
+          aria-hidden
+          style={listening ? undefined : { width: 6, height: 6, background: "var(--ink-faint)" }}
         />
-        {listening ? "Listening — tap to stop" : busy ? "Sorting that out…" : "Say it instead"}
+        {listening ? "Listening — tap to stop" : busy ? "Sorting that out" : "Say it instead"}
       </button>
 
       {interim && (
-        <span className="text-[13px] italic text-[var(--color-faint)]">&ldquo;{interim}&rdquo;</span>
+        <span className="mono-micro" style={{ color: "var(--ink-faint)", textTransform: "none" }}>
+          &ldquo;{interim}&rdquo;
+        </span>
       )}
-      {error && <span className="text-[13px] text-[var(--color-accent)]">{DICTATION_ERROR_COPY[error]}</span>}
+      {error && (
+        <span className="mono-micro" style={{ color: "var(--alert)", textTransform: "none" }}>
+          {DICTATION_ERROR_COPY[error]}
+        </span>
+      )}
     </div>
   );
 }

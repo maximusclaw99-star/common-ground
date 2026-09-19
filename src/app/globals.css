@@ -1,93 +1,115 @@
 @import "tailwindcss";
 
-/*
- * One warm neutral scale and one accent. The product's whole argument is that
- * a human wrote this, so the palette leans warm rather than the cool
- * blue-grey every AI tool defaults to.
- */
-@theme {
-  --color-paper: #fbfaf8;
-  --color-surface: #ffffff;
-  --color-raised: #f4f2ee;
-  --color-line: #e6e2da;
-  --color-ink: #1a1916;
-  --color-muted: #6d675d;
-  --color-faint: #989184;
+/* The design system. tokens.css is read straight from design/terminal-brutalist
+   so that folder stays the single source of truth — and it is itself GENERATED
+   from tokens.json, so change the JSON and recompile, never the CSS.
+   The component stylesheet arrives through scripts/sync-design.mjs, which
+   strips its Google Fonts @import; see that file for why. */
+@import "../../design/terminal-brutalist/tokens.css";
+@import "../styles/tb-bundle.generated.css";
 
-  --color-accent: #b4451f;
-  --color-accent-soft: #f6ece6;
-  --color-accent-line: #e8cdbe;
-
-  --color-good: #2f6f4e;
-  --color-good-soft: #e8f1ec;
-
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-
-  --radius-card: 14px;
-}
-
-/*
- * Tier colour is meaning, not decoration: the ladder is the product, so a
- * connection's strength should be legible before any text is read.
- */
+/* Space Grotesk and Space Mono arrive through next/font rather than the
+   @import that ships inside bundle.css: self-hosting is what the system
+   recommends for production, and it costs a render-blocking request less. The
+   family stacks are otherwise unchanged. */
 :root {
-  --tier-2: #1d6b4f;
-  --tier-3: #2f7a52;
-  --tier-4: #4a8149;
-  --tier-5: #6d8640;
-  --tier-7: #97853a;
-  --tier-8: #b07c36;
-  --tier-9: #bd6f33;
-  --tier-10: #bf6030;
-  --tier-11: #b2554e;
-  --tier-12: #98565f;
-  --tier-13: #7c5a68;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-paper: #131210;
-    --color-surface: #1b1a17;
-    --color-raised: #232120;
-    --color-line: #34312c;
-    --color-ink: #f2efe9;
-    --color-muted: #a29a8e;
-    --color-faint: #7b7368;
-    --color-accent: #e07a4d;
-    --color-accent-soft: #2a1d16;
-    --color-accent-line: #4a3125;
-    --color-good: #6bbd90;
-    --color-good-soft: #17251d;
-  }
+/* Tier hues: the ladder rendered as colour. Interpolated between the system's
+   own `signal` and `alert` so no new palette enters the system, and restated
+   under dark because both endpoints lift there. */
+:root, [data-theme="light"] {
+  --tier-2: #0d6b3c;  --tier-3: #2f6b30;  --tier-4: #4a6a24;
+  --tier-5: #63661a;  --tier-7: #7c6112;  --tier-8: #935a0d;
+  --tier-9: #a4500c;  --tier-10: #a8440b; --tier-11: #a8380b;
+  --tier-12: #a52f0b; --tier-13: #a3290c;
+}
+[data-theme="dark"] {
+  --tier-2: #4ade80;  --tier-3: #74dd6d;  --tier-4: #9bda5f;
+  --tier-5: #bed455; --tier-7: #ddc953;  --tier-8: #f2b957;
+  --tier-9: #ffa75c; --tier-10: #ff9a5b; --tier-11: #ff9059;
+  --tier-12: #ff8a58; --tier-13: #ff8358;
 }
 
-* { border-color: var(--color-line); }
-
-html { scroll-behavior: smooth; }
+html, body { margin: 0; height: 100%; }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-display);
 }
 
-h1, h2, h3, .display { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.015em; }
+/* Bands, the only layout primitive this system has. Pages are stacks of
+   full-bleed bands with no outer container; only hero content is constrained. */
+@layer components {
+  .tb-band {
+    padding: var(--space-32) var(--space-24);
+    position: relative;
+    z-index: 1;
+  }
+  @media (min-width: 768px) {
+    .tb-band { padding: var(--space-48) var(--space-64); }
+  }
 
-@layer utilities {
-  .card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
+  .tb-wrap { width: 100%; max-width: var(--container-max); margin: 0 auto; }
+  .tb-copy { max-width: var(--copy-max); }
+
+  /* An inset panel. Always separated from canvas by a rule as well as by
+     shade — the two grounds are only a few percent apart on purpose. */
+  .tb-panel {
+    background: var(--canvas-raised);
+    border: var(--border-1) solid var(--rule-strong);
+    border-radius: var(--radius-none);
+    padding: var(--space-24);
   }
-  .rule { border-top: 1px solid var(--color-line); }
-  .focus-ring:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+
+  /* Form controls. rule-strong, because these borders carry meaning. */
+  .tb-field {
+    width: 100%;
+    background: var(--canvas);
+    color: var(--ink);
+    border: var(--border-1) solid var(--rule-strong);
+    border-radius: var(--radius-none);
+    padding: var(--space-12) var(--space-14);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 21px;
   }
+  .tb-field::placeholder { color: var(--ink-faint); text-transform: none; }
+
+  /* A removable chip. Square, bordered, mono — a pill would read as a
+     different product entirely. */
+  .tb-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    border: var(--border-1) solid var(--rule-strong);
+    border-radius: var(--radius-none);
+    padding: var(--space-4) var(--space-10);
+    background: var(--canvas);
+    text-transform: uppercase;
+    transition: transform 100ms ease, box-shadow 100ms ease;
+  }
+  .tb-chip:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-brutal); }
+  .tb-chip:active { transform: none; box-shadow: none; }
+
+  /* A card that sits proud of the page. shadow-brutal-lg is the only shadow
+     permitted at rest. */
+  .tb-card {
+    display: block;
+    background: var(--canvas);
+    border: var(--border-1) solid var(--rule-strong);
+    border-radius: var(--radius-none);
+    padding: var(--space-20);
+    transition: transform 100ms ease, box-shadow 100ms ease;
+  }
+  a.tb-card:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-brutal); }
+
+  .tb-rule { border-top: var(--border-1) solid var(--rule); }
 }
 
-/* Inputs inherit the theme rather than each component restating it. */
-input, textarea, select, button { font: inherit; color: inherit; }
-input::placeholder, textarea::placeholder { color: var(--color-faint); }
+@media (prefers-reduced-motion: reduce) {
+  .tb-chip, .tb-card { transition: none; }
+}

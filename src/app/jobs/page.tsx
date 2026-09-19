@@ -1,13 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Footer, Header } from "@/components/chrome";
+import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
+import companies from "@/../data/companies.seed.json";
 import { getSession } from "@/lib/session";
 
-/**
- * Per-student, so never prerendered. In demo mode getSession() answers from
- * memory without touching cookies, which is enough for Next to treat this page
- * as static and bake one student's ranking into the build.
- */
 export const dynamic = "force-dynamic";
 
 /**
@@ -21,37 +17,56 @@ export default async function JobsPage() {
   if (!student) redirect("/sign-in?next=/jobs");
 
   const targets = student.facts.target_companies;
+  const boards = (companies as { ats: string }[]);
+  const byAts = boards.reduce<Record<string, number>>((acc, c) => {
+    acc[c.ats] = (acc[c.ats] ?? 0) + 1;
+    return acc;
+  }, {});
 
   return (
-    <div className="min-h-dvh">
-      <Header demo={demo} email={student.email} />
-      <main className="mx-auto max-w-3xl px-4 py-12">
-        <h1 className="text-[34px] leading-tight">Openings</h1>
-        <p className="mt-3 text-[16px] leading-relaxed text-[var(--color-muted)]">
-          We poll the applicant tracking systems behind {targets.length > 0 ? "your target companies" : "33 employers"} every
-          morning and keep the entry-level roles, with the date each one opened. Connections come
-          first though: a posting you find through a person is worth more than one you find first.
-        </p>
+    <div className="tb-page" style={{ minHeight: "100vh" }}>
+      {demo && <DemoStrip />}
+      <Nav current="openings" signedIn cta={null} />
 
-        <div className="mt-8 card p-6">
-          <h2 className="text-[19px]">Not wired to the page yet</h2>
-          <p className="mt-2 text-[15px] leading-relaxed text-[var(--color-muted)]">
-            The ingest pipeline is built and tested — Greenhouse, Lever, Ashby and Workday, with
-            closure detection that refuses to mark a role closed just because a poll failed. The
-            browsing UI on top of it is the next thing we build.
+      <section className="tb-band tb-layer" style={{ flexGrow: 1 }}>
+        <div className="tb-wrap" style={{ maxWidth: 720 }}>
+          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Openings</p>
+          <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
+            Ingested.<br />Not yet drawn.
+          </h1>
+          <p className="body" style={{ color: "var(--ink-muted)", margin: "0 0 var(--space-32)" }}>
+            We poll the applicant tracking systems behind {boards.length} employers every morning and
+            keep the entry-level roles with the date each one opened. Connections come first though:
+            a posting you find through a person is worth more than one you find first.
           </p>
-          {targets.length > 0 && (
-            <p className="mt-4 text-[14px] text-[var(--color-muted)]">
-              We&rsquo;ll start with: {targets.join(", ")}.
+
+          <div className="tb-panel">
+            <p className="mono-label" style={{ margin: 0 }}>Status</p>
+            <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0" }}>
+              The ingest pipeline is built and tested — Greenhouse, Lever, Ashby and Workday, with
+              closure detection that refuses to mark a role closed just because a poll failed. The
+              browsing UI on top of it is the next thing we build.
             </p>
-          )}
-          <Link href="/dashboard"
-            className="focus-ring mt-5 inline-block rounded-xl bg-[var(--color-ink)] px-4 py-2 text-[14px] font-medium text-[var(--color-paper)]">
-            Go to your people instead
-          </Link>
+            {targets.length > 0 && (
+              <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-16) 0 0", textTransform: "none" }}>
+                &gt; Starting with: {targets.join(", ")}
+              </p>
+            )}
+            <Link href="/dashboard" className="tb-btn tb-btn--sm mono-label" style={{ marginTop: "var(--space-24)" }}>
+              Go to your people &#8599;
+            </Link>
+          </div>
         </div>
-      </main>
-      <Footer />
+      </section>
+
+      <StatusFooter
+        live={!demo}
+        readings={[
+          { label: "Boards", value: String(boards.length) },
+          ...Object.entries(byAts).map(([ats, n]) => ({ label: ats, value: String(n) })),
+          { label: "Poll", value: "07:00 daily" },
+        ]}
+      />
     </div>
   );
 }

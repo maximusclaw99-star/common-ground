@@ -1,133 +1,137 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { Footer, Header } from "@/components/chrome";
-import { TierBadge, TierLadder } from "@/components/tier-badge";
+import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
+import { TierBadge, TierLadder, tierColor } from "@/components/tier-badge";
 import { scoreAffinity } from "@/lib/affinity/score";
 import { getPeopleProvider } from "@/lib/people";
 import { getSession } from "@/lib/session";
+
+export const dynamic = "force-dynamic";
 
 export default async function PersonPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { student, demo } = await getSession();
   if (!student) redirect(`/sign-in?next=/people/${id}`);
 
-  const people = await getPeopleProvider().getPeople({
-    companies: student.facts.target_companies, limit: 400,
-  });
+  const provider = getPeopleProvider();
+  const people = await provider.getPeople({ companies: student.facts.target_companies, limit: 400 });
   const person = people.find((p) => p.id === id);
   if (!person) notFound();
 
   const result = scoreAffinity({ profile: student.profile, facts: student.facts }, person);
 
   return (
-    <div className="min-h-dvh">
-      <Header demo={demo} email={student.email} />
-      <main className="mx-auto max-w-5xl px-4 py-10">
-        <Link href="/dashboard" className="focus-ring text-[14px] text-[var(--color-muted)] hover:text-[var(--color-ink)]">
-          ← All people
-        </Link>
+    <div className="tb-page" style={{ minHeight: "100vh" }}>
+      {demo && <DemoStrip />}
+      <Nav current="people" signedIn cta={null} />
 
-        <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-[34px] leading-tight">{person.fullName}</h1>
-            <p className="mt-1 text-[16px] text-[var(--color-muted)]">
-              {person.currentTitle} · {person.currentCompany}
-            </p>
+      <section className="tb-band tb-layer">
+        <div className="tb-wrap">
+          <Link className="tb-link mono-label" href="/dashboard">&larr; All people</Link>
+          <div className="mt-[var(--space-16)] flex flex-wrap items-start justify-between gap-[var(--space-16)]">
+            <div>
+              <h1 className="display-md" style={{ textTransform: "uppercase", margin: 0 }}>
+                {person.fullName}
+              </h1>
+              <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: "var(--space-12) 0 0" }}>
+                {person.currentTitle} &middot; {person.currentCompany}
+              </p>
+            </div>
+            <TierBadge rank={result.rank} score={result.score} />
           </div>
-          <TierBadge rank={result.rank} score={result.score} />
         </div>
+      </section>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.35fr_1fr]">
-          <div className="space-y-6">
-            <section className="card p-6">
-              <h2 className="text-[20px]">Why they came up</h2>
-              <p className="mt-1 text-[14px] text-[var(--color-muted)]">{result.tierLabel}</p>
-              <ul className="mt-4 space-y-3">
+      <section className="tb-band tb-band-top tb-layer">
+        <div className="tb-wrap grid gap-[var(--space-32)] lg:grid-cols-[1.35fr_1fr]">
+          <div className="grid gap-[var(--space-24)] content-start">
+            <div className="tb-panel">
+              <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Why they came up</p>
+              <h2 className="title" style={{ textTransform: "uppercase", margin: "var(--space-12) 0 var(--space-16)" }}>
+                {result.tierLabel}
+              </h2>
+              <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: "var(--space-16)" }}>
                 {result.evidence.length === 0 && (
-                  <li className="text-[14px] text-[var(--color-muted)]">
+                  <li className="body-sm" style={{ color: "var(--ink-muted)" }}>
                     Nothing beyond the fact that you want to work there. That is a real reason to
                     write, but it is the weakest one on the list.
                   </li>
                 )}
                 {result.evidence.map((e, i) => (
-                  <li key={i} className="flex gap-3">
-                    <span className="mt-[7px] h-2 w-2 shrink-0 rounded-full"
-                      style={{ background: `var(--tier-${e.rank})` }} />
+                  <li key={i} style={{ display: "flex", gap: "var(--space-12)" }}>
+                    <span aria-hidden style={{ width: 8, height: 8, marginTop: 7, flexShrink: 0, background: tierColor(e.rank) }} />
                     <div>
-                      <p className="text-[15px]">{e.label}</p>
-                      <p className="mt-0.5 text-[12px] text-[var(--color-faint)]">
-                        yours: {e.studentValue || "—"} · theirs: {e.personValue || "—"}
+                      <p className="body-sm" style={{ margin: 0 }}>{e.label}</p>
+                      <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-4) 0 0" }}>
+                        Yours: {e.studentValue || "—"} &middot; Theirs: {e.personValue || "—"}
                         {e.confidence < 1 && ` · ${Math.round(e.confidence * 100)}% sure`}
                       </p>
                     </div>
                   </li>
                 ))}
               </ul>
-            </section>
+            </div>
 
-            <section className="card p-6">
-              <h2 className="text-[20px]">Your opening line</h2>
-              <p className="mt-1 text-[14px] text-[var(--color-muted)]">
-                A starting point, not a script. Rewrite it in your own words — that is the entire
-                point of sending it.
-              </p>
-              <blockquote className="mt-4 rounded-lg border-l-2 border-[var(--color-accent)] bg-[var(--color-raised)] px-4 py-3 text-[15px] leading-relaxed">
+            <div className="tb-panel">
+              <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Your opening line</p>
+              <blockquote className="mono-body" style={{
+                margin: "var(--space-16) 0", padding: "var(--space-16)",
+                background: "var(--canvas)", borderLeft: "var(--border-2) solid var(--rule-strong)",
+                textTransform: "none",
+              }}>
                 {result.outreach.opener}
               </blockquote>
-              <div className="mt-4 rule pt-4">
-                <p className="text-[13px] font-medium uppercase tracking-wide text-[var(--color-faint)]">
-                  What to do with it
-                </p>
-                <p className="mt-1.5 text-[15px] leading-relaxed">{result.outreach.guidance}</p>
+              <div className="tb-rule" style={{ paddingTop: "var(--space-16)" }}>
+                <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>What to do with it</p>
+                <p className="body-sm" style={{ margin: "var(--space-8) 0 0" }}>{result.outreach.guidance}</p>
                 {result.outreach.timing && (
-                  <p className="mt-2 text-[14px] text-[var(--color-accent)]">
-                    Timing: {result.outreach.timing}.
+                  <p className="mono-label" style={{ color: "var(--alert)", margin: "var(--space-12) 0 0" }}>
+                    <span className="tb-led tb-led--alert" aria-hidden /> {result.outreach.timing}
                   </p>
                 )}
               </div>
-              <p className="mt-4 text-[13px] text-[var(--color-faint)]">
-                We do not send this for you, and we never will. A message that arrives without a
-                person behind it is the problem we exist to solve.
+              <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-16) 0 0", textTransform: "none" }}>
+                A starting point, not a script. We do not send this for you, and we never will — a
+                message that arrives without a person behind it is the problem we exist to solve.
               </p>
-            </section>
+            </div>
           </div>
 
-          <aside className="space-y-6">
-            <section className="card p-4">
-              <h2 className="px-2 pt-1 text-[16px]">Where this lands on the ladder</h2>
-              <div className="mt-2">
-                <TierLadder activeRank={result.rank} />
-              </div>
-            </section>
+          <aside className="grid gap-[var(--space-24)] content-start">
+            <div className="tb-panel">
+              <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: "0 0 var(--space-12)" }}>
+                &gt; Where this lands
+              </p>
+              <TierLadder activeRank={result.rank} />
+            </div>
 
             {result.unlockable.length > 0 && (
-              <section className="card p-5">
-                <h2 className="text-[16px]">What would move them up</h2>
-                <ul className="mt-2 space-y-2 text-[14px] text-[var(--color-muted)]">
+              <div className="tb-panel">
+                <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; What would move them up</p>
+                <ul className="body-sm" style={{ margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", color: "var(--ink-muted)", display: "grid", gap: "var(--space-8)" }}>
                   {result.unlockable.map((u) => (
-                    <li key={u.fieldId}>
-                      {u.because} — tell us and we can check tier {u.rank}.
-                    </li>
+                    <li key={u.fieldId}>{u.because} — tell us and we can check tier {u.rank}.</li>
                   ))}
                 </ul>
-                <Link href="/intake"
-                  className="focus-ring mt-4 inline-block rounded-lg border px-3 py-1.5 text-[13px] hover:bg-[var(--color-raised)]">
+                <Link className="tb-btn tb-btn--sm mono-label" href="/intake" style={{ marginTop: "var(--space-16)" }}>
                   Answer those
                 </Link>
-              </section>
+              </div>
             )}
-
-            <section className="card p-5 text-[13px] leading-relaxed text-[var(--color-muted)]">
-              <p>
-                Scored deterministically from {result.components.base} (tier floor) plus a
-                within-tier bonus. Nothing about this ranking is a model&rsquo;s opinion — you can
-                read exactly which fact produced it above.
-              </p>
-            </section>
           </aside>
         </div>
-      </main>
-      <Footer />
+      </section>
+
+      <StatusFooter
+        live={!demo}
+        readings={[
+          { label: "Tier", value: String(result.rank) },
+          { label: "Score", value: `${Math.round(result.score)} / 100` },
+          { label: "Band floor", value: String(result.components.base) },
+          { label: "Evidence", value: String(result.evidence.length) },
+          { label: "Source", value: person.source },
+        ]}
+      />
     </div>
   );
 }

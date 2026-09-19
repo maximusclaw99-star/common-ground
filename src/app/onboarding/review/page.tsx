@@ -1,13 +1,8 @@
 import { redirect } from "next/navigation";
-import { Footer, Header } from "@/components/chrome";
+import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
 import { getSession } from "@/lib/session";
 import { confirmProfile } from "../actions";
 
-/**
- * Per-student, so never prerendered. In demo mode getSession() answers from
- * memory without touching cookies, which is enough for Next to treat this page
- * as static and bake one student's ranking into the build.
- */
 export const dynamic = "force-dynamic";
 
 export default async function ReviewPage() {
@@ -16,39 +11,58 @@ export default async function ReviewPage() {
 
   const { profile } = student;
   const a = profile.affinity;
+  const known = [
+    ...a.student_orgs, ...a.greek, ...a.case_competitions, ...a.programs,
+    ...a.prior_employers, ...a.majors, ...a.certifications_in_progress,
+  ].filter(Boolean).length;
 
   return (
-    <div className="min-h-dvh">
-      <Header demo={demo} email={student.email} />
-      <main className="mx-auto max-w-3xl px-4 py-10">
-        <h1 className="text-[34px] leading-tight">Here&rsquo;s what we read</h1>
-        <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-[var(--color-muted)]">
-          Everything below is something we can now match you on, so none of it becomes a question.
-          Anything we got wrong, you can fix in the next step.
-        </p>
+    <div className="tb-page" style={{ minHeight: "100vh" }}>
+      {demo && <DemoStrip />}
+      <Nav signedIn cta={null} />
 
-        {profile.uncertainties.length > 0 && (
-          <section className="mt-8 rounded-[14px] border border-[var(--color-accent-line)] bg-[var(--color-accent-soft)] p-5">
-            <h2 className="text-[19px]">We weren&rsquo;t sure about {profile.uncertainties.length} thing{profile.uncertainties.length === 1 ? "" : "s"}</h2>
-            <p className="mt-1 text-[14px] text-[var(--color-muted)]">
+      <section className="tb-band tb-layer">
+        <div className="tb-wrap" style={{ maxWidth: 860 }}>
+          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Step two of two</p>
+          <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
+            Here is what<br />we read.
+          </h1>
+          <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
+            Everything below is something we can now match you on, so none of it becomes a question.
+            Anything we got wrong, you can fix in the next step.
+          </p>
+        </div>
+      </section>
+
+      {profile.uncertainties.length > 0 && (
+        <section className="tb-band tb-band-top tb-layer">
+          <div className="tb-wrap tb-panel" style={{ maxWidth: 860 }}>
+            <p className="mono-label" style={{ color: "var(--alert)", margin: 0 }}>
+              <span className="tb-led tb-led--alert" aria-hidden />{" "}
+              {profile.uncertainties.length} thing{profile.uncertainties.length === 1 ? "" : "s"} we could not resolve
+            </p>
+            <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 var(--space-16)" }}>
               Rather than guess, we wrote them down. Each one turns into a question, shown next to
               exactly what confused us.
             </p>
-            <ul className="mt-3 space-y-2 text-[14px] leading-relaxed">
-              {profile.uncertainties.map((note) => <li key={note}>• {note}</li>)}
+            <ul className="body-sm" style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: "var(--space-8)" }}>
+              {profile.uncertainties.map((note) => (
+                <li key={note} style={{ color: "var(--ink-muted)" }}>&gt; {note}</li>
+              ))}
             </ul>
-          </section>
-        )}
+          </div>
+        </section>
+      )}
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <section className="tb-band tb-band-top tb-layer">
+        <div className="tb-wrap grid gap-[var(--space-24)] md:grid-cols-2" style={{ maxWidth: 860 }}>
           <Facts title="You" items={[
             ["Name", profile.full_name], ["School", a.school_raw ?? profile.school],
             ["Graduating", profile.grad_date], ["Work authorisation", profile.work_auth],
           ]} />
           <Facts title="Study" items={[
             ["Majors", a.majors.join(", ")], ["Minors", a.minors.join(", ")],
-            ["Certifications", a.certifications_in_progress.join(", ")],
-            ["Clearance", a.clearance],
+            ["Certifications", a.certifications_in_progress.join(", ")], ["Clearance", a.clearance],
           ]} />
           <Facts title="Affiliations — the strongest signal we have" items={[
             ["Clubs and orgs", a.student_orgs.join(", ")], ["Greek", a.greek.join(", ")],
@@ -61,32 +75,42 @@ export default async function ReviewPage() {
             ["Skills", profile.skills.slice(0, 8).join(", ")],
           ]} />
         </div>
+      </section>
 
-        <form action={confirmProfile} className="mt-10 rule flex flex-wrap items-center gap-4 pt-6">
-          <button type="submit"
-            className="focus-ring rounded-xl bg-[var(--color-accent)] px-5 py-2.5 text-[15px] font-medium text-white">
-            Looks right — ask me the rest
+      <section className="tb-band tb-band-top tb-layer">
+        <form action={confirmProfile} className="tb-wrap flex flex-wrap items-center gap-[var(--space-16)]" style={{ maxWidth: 860 }}>
+          <button type="submit" className="tb-btn tb-btn--solid mono-label">
+            Looks right &mdash; ask me the rest &#8599;
           </button>
-          <span className="text-[14px] text-[var(--color-faint)]">
-            Next we ask only for what a resume never carries.
+          <span className="mono-micro" style={{ color: "var(--ink-faint)", textTransform: "none" }}>
+            &gt; Next we ask only for what a resume never carries.
           </span>
         </form>
-      </main>
-      <Footer />
+      </section>
+
+      <StatusFooter
+        live={!demo}
+        readings={[
+          { label: "Facts extracted", value: String(known) },
+          { label: "Unresolved", value: String(profile.uncertainties.length) },
+          { label: "Skills", value: String(profile.skills.length) },
+          { label: "Roles", value: String(profile.experience.length) },
+        ]}
+      />
     </div>
   );
 }
 
 function Facts({ title, items }: { title: string; items: [string, string | null | undefined][] }) {
   return (
-    <section className="card p-5">
-      <h2 className="text-[17px]">{title}</h2>
-      <dl className="mt-3 space-y-2.5">
+    <section className="tb-panel">
+      <h2 className="mono-label" style={{ margin: "0 0 var(--space-16)" }}>{title}</h2>
+      <dl style={{ margin: 0, display: "grid", gap: "var(--space-12)" }}>
         {items.map(([label, value]) => (
           <div key={label}>
-            <dt className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">{label}</dt>
-            <dd className={`text-[14px] leading-snug ${value ? "" : "text-[var(--color-faint)] italic"}`}>
-              {value || "we'll ask"}
+            <dt className="mono-micro" style={{ color: "var(--ink-faint)" }}>{label}</dt>
+            <dd className="body-sm" style={{ margin: "2px 0 0", color: value ? "var(--ink)" : "var(--ink-faint)" }}>
+              {value || "we will ask"}
             </dd>
           </div>
         ))}

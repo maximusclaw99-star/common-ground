@@ -1,0 +1,91 @@
+/* Terminal Brutalist — compiled from tokens.json. Generated file: edit
+   tokens.json and recompile, never this. */
+
+:root,
+[data-theme="light"] {
+  --canvas: #f4efe6;
+  --canvas-raised: #ebe3d5;
+  --ink: #111111;
+  --ink-muted: #3d3a35;
+  --ink-subtle: #5c5851;
+  --ink-faint: #666157;
+  --inverse-surface: #111111;
+  --inverse-ink: #f4efe6;
+  --rule: rgba(17, 17, 17, 0.15);
+  --rule-strong: var(--ink);
+  --grid-line: rgba(17, 17, 17, 0.06);
+  --signal: #0d6b3c;
+  --alert: #a3290c;
+  --focus-ring: #c2410c;
+  --selection-bg: var(--ink);
+  --selection-ink: var(--canvas);
+  --shadow-brutal: 4px 4px 0 0 #111111;
+  --shadow-brutal-lg: 8px 8px 0 0 #111111;
+}
+
+[data-theme="dark"] {
+  --canvas: #111111;
+  --canvas-raised: #1c1b19;
+  --ink: #f4efe6;
+  --ink-muted: #c9c2b6;
+  --ink-subtle: #9b9488;
+  --ink-faint: #948d81;
+  --inverse-surface: #f4efe6;
+  --inverse-ink: #111111;
+  --rule: rgba(244, 239, 230, 0.22);
+  --rule-strong: var(--ink);
+  --grid-line: rgba(244, 239, 230, 0.08);
+  --signal: #4ade80;
+  --alert: #ff8358;
+  --focus-ring: #c2410c;
+  --selection-bg: var(--ink);
+  --selection-ink: var(--canvas);
+  --shadow-brutal: 4px 4px 0 0 #f4efe6;
+  --shadow-brutal-lg: 8px 8px 0 0 #f4efe6;
+}
+
+:root {
+  /* spacing */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --space-64: 64px;
+  /* radius */
+  --radius-none: 0;
+  --radius-dot: 50%;
+  /* border */
+  --border-1: 1px;
+  --border-2: 2px;
+  /* layout */
+  --grid-pitch: 30px;
+  --container-max: 1024px;
+  --copy-max: 560px;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Display */
+.display-xl { font-family: var(--font-display); font-size: 96px; line-height: 86px; font-weight: 700; letter-spacing: -0.04em; }
+.display-lg { font-family: var(--font-display); font-size: 64px; line-height: 58px; font-weight: 700; letter-spacing: -0.04em; }
+.display-md { font-family: var(--font-display); font-size: 48px; line-height: 44px; font-weight: 700; letter-spacing: -0.03em; }
+.display-sm { font-family: var(--font-display); font-size: 32px; line-height: 30px; font-weight: 700; letter-spacing: -0.02em; }
+
+/* Text */
+.title { font-family: var(--font-display); font-size: 18px; line-height: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.body { font-family: var(--font-display); font-size: 16px; line-height: 24px; font-weight: 500; }
+.body-sm { font-family: var(--font-display); font-size: 14px; line-height: 21px; font-weight: 500; }
+
+/* Mono */
+.mono-lead { font-family: var(--font-mono); font-size: 16px; line-height: 24px; font-weight: 700; }
+.mono-body { font-family: var(--font-mono); font-size: 14px; line-height: 21px; font-weight: 700; }
+.mono-label { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.1em; }
+.mono-ticker { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.05em; }
+.mono-micro { font-family: var(--font-mono); font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 0.12em; }
+

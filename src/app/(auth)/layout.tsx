@@ -1,10 +1,12 @@
-import { Wordmark } from "@/components/chrome";
+import { Nav } from "@/components/tb/chrome";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-dvh">
-      <header className="mx-auto max-w-5xl px-4 py-5"><Wordmark /></header>
-      <main className="mx-auto max-w-5xl px-4 py-12">{children}</main>
+    <div className="tb-page" style={{ minHeight: "100vh" }}>
+      <Nav cta={null} />
+      <section className="tb-band tb-layer" style={{ flexGrow: 1 }}>
+        <div className="tb-wrap" style={{ maxWidth: 460 }}>{children}</div>
+      </section>
     </div>
   );
 }

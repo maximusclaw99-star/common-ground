@@ -1,0 +1,369 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* ==========================================================================
+   Terminal Brutalist — component stylesheet
+   Every value below resolves to a token from tokens.json. Nothing is hard
+   coded except the two animation timings, which are documented in
+   guidelines/10-motion.md.
+   ========================================================================== */
+
+/* --- Base ---------------------------------------------------------------- */
+
+.tb-root {
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.tb-root ::selection {
+  background: var(--selection-bg);
+  color: var(--selection-ink);
+}
+
+.tb-mono { font-family: var(--font-mono); }
+
+.tb-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* Structural band dividers. Decorative only — see the `rule` token note. */
+.tb-band-bottom { border-bottom: var(--border-1) solid var(--rule); }
+.tb-band-top    { border-top:    var(--border-1) solid var(--rule); }
+
+/* --- Focus --------------------------------------------------------------- */
+
+.tb-root :focus-visible {
+  outline: var(--border-2) solid var(--focus-ring);
+  outline-offset: var(--border-2);
+}
+
+/* --- Ticker (MarqueeBar) ------------------------------------------------- */
+
+.tb-ticker {
+  display: flex;
+  overflow: hidden;
+  background: var(--inverse-surface);
+  color: var(--inverse-ink);
+  padding: var(--space-8) 0;
+  border-bottom: var(--border-1) solid var(--rule-strong);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.tb-ticker__track {
+  display: flex;
+  flex: 0 0 auto;
+  min-width: 100%;
+  width: max-content;
+  animation-name: tb-ticker-pan;
+  animation-duration: 34s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.tb-ticker__item {
+  padding: 0 var(--space-32);
+  text-transform: uppercase;
+}
+
+.tb-ticker a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: var(--border-1);
+}
+
+@keyframes tb-ticker-pan {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* --- Background grid ----------------------------------------------------- */
+
+.tb-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) var(--border-1), transparent var(--border-1)),
+    linear-gradient(to bottom, var(--grid-line) var(--border-1), transparent var(--border-1));
+  background-size: var(--grid-pitch) var(--grid-pitch);
+  animation-name: tb-grid-pan;
+  animation-duration: 24s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes tb-grid-pan {
+  from { background-position: 0 0; }
+  to   { background-position: var(--grid-pitch) var(--grid-pitch); }
+}
+
+/* Anything that must sit above the grid. */
+.tb-layer { position: relative; z-index: 1; }
+
+/* --- ASCII relief -------------------------------------------------------- */
+
+.tb-ascii {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tb-ascii canvas { display: block; width: 100%; height: 100%; }
+
+/* --- Crosshair ----------------------------------------------------------- */
+
+.tb-crosshair {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.tb-crosshair[data-on] { opacity: 1; }
+
+.tb-crosshair__x,
+.tb-crosshair__y { position: absolute; background: var(--rule); }
+.tb-crosshair__x { left: 0; right: 0; height: var(--border-1); }
+.tb-crosshair__y { top: 0; bottom: 0; width: var(--border-1); }
+
+.tb-crosshair__dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: var(--radius-dot);
+  background: var(--ink);
+}
+
+.tb-crosshair__read {
+  position: absolute;
+  margin: -44px 0 0 var(--space-16);
+  color: var(--ink-subtle);
+  white-space: pre;
+}
+
+@media (pointer: coarse) { .tb-crosshair { display: none; } }
+
+/* --- Nav ----------------------------------------------------------------- */
+
+.tb-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-24);
+  padding: var(--space-24);
+}
+
+.tb-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.tb-nav__brand svg { display: block; width: 20px; height: 20px; }
+
+.tb-nav__links {
+  display: flex;
+  gap: var(--space-32);
+}
+
+.tb-link {
+  color: var(--ink-subtle);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 100ms ease;
+}
+
+.tb-link:hover,
+.tb-link[aria-current] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: var(--border-2);
+  text-underline-offset: 4px;
+}
+
+/* --- Button -------------------------------------------------------------- */
+
+.tb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-14) var(--space-24);
+  border: var(--border-1) solid var(--rule-strong);
+  border-radius: var(--radius-none);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 100ms ease, box-shadow 100ms ease;
+}
+
+.tb-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-brutal);
+}
+
+.tb-btn:active {
+  transform: translate(0, 0);
+  box-shadow: none;
+}
+
+.tb-btn--solid {
+  background: var(--inverse-surface);
+  color: var(--inverse-ink);
+}
+
+.tb-btn--sm { padding: var(--space-10) var(--space-20); }
+
+.tb-btn[aria-disabled='true'],
+.tb-btn:disabled {
+  color: var(--ink-faint);
+  border-color: var(--ink-faint);
+  background: transparent;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- Typewriter ---------------------------------------------------------- */
+
+.tb-type {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  width: 0;
+  border-right: var(--border-2) solid var(--ink);
+  animation-name: tb-type-in, tb-caret;
+  animation-duration: calc(var(--tb-chars, 32) * 45ms), 750ms;
+  animation-timing-function: steps(var(--tb-chars, 32), end), step-end;
+  animation-delay: var(--tb-delay, 0ms), 0ms;
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: forwards, none;
+}
+
+.tb-type--nocaret { border-right-color: transparent; animation-name: tb-type-in; }
+
+@keyframes tb-type-in {
+  from { width: 0; }
+  to   { width: calc(var(--tb-chars, 32) * 1ch); }
+}
+
+@keyframes tb-caret {
+  from, to { border-right-color: transparent; }
+  50%      { border-right-color: var(--ink); }
+}
+
+/* --- Status LED and diagnostic strip ------------------------------------- */
+
+.tb-led {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: var(--radius-dot);
+  background: currentColor;
+  animation-name: tb-led-blink;
+  animation-duration: 1.6s;
+  animation-timing-function: steps(1, end);
+  animation-iteration-count: infinite;
+}
+
+.tb-led--live  { color: var(--signal); }
+.tb-led--alert { color: var(--alert); }
+
+@keyframes tb-led-blink {
+  0%, 55%   { opacity: 1; }
+  56%, 100% { opacity: 0.2; }
+}
+
+.tb-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+.tb-status__group { display: flex; align-items: center; gap: var(--space-12); }
+.tb-status__pair  { display: inline-flex; align-items: center; gap: var(--space-4); color: var(--ink); }
+
+/* --- Hero ---------------------------------------------------------------- */
+
+.tb-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  flex-grow: 1;
+  padding: var(--space-32);
+  text-align: right;
+}
+
+.tb-hero__inner { width: 100%; max-width: var(--container-max); margin-left: auto; }
+.tb-hero__head  { text-transform: uppercase; margin: 0 0 var(--space-48); mix-blend-mode: multiply; }
+.tb-hero__copy  { display: flex; flex-direction: column; align-items: flex-end; width: 100%; }
+.tb-hero__lines { color: var(--ink-muted); }
+.tb-hero__ctas  { display: flex; flex-wrap: wrap; gap: var(--space-16); margin-top: var(--space-32); }
+.tb-hero__note  { color: var(--ink-faint); text-transform: uppercase; margin: var(--space-24) 0 0; }
+
+/* mix-blend-mode multiply darkens on paper but erases ink on a dark ground. */
+[data-theme='dark'] .tb-hero__head { mix-blend-mode: normal; }
+
+/* The hero is the one place type steps up with the viewport. Markup carries
+   the small style (`display-md`, `mono-body`); these blocks restate the large
+   style's metrics, because type styles compile to classes, not variables.
+   Keep them in sync with `display-xl` and `mono-lead` in tokens.json. */
+@media (min-width: 768px) {
+  .tb-hero { padding: var(--space-64); }
+  .tb-hero__copy {
+    align-items: flex-start;
+    text-align: left;
+    max-width: var(--copy-max);
+    margin-left: auto;
+  }
+  .tb-hero__head {          /* display-xl */
+    font-size: 96px;
+    line-height: 86px;
+    letter-spacing: -0.04em;
+  }
+  .tb-hero__lines {         /* mono-lead */
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+/* --- Reduced motion ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-ticker__track,
+  .tb-grid,
+  .tb-led {
+    animation: none;
+  }
+  .tb-type {
+    animation: none;
+    width: auto;
+    border-right-color: transparent;
+  }
+  .tb-btn,
+  .tb-crosshair { transition: none; }
+}

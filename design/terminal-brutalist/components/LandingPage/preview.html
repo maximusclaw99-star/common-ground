@@ -1,0 +1,81 @@
+<!-- @dsCard group="Pages" height=720 page subtitle="Ticker, nav, hero and diagnostic strip composed as one screen" -->
+<div class="tb-root tb-page" id="lp" style="min-height:720px">
+
+  <div class="tb-ticker mono-ticker" role="marquee" aria-label="Announcement">
+    <div class="tb-ticker__track">
+      <span class="tb-ticker__item">No pwn, no pay. If our scan finds no validated high or critical issue, you pay nothing. <a href="#">Learn more &#8599;</a></span>
+      <span class="tb-ticker__item">Helix 2.4 ships signed SBOMs on every build. <a href="#">Changelog &#8599;</a></span>
+      <span class="tb-ticker__item" aria-hidden="true">No pwn, no pay. If our scan finds no validated high or critical issue, you pay nothing. <a href="#">Learn more &#8599;</a></span>
+      <span class="tb-ticker__item" aria-hidden="true">Helix 2.4 ships signed SBOMs on every build. <a href="#">Changelog &#8599;</a></span>
+    </div>
+  </div>
+
+  <nav class="tb-nav tb-band-bottom tb-layer mono-label">
+    <a class="tb-nav__brand title" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M4 4h16v16H4z" /><path d="M4 12h16M12 4v16" />
+      </svg>
+      Helix
+    </a>
+    <div class="tb-nav__links">
+      <a class="tb-link" href="#">Docs &#8599;</a>
+      <a class="tb-link" href="#" aria-current="page">Product</a>
+      <a class="tb-link" href="#">Pricing</a>
+    </div>
+    <div class="tb-nav__links" style="align-items:center;gap:var(--space-24)">
+      <span style="color:var(--ink-subtle)">EN &#8853;</span>
+      <a class="tb-btn tb-btn--sm mono-label" href="#">Book a demo</a>
+    </div>
+  </nav>
+
+  <div class="tb-grid"></div>
+  <div class="tb-ascii" id="lp-relief"></div>
+
+  <main class="tb-hero tb-layer">
+    <div class="tb-hero__inner">
+      <h1 class="display-md tb-hero__head">Proof for<br />every build.</h1>
+      <div class="tb-hero__copy">
+        <div class="mono-body tb-hero__lines" style="min-height:52px">
+          <span class="tb-type tb-type--nocaret" style="--tb-chars:27">&gt; scanning 1,284 commits...</span><br />
+          <span class="tb-type" style="--tb-chars:28;--tb-delay:1300ms">&gt; 3 exploitable paths found_</span>
+        </div>
+        <div class="tb-hero__ctas">
+          <a class="tb-btn tb-btn--solid mono-label" href="#">Start for free &#8599;</a>
+          <a class="tb-btn mono-label" href="#">Book a demo</a>
+        </div>
+        <p class="mono-micro tb-hero__note">14-day trial &middot; No card required</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="tb-status tb-band-top tb-layer mono-micro">
+    <div class="tb-status__group">
+      <span>Client: Chrome</span>
+      <span>Viewport: <span id="tb-vp">&mdash;</span></span>
+      <span>Depth: 30bit</span>
+    </div>
+    <div class="tb-status__group">
+      <span>Zone: <span id="tb-tz">&mdash;</span></span>
+      <span class="tb-status__pair">Status: <span class="tb-led tb-led--live" aria-hidden="true"></span> On</span>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('tb-vp').textContent =
+      window.innerWidth + '×' + window.innerHeight;
+    try {
+      document.getElementById('tb-tz').textContent =
+        Intl.DateTimeFormat().resolvedOptions().timeZone || 'LOCAL';
+    } catch (e) {
+      document.getElementById('tb-tz').textContent = 'LOCAL';
+    }
+
+    TB.asciiRelief(document.getElementById('lp-relief'), {
+      source: TB.reliefSource({ seed: 0.6 }),
+      cell: 7,
+      ratio: 1.6,
+      alpha: 0.24
+    });
+    TB.crosshair(document.getElementById('lp'));
+  </script>
+</div>

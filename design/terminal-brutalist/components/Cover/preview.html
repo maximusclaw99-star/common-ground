@@ -1,0 +1,35 @@
+<!-- @dsCard height=288 subtitle="Terminal Brutalist" -->
+<!--
+  blocks:      ink 180x288 (bleeds top+bottom) · ink-muted 270x210 · alert 150x48 · signal 120x48 (both bleed bottom) — every side a multiple of grid-pitch (30px), every corner radius-none
+  arrangement: one tall slab flush to the block box's left edge, a 30px ground gutter, then a wide block with a status band beneath it — the page's own band stack turned on its side
+  pattern:     plus grid at 2x grid-pitch, stroked in canvas at border-2 — this system's one texture is a panning engineering grid and its placeholder mark is an inscribed crosshair, so the grid intersection IS the motif
+  scales:      pitch 60px (2 x grid-pitch 30px) · plus arm 9px · stroke border-2 · gutter 30px · corners radius-none throughout
+-->
+<div class="tb-root" style="padding:0">
+  <svg viewBox="0 0 960 288" width="960" height="288" style="display:block;width:100%;height:auto" role="img" aria-label="Terminal Brutalist design system">
+    <style>
+      .c-ground { fill: var(--canvas); }
+      .block    { rx: var(--radius-none); }
+      .c-ink    { fill: var(--ink); }
+      .c-muted  { fill: var(--ink-muted); }
+      .c-alert  { fill: var(--alert); }
+      .c-signal { fill: var(--signal); }
+      .pattern  { fill: none; stroke: var(--canvas); stroke-width: var(--border-2); }
+      .t-name   { fill: var(--ink); font-family: var(--font-display); font-weight: 700; font-size: 72px; letter-spacing: -0.03em; }
+      .t-tag    { fill: var(--ink-subtle); font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; }
+    </style>
+
+    <rect class="c-ground" x="0" y="0" width="960" height="288" />
+
+    <rect class="block c-ink"    x="480" y="0"   width="180" height="288" />
+    <rect class="block c-muted"  x="690" y="0"   width="270" height="210" />
+    <rect class="block c-alert"  x="690" y="240" width="150" height="48"  />
+    <rect class="block c-signal" x="840" y="240" width="120" height="48"  />
+
+    <path class="pattern" d="M501 30H519M510 21V39 M501 90H519M510 81V99 M501 150H519M510 141V159 M501 210H519M510 201V219 M501 270H519M510 261V279 M561 30H579M570 21V39 M561 90H579M570 81V99 M561 150H579M570 141V159 M561 210H579M570 201V219 M561 270H579M570 261V279 M621 30H639M630 21V39 M621 90H639M630 81V99 M621 150H639M630 141V159 M621 210H639M630 201V219 M621 270H639M630 261V279 M711 30H729M720 21V39 M711 90H729M720 81V99 M711 150H729M720 141V159 M711 270H729M720 261V279 M771 30H789M780 21V39 M771 90H789M780 81V99 M771 150H789M780 141V159 M771 270H789M780 261V279 M831 30H849M840 21V39 M831 90H849M840 81V99 M831 150H849M840 141V159 M831 270H849M840 261V279 M891 30H909M900 21V39 M891 90H909M900 81V99 M891 150H909M900 141V159 M891 270H909M900 261V279" />
+
+    <text class="t-name" x="48" y="146">Terminal</text>
+    <text class="t-name" x="48" y="214">Brutalist</text>
+    <text class="t-tag"  x="48" y="256">PAPER GROUND, FULL-BLACK INK, NOTHING ROUNDED</text>
+  </svg>
+</div>
