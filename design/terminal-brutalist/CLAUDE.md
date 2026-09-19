@@ -40,6 +40,8 @@ A two-tone, square-cornered design system for technical product pages. Warm pape
 - The product name `Helix`, in `index.html` and the `NavBar` / `LandingPage` previews.
 - The mark in `assets/Marks/` — a generic square-and-crosshair stand-in, not an identity.
 - The `AsciiRelief` source. It ships with `TB.reliefSource()`, procedural stand-in artwork. Point it at work you own, commissioned, or public-domain. The treatment is a technique and it is yours to use; the picture inside it has to be yours too.
+
+  To prepare a picture: `python3 tools/prep-relief.py in.jpg assets/Art/hands.png --rect L,T,R,B --lift 0.2` (needs `opencv-python-headless`, `numpy`, `pillow`). It isolates the subject with GrabCut inside the rectangle you give, grayscales it, and writes a PNG whose alpha is the subject mask. Then `TB.asciiRelief(host, { source: imgElement })` with that PNG in an `<img>`. Same-origin only; a cross-origin image taints the canvas and paints nothing. Use `--data-uri` if the page must be self-contained.
 - The diagnostic strip must read real client values. Invented ones are the difference between this reading as an instrument and reading as a costume.
 
 ## Adding a component

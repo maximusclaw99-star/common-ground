@@ -79,6 +79,18 @@ const Type = ({ children, delay = 0, caret = true }) => (
 
 Compute `--tb-chars` from the string rather than hard-coding it, and derive each line's delay from the sum of the previous lines' durations at 45ms per character.
 
+## Putting a real picture in the relief
+
+`tools/prep-relief.py` turns any photograph or painting into an `AsciiRelief` source:
+
+```
+python3 tools/prep-relief.py source.jpg assets/Art/subject.png --rect 120,80,1650,900 --lift 0.2
+```
+
+`--rect` is the box the subject sits in, in source pixels; GrabCut separates it from whatever ground is outside. `--lift` darkens the subject so a pale one still paints dense glyphs; `--gamma` shapes its shading. The output PNG carries the mask in its alpha channel, which is what lets the relief stop at the subject's edge rather than filling the frame. Load it with an `<img>` on the same origin and hand the element to `TB.asciiRelief`. For a fully self-contained page, `--data-uri` prints the PNG as a `data:` URI to inline.
+
+Cell size sets the texture's coarseness: `cell: 7` is a chunky plot, `cell: 5` reads closer to a halftone. The row ratio should match your mono face's glyph aspect; Space Mono is about 1.6.
+
 ## Checklist before shipping a page
 
 - Replace the placeholder name `Helix` and the mark in `assets/Marks`.

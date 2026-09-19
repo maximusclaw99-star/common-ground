@@ -18,19 +18,17 @@ export const metadata: Metadata = {
 };
 
 /**
- * The system has no automatic theme — `data-theme` must be set on <html>. This
- * runs before first paint so the page never flashes the wrong ground, and
- * suppressHydrationWarning covers the attribute the server could not know.
+ * Paper, always.
+ *
+ * The system ships no automatic theme — `data-theme` is ours to set — and
+ * Paper is the brand. Pinning it here rather than following the OS means the
+ * hero's `mix-blend-mode: multiply` is always on the ground it was drawn for,
+ * and nobody sees a different product depending on their system settings.
+ * Terminal (dark) stays defined in tokens.css for whenever a toggle is wanted.
  */
-const THEME_SCRIPT = `try{document.documentElement.dataset.theme=` +
-  `matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}` +
-  `catch(e){document.documentElement.dataset.theme='light'}`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="light" suppressHydrationWarning
-      className={`${display.variable} ${mono.variable}`}>
-      <head><script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} /></head>
+    <html lang="en" data-theme="light" className={`${display.variable} ${mono.variable}`}>
       <body className="tb-root">{children}</body>
     </html>
   );

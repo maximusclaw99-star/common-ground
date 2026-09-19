@@ -1,6 +1,7 @@
 "use client";
 
 import Script from "next/script";
+import { RELIEF_RATIO, handsReliefSource } from "./hands-relief";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -32,7 +33,7 @@ export function HeroLayers({ pageRef }: { pageRef: React.RefObject<HTMLElement |
     if (!ready || !window.TB) return;
     const relief = reliefRef.current
       ? window.TB.asciiRelief(reliefRef.current, {
-          source: window.TB.reliefSource({ seed: 0.6 }), cell: 7, ratio: 1.6, alpha: 0.24,
+          source: handsReliefSource(), cell: 5, ratio: RELIEF_RATIO, alpha: 0.32,
         })
       : null;
     const cross = pageRef.current ? window.TB.crosshair(pageRef.current) : null;
