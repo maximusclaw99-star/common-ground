@@ -24,9 +24,31 @@ import type { Position, PositionRequirement, PositionsProvider, PositionsQuery }
 const EXPORTED_ON = "2026-09-19";
 const STAND_IN_CLOSE = "2026-12-18";
 
+const POOL_TTL_MS = 10 * 60 * 1000;
+let poolPromise: Promise<Position[]> | null = null;
+let poolFetchedAt = 0;
+
+/** One directory fetch per server instance, kept ten minutes; concurrent first requests share it. */
+function pool(): Promise<Position[]> {
+  if (!poolPromise || Date.now() - poolFetchedAt > POOL_TTL_MS) {
+    poolFetchedAt = Date.now();
+    poolPromise = fetchDirectory().catch((err) => { poolPromise = null; throw err; });
+  }
+  return poolPromise;
+}
+
 export const databricksPositionsProvider: PositionsProvider = {
   name: "databricks",
   async getPositions({ companies, limit = 8000 }: PositionsQuery): Promise<Position[]> {
+    const positions = await pool();
+    const wanted = new Set(companies.map((c) => c.trim().toLowerCase()));
+    const matched = positions.filter((p) => wanted.has(p.company.toLowerCase()));
+    const rest = positions.filter((p) => !matched.includes(p));
+    return [...matched, ...rest].slice(0, limit);
+  },
+};
+
+async function fetchDirectory(): Promise<Position[]> {
     const rows = await query(`
       select i.id, i.category, i.company, i.title, i.location, i.just_posted, i.apply_url,
              coalesce(max(c.vertical), 'other') as vertical,
@@ -35,15 +57,9 @@ export const databricksPositionsProvider: PositionsProvider = {
       left join workspace.jobsearch.category_requirements c on c.category = i.category
       group by i.id, i.category, i.company, i.title, i.location, i.just_posted, i.apply_url
       order by i.just_posted desc, i.company, i.id
-      limit ${Number(limit)}
     `, [], { waitTimeout: "30s" });
-    const positions = rows.map(toDirectoryPosition);
-    const wanted = new Set(companies.map((c) => c.trim().toLowerCase()));
-    const matched = positions.filter((p) => wanted.has(p.company.toLowerCase()));
-    const rest = positions.filter((p) => !matched.includes(p));
-    return [...matched, ...rest];
-  },
-};
+    return rows.map(toDirectoryPosition);
+}
 
 const parse = <T>(v: unknown, fallback: T): T => {
   if (typeof v !== "string" || v === "") return fallback;

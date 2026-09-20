@@ -153,7 +153,10 @@ export const demoStore = {
 
   /** set(), then written through to the table before returning, so the redirect that follows sees it anywhere. */
   async save(id: string, next: Partial<StoredStudent>): Promise<StoredStudent> {
-    const base = isPersistenceConfigured() ? (await demoStore.load(id)) ?? initial() : demoStore.get(id)!;
+    // The request that is saving has almost always just loaded this student
+    // (getSession), so the in-process copy is current; re-reading would cost
+    // a round trip for nothing. Only a save with no prior load reads first.
+    const base = students.get(id) ?? (isPersistenceConfigured() ? (await demoStore.load(id)) ?? initial() : demoStore.get(id)!);
     const student = { ...base, ...next };
     students.set(id, student);
     if (isPersistenceConfigured()) {

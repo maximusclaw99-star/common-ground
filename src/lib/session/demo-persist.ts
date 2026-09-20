@@ -35,7 +35,9 @@ export const isPersistenceConfigured = (): boolean =>
 const TABLE = "workspace.jobsearch.demo_sessions";
 
 export async function loadPersisted(id: string): Promise<PersistedStudent | null> {
-  const rows = await query(`SELECT student FROM ${TABLE} WHERE id = :id LIMIT 1`, [{ name: "id", value: id }],
+  // Latest write wins: saves append rather than merge, which is about twice
+  // as fast on Delta and never contends. Old rows are harmless.
+  const rows = await query(`SELECT student FROM ${TABLE} WHERE id = :id ORDER BY updated_at DESC LIMIT 1`, [{ name: "id", value: id }],
     { waitTimeout: "15s", pollForMs: 10_000 });
   const raw = rows[0]?.student;
   if (typeof raw !== "string" || !raw) return null;
@@ -44,10 +46,7 @@ export async function loadPersisted(id: string): Promise<PersistedStudent | null
 
 export async function savePersisted(id: string, student: PersistedStudent): Promise<void> {
   await query(
-    `MERGE INTO ${TABLE} t
-     USING (SELECT :id AS id, :student AS student) s ON t.id = s.id
-     WHEN MATCHED THEN UPDATE SET student = s.student, updated_at = current_timestamp()
-     WHEN NOT MATCHED THEN INSERT (id, student, created_at, updated_at) VALUES (s.id, s.student, current_timestamp(), current_timestamp())`,
+    `INSERT INTO ${TABLE} (id, student, created_at, updated_at) VALUES (:id, :student, current_timestamp(), current_timestamp())`,
     [{ name: "id", value: id }, { name: "student", value: JSON.stringify(student) }],
     { waitTimeout: "20s", pollForMs: 15_000 },
   );

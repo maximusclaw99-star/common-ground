@@ -23,9 +23,37 @@ import type { PeopleProvider, PeopleQuery } from "./types";
  * Privacy: rows fetched here are scored in memory and never written to
  * Supabase. We hold no standing database of people who did not sign up.
  */
+/**
+ * The pool changes only when the warehouse is reloaded, so one fetch per
+ * server instance (kept ten minutes) serves every page; without this, every
+ * page paid ~1.5 s to re-download 1,100 people. The promise is cached, not
+ * the result, so concurrent first requests share one query.
+ */
+const POOL_TTL_MS = 10 * 60 * 1000;
+let poolPromise: Promise<Person[]> | null = null;
+let poolFetchedAt = 0;
+
+function pool(): Promise<Person[]> {
+  if (!poolPromise || Date.now() - poolFetchedAt > POOL_TTL_MS) {
+    poolFetchedAt = Date.now();
+    poolPromise = fetchPool().catch((err) => { poolPromise = null; throw err; });
+  }
+  return poolPromise;
+}
+
 export const databricksPeopleProvider: PeopleProvider = {
   name: "databricks",
-  async getPeople({ companies, limit = 400 }: PeopleQuery): Promise<Person[]> {
+  async getPeople({ companies, limit = 2000 }: PeopleQuery): Promise<Person[]> {
+    const all = await pool();
+    const wanted = new Set(companies.map((c) => c.trim().toLowerCase()));
+    const matched = all.filter((p) => wanted.has(p.currentCompany.toLowerCase()));
+    const rest = all.filter((p) => !matched.includes(p));
+    return [...matched, ...rest].slice(0, limit);
+  },
+};
+
+async function fetchPool(): Promise<Person[]> {
+  {
     const host = process.env.DATABRICKS_HOST?.replace(/^https?:\/\//, "").replace(/\/$/, "");
     const token = process.env.DATABRICKS_TOKEN;
     const warehouseId =
@@ -36,14 +64,8 @@ export const databricksPeopleProvider: PeopleProvider = {
       );
     }
 
-    const params = companies.map((c, i) => ({ name: `c${i}`, value: c }));
-    const targetList = params.map((p) => `:${p.name}`).join(", ") || "''";
-    const statement = `
-      select * from workspace.jobsearch.v_people_provider
-      order by case when lower(current_company) in (${targetList}) then 0 else 1 end,
-               openness_to_chat desc
-      limit ${Number(limit)}
-    `;
+    const params: { name: string; value: string }[] = [];
+    const statement = "select * from workspace.jobsearch.v_people_provider order by openness_to_chat desc";
 
     const response = await fetch(`https://${host}/api/2.0/sql/statements`, {
       method: "POST",
@@ -51,7 +73,7 @@ export const databricksPeopleProvider: PeopleProvider = {
       body: JSON.stringify({
         warehouse_id: warehouseId,
         statement,
-        parameters: params.map((p) => ({ ...p, value: p.value.toLowerCase() })),
+        parameters: params,
         wait_timeout: "30s",
         disposition: "INLINE",
         format: "JSON_ARRAY",
@@ -72,8 +94,8 @@ export const databricksPeopleProvider: PeopleProvider = {
       columns.forEach((name, i) => (row[name] = values[i]));
       return toPerson(row, fetchedAt);
     });
-  },
-};
+  }
+}
 
 interface StatementResponse {
   status?: { state: string; error?: { message?: string } };

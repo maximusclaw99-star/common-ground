@@ -44,12 +44,10 @@ export async function saveAnswersAction(
   try {
     const { facts, meta } = applyAnswers(student.facts, student.meta, answers);
     await saveFacts(facts, meta, completed);
-    // Only the dashboard. Revalidating /intake re-runs computeGaps against the
-    // answers just saved and hands the running flow a DIFFERENT step list
-    // mid-walk — screens renumber, and a screen the student was about to see
-    // can disappear. The flow owns its step list until they finish; the next
-    // visit recomputes it.
-    revalidatePath("/dashboard");
+    // No revalidation here at all: every page that reads these facts is
+    // force-dynamic, so nothing is cached to invalidate, and a revalidate call
+    // makes the action response re-render /intake — a second round trip to the
+    // warehouse for a page the student is still typing on.
     return { ok: true };
   } catch (error) {
     console.error("[intake] could not save answers", error);

@@ -4,7 +4,6 @@ import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
 import { OpeningRow } from "@/components/opening-row";
 import companies from "@/../data/companies.seed.json";
 import { getPositionsProvider, headlineGap, positionGaps, rankPositions, studentVerticals } from "@/lib/positions";
-import { mockAdvice, skillGapAdvice } from "@/lib/positions/advice";
 import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -36,9 +35,9 @@ export default async function JobsPage() {
   // deadline and simply absent if it loses.
   const top = ranked.find((r) => r.fit.windowStatus !== "closed") ?? ranked[0];
   const topGap = top ? headlineGap(gapsById.get(top.position.id) ?? []) : null;
-  const advice = top && topGap
-    ? provider.name === "mock" ? mockAdvice(topGap) : await skillGapAdvice(top.position, topGap)
-    : null;
+  // No model call on the list: it held the page for up to 8 s. The opening
+  // page's agent gives the real answer, with the trace.
+  const advice: string | null = null;
 
   const open = ranked.filter((r) => r.fit.windowStatus !== "closed");
   const soon = open.filter((r) => r.fit.windowStatus === "open" || r.fit.windowStatus === "opens_soon");
@@ -88,9 +87,9 @@ export default async function JobsPage() {
               <span className="tb-led tb-led--live" aria-hidden /> Best fit right now
             </p>
             <OpeningRow ranked={top} gaps={gapsById.get(top.position.id) ?? []} advice={advice} />
-            {topGap && !advice && provider.name !== "mock" && (
+            {topGap && (
               <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-8) 0 0", textTransform: "none" }}>
-                Advice on closing the {topGap.requirement} gap did not come back in time; reload to try again.
+                Open it and ask the agent how to close the {topGap.requirement} gap.
               </p>
             )}
           </div>
@@ -151,7 +150,6 @@ export default async function JobsPage() {
           { label: "Openings", value: String(ranked.length) },
           { label: "Open / soon", value: String(soon.length) },
           { label: "Verticals", value: verticals.length ? verticals.join(", ") : "all" },
-          { label: "Advice", value: advice ? "1 call" : "none" },
           { label: "Source", value: provider.name },
         ]}
       />
