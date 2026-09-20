@@ -90,6 +90,8 @@ export function windowStatus(position: Position, now: number): { status: WindowS
   return { status: "closed", daysUntilOpen };
 }
 
+const GRADUATE_ROLE = /\b(ph\.?d|mba|master'?s|masters|graduate student|postdoc|doctoral)\b/i;
+
 export function scorePosition(
   student: ScorableStudent,
   position: Position,
@@ -158,6 +160,14 @@ export function scorePosition(
       : status === "upcoming" ? `Opens ${position.opensOn}`
       : "Application window closed",
   );
+
+  // The directory mixes in postings for PhD, MBA and master's candidates.
+  // The app is for undergraduates, so those sink below every bachelor's
+  // role rather than topping the list because the company is a target.
+  if (GRADUATE_ROLE.test(position.title)) {
+    score -= 30;
+    reasons.push("Aimed at graduate students (PhD / MBA / master's)");
+  }
 
   const targets = new Set(student.facts.target_companies.map(norm));
   if (targets.has(norm(position.company))) {

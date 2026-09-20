@@ -83,3 +83,12 @@ test("allVerticals keeps out-of-vertical roles at zero vertical points, and says
   assert.ok(kept.reasons[0].startsWith("Outside the verticals"));
   assert.ok(kept.score < scorePosition(student, byId("m01"), { now: NOW, verticals: ["consulting"] })!.score);
 });
+
+test("a posting aimed at PhD or MBA candidates sinks below the same role for undergraduates", () => {
+  const base = byId("m03");
+  const phd: Position = { ...base, id: "phd", title: `Current PhD, ${base.title}` };
+  const undergrad = scorePosition(student, base, { now: NOW })!;
+  const graduate = scorePosition(student, phd, { now: NOW })!;
+  assert.ok(graduate.score < undergrad.score - 20);
+  assert.ok(graduate.reasons.some((r) => /graduate students/.test(r)));
+});
