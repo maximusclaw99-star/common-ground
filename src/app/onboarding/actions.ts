@@ -57,7 +57,7 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
     // questionnaire still asks the student to confirm each of these, because
     // no meta entry is written here, so nothing is silently treated as answered.
     const facts = { ...EMPTY_FACTS, ...deriveAll(FIELDS, profile) };
-    demoStore.set(id, { profile, facts });
+    await demoStore.save(id, { profile, facts });
     redirect("/onboarding/review");
   }
 

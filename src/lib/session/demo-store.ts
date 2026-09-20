@@ -1,11 +1,17 @@
 import { EMPTY_FACTS, type AffinityFacts, type FactsMeta, type StudentProfile } from "@/lib/ai/schemas";
 import { student as fixtureStudent } from "@/lib/affinity/__fixtures__/cast";
 import { DEFAULT_WEIGHTS, type HomophilyWeights } from "@/lib/homophily/scorer";
+import { isPersistenceConfigured, loadPersisted, savePersisted } from "./demo-persist";
 
 /**
- * The demo-mode store: one student per browser, held in module memory.
+ * The demo-mode store: one student per browser.
  *
- * Deliberately not a database. Demo mode exists so the product can be shown
+ * Held in module memory on a single server; on Vercel, where each request may
+ * run on a different instance, load()/save() go through a Delta table
+ * (demo-persist.ts) so the browser's student is the same everywhere. The sync
+ * get()/set() remain for tests and for mock mode.
+ *
+ * Deliberately not a real account system. Demo mode exists so the product can be shown
  * and built before Supabase is configured, and anything that survives a server
  * restart would start to look like persistence we have not actually built.
  *
@@ -118,6 +124,45 @@ export const demoStore = {
   reset(id: string): StoredStudent {
     const student = initial();
     students.set(id, student);
+    return student;
+  },
+
+  /**
+   * The same as get(), but through the shared table when Databricks is
+   * configured — the version pages must use, because on Vercel the map in
+   * this process is not the map the last request wrote to.
+   */
+  async load(id: string | null | undefined): Promise<StoredStudent | null> {
+    if (!id) return null;
+    if (!isPersistenceConfigured()) return demoStore.get(id);
+    try {
+      const found = await loadPersisted(id);
+      if (found) {
+        students.set(id, found);
+        return found;
+      }
+      const fresh = initial();
+      students.set(id, fresh);
+      await savePersisted(id, fresh);
+      return fresh;
+    } catch (err) {
+      console.warn("[demo] session table unavailable, using this instance's memory", err instanceof Error ? err.message : err);
+      return demoStore.get(id);
+    }
+  },
+
+  /** set(), then written through to the table before returning, so the redirect that follows sees it anywhere. */
+  async save(id: string, next: Partial<StoredStudent>): Promise<StoredStudent> {
+    const base = isPersistenceConfigured() ? (await demoStore.load(id)) ?? initial() : demoStore.get(id)!;
+    const student = { ...base, ...next };
+    students.set(id, student);
+    if (isPersistenceConfigured()) {
+      try {
+        await savePersisted(id, student);
+      } catch (err) {
+        console.error("[demo] could not persist the session; it will not survive this instance", err instanceof Error ? err.message : err);
+      }
+    }
     return student;
   },
 

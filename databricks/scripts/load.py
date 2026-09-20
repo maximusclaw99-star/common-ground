@@ -152,6 +152,8 @@ def main() -> None:
     db.upload(str(SEED / "internships.jsonl"), f"{VOLUME}/internships.jsonl")
     db.sql_file(str(SQL / "05_directory.sql"))
     load_category_requirements(db)
+    print("demo session store")
+    db.sql_file(str(SQL / "06_sessions.sql"))
 
     print("row counts")
     for t in TABLES + ["internships", "learning_catalog"]:
