@@ -11,6 +11,8 @@ import { getSession } from "@/lib/session";
 import { restartQuestionsAction } from "./actions";
 
 export const dynamic = "force-dynamic";
+/** The model calls behind this page can take longer than a default function budget. */
+export const maxDuration = 60;
 
 export default async function IntakePage() {
   const { student, demo } = await getSession();

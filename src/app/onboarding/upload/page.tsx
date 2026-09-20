@@ -7,6 +7,8 @@ import { getSession } from "@/lib/session";
 import { UploadForm } from "./upload-form";
 
 export const dynamic = "force-dynamic";
+/** The model calls behind this page can take longer than a default function budget. */
+export const maxDuration = 60;
 
 export default async function UploadPage() {
   const { demo, student } = await getSession();

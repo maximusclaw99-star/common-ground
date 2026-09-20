@@ -206,6 +206,7 @@ export default async function CompanyPage({
                       </span>
                       <span className="mono-micro" style={{ color: fit.windowStatus === "upcoming" ? "var(--ink-faint)" : "var(--alert)", whiteSpace: "nowrap" }}>
                         {windowLabel(fit)}{fit.datesKnown && <> &middot; {position.opensOn}</>}
+                        {" "}&middot; <Link className="tb-link" href={`/jobs/${position.id}`}>Improve my chances &#8599;</Link>
                       </span>
                     </li>
                   ))}

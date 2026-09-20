@@ -235,5 +235,8 @@ body {
   /* The mic still turns solid while listening; it just stops pulsing. */
   .tb-mic[aria-pressed="true"] { animation: none; }
   /* Nothing sweeps; the elapsed counter beside it still says work is happening. */
-  .tb-progress__bar { animation: none; width: 100%; opacity: 0.25; }
+  .tb-progress__bar {
+    animation: none; width: 100%; opacity: 0.6;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 12px, transparent 12px 24px);
+  }
 }
