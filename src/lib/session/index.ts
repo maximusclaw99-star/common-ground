@@ -30,7 +30,7 @@ export async function demoAccountId(): Promise<string | null> {
  */
 export async function getSession(): Promise<Session> {
   if (!isSupabaseConfigured()) {
-    return { student: demoStore.get(await demoAccountId()), demo: true };
+    return { student: await demoStore.load(await demoAccountId()), demo: true };
   }
 
   const supabase = await createClient();
@@ -87,7 +87,7 @@ export async function saveFacts(facts: AffinityFacts, meta: FactsMeta, completed
   if (!isSupabaseConfigured()) {
     const id = await demoAccountId();
     if (!id) throw new Error("Not signed in");
-    demoStore.set(id, { facts, meta, ...(completed ? { intakeCompletedAt: new Date().toISOString() } : {}) });
+    await demoStore.save(id, { facts, meta, ...(completed ? { intakeCompletedAt: new Date().toISOString() } : {}) });
     return;
   }
 
@@ -114,7 +114,7 @@ export async function saveHomophilyWeights(weights: HomophilyWeights): Promise<v
   if (!isSupabaseConfigured()) {
     const id = await demoAccountId();
     if (!id) throw new Error("Not signed in");
-    demoStore.set(id, { homophilyWeights: parsed });
+    await demoStore.save(id, { homophilyWeights: parsed });
     return;
   }
   const supabase = await createClient();
