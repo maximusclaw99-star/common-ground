@@ -134,3 +134,18 @@ Every run is written to `workspace.jobsearch.agent_runs` with its full trace, so
 recommend most often" or "how many fabrications did the check catch". If the model is unavailable the same tools run
 in a fixed order and the page says so; mock mode does the same without a model. `databricks/sql/04_agent.sql` +
 `data/learning_catalog.json` are the warehouse side; `make load` installs them.
+
+## The openings are real: the Summer 2027 Internships Directory
+
+`workspace.jobsearch.internships` holds the directory export (6,632 postings, 1,060 employers, 17 categories,
+live apply URLs) — the app's openings source in Databricks mode (`src/lib/positions/databricks.ts`). The source
+carries no posting text, requirements or dates, so:
+
+- `category_requirements` (data/category_requirements.json) is what each category typically asks for, and every
+  opening page says "typical for … — read the posting itself";
+- dates are stand-ins flagged `datesKnown: false`; the UI says "posted" / "just posted", never a countdown;
+- `/jobs` groups by category (just-posted first) instead of by month, and caps each group at the 24 best fits;
+- every opening has its own page, `/jobs/[id]`: what they ask for with have / in-progress / missing marks, where
+  you stand, the people you can reach at that employer, and the plan agent on a button. The old `/plan` tab is gone.
+
+`make load` uploads the JSONL to the volume and runs `sql/05_directory.sql`.

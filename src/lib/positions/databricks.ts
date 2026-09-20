@@ -2,35 +2,42 @@ import { query } from "@/lib/databricks/sql";
 import type { Position, PositionRequirement, PositionsProvider, PositionsQuery } from "./types";
 
 /**
- * Openings from the warehouse: `positions` + `companies` + `position_requirements`
- * in workspace.jobsearch (databricks/sql/00_schema.sql).
+ * Openings from the warehouse.
  *
- * Scoring happens in the app (`./score.ts`), not in `v_student_position_matches`,
- * because the student on the page is whoever is signed in — or the demo student
- * held in memory — and neither is a row in the warehouse's `students` table.
- * The view and the TS scorer carry the same weights, so a number seen here and
- * a number queried in Genie agree.
+ * The source is the Summer 2027 Internships Directory — 6,600+ real postings
+ * in workspace.jobsearch.internships (databricks/sql/05_directory.sql). It
+ * carries a category, company, title, location, a just-posted flag and the
+ * live application URL, and nothing else: no posting text, no requirements,
+ * no dates. So:
  *
- * The whole pool is 120 rows, so it is fetched once per request and ordered
- * in memory: target-company postings first, then by opening date. Filtering by
- * company would be wrong for the same reason it is wrong for people — a role
- * the student did not think to name is still a role.
+ *  - requirements come from category_requirements, what roles in that
+ *    category typically ask for, and every Position says so
+ *    (`requirementsTypical`); the UI repeats it next to the list.
+ *  - dates are stand-ins (`datesKnown: false`): the export date as opens_on
+ *    and ninety days later as closes_on, so window logic keeps working and
+ *    the UI shows "posted" rather than a made-up countdown.
+ *
+ * The whole directory is one Statement API call (~1.4 s, one chunk) and is
+ * ordered in memory: target-company postings first, then just-posted, then
+ * by company. Filtering happens in the scorer, by the student's verticals.
  */
+const EXPORTED_ON = "2026-09-19";
+const STAND_IN_CLOSE = "2026-12-18";
+
 export const databricksPositionsProvider: PositionsProvider = {
   name: "databricks",
-  async getPositions({ companies, limit = 400 }: PositionsQuery): Promise<Position[]> {
+  async getPositions({ companies, limit = 8000 }: PositionsQuery): Promise<Position[]> {
     const rows = await query(`
-      select p.id, p.title, c.name as company, p.company_id, p.type, p.vertical, p.location,
-             cast(p.opens_on as string) as opens_on, cast(p.closes_on as string) as closes_on,
-             p.target_grad_years, p.description, p.posted_url,
-             (select collect_list(named_struct('requirement', r.requirement, 'kind', r.kind, 'required', r.required))
-                from workspace.jobsearch.position_requirements r where r.position_id = p.id) as requirements
-      from workspace.jobsearch.positions p
-      join workspace.jobsearch.companies c on c.id = p.company_id
-      order by p.opens_on, p.id
+      select i.id, i.category, i.company, i.title, i.location, i.just_posted, i.apply_url,
+             coalesce(max(c.vertical), 'other') as vertical,
+             collect_list(named_struct('requirement', c.requirement, 'kind', c.kind, 'required', c.required)) as requirements
+      from workspace.jobsearch.internships i
+      left join workspace.jobsearch.category_requirements c on c.category = i.category
+      group by i.id, i.category, i.company, i.title, i.location, i.just_posted, i.apply_url
+      order by i.just_posted desc, i.company, i.id
       limit ${Number(limit)}
-    `);
-    const positions = rows.map(toPosition);
+    `, [], { waitTimeout: "30s" });
+    const positions = rows.map(toDirectoryPosition);
     const wanted = new Set(companies.map((c) => c.trim().toLowerCase()));
     const matched = positions.filter((p) => wanted.has(p.company.toLowerCase()));
     const rest = positions.filter((p) => !matched.includes(p));
@@ -38,7 +45,6 @@ export const databricksPositionsProvider: PositionsProvider = {
   },
 };
 
-/** ARRAY and STRUCT columns arrive as JSON text; everything else is a string or null. */
 const parse = <T>(v: unknown, fallback: T): T => {
   if (typeof v !== "string" || v === "") return fallback;
   try {
@@ -48,10 +54,44 @@ const parse = <T>(v: unknown, fallback: T): T => {
   }
 };
 const str = (v: unknown): string | null => (v == null || v === "" ? null : String(v));
-
 const KINDS = new Set(["skill", "certification", "degree", "experience"]);
 
-/** Warehouse row -> Position. Exported for the parsing test. */
+const parseRequirements = (v: unknown): PositionRequirement[] =>
+  parse<Record<string, unknown>[]>(v, [])
+    .filter((r) => r && KINDS.has(String(r.kind)) && r.requirement != null)
+    .map((r) => ({
+      requirement: String(r.requirement),
+      kind: String(r.kind) as PositionRequirement["kind"],
+      // Booleans inside a struct come back as JSON true/false; a plain column would be "true".
+      required: r.required === true || r.required === "true",
+    }));
+
+/** Directory row -> Position. Exported for the parsing test. */
+export function toDirectoryPosition(row: Record<string, unknown>): Position {
+  const justPosted = row.just_posted === true || row.just_posted === "true";
+  return {
+    id: String(row.id ?? ""),
+    title: String(row.title ?? ""),
+    company: String(row.company ?? ""),
+    companyId: null,
+    type: "internship",
+    vertical: String(row.vertical ?? "other"),
+    category: str(row.category),
+    location: str(row.location),
+    opensOn: EXPORTED_ON,
+    closesOn: STAND_IN_CLOSE,
+    datesKnown: false,
+    justPosted,
+    targetGradYears: [2027, 2028, 2029],
+    description: null,
+    url: str(row.apply_url),
+    requirements: parseRequirements(row.requirements),
+    requirementsTypical: true,
+    source: "databricks",
+  };
+}
+
+/** Warehouse `positions` row -> Position (the synthetic set with real dates and per-posting requirements). */
 export function toPosition(row: Record<string, unknown>): Position {
   const type = String(row.type ?? "internship");
   return {
@@ -61,21 +101,17 @@ export function toPosition(row: Record<string, unknown>): Position {
     companyId: str(row.company_id),
     type: (type === "full_time" || type === "research" ? type : "internship"),
     vertical: String(row.vertical ?? ""),
+    category: null,
     location: str(row.location),
     opensOn: String(row.opens_on ?? ""),
     closesOn: String(row.closes_on ?? ""),
+    datesKnown: true,
+    justPosted: false,
     targetGradYears: parse<unknown[]>(row.target_grad_years, []).map(Number).filter((n) => !Number.isNaN(n)),
     description: str(row.description),
     url: str(row.posted_url),
-    requirements: parse<Record<string, unknown>[]>(row.requirements, [])
-      .filter((r) => KINDS.has(String(r.kind)))
-      .map((r): PositionRequirement => ({
-        requirement: String(r.requirement ?? ""),
-        kind: String(r.kind) as PositionRequirement["kind"],
-        // Booleans inside a struct come back as JSON true/false, but a plain
-        // BOOLEAN column would be the string "true"; accept both.
-        required: r.required === true || r.required === "true",
-      })),
+    requirements: parseRequirements(row.requirements),
+    requirementsTypical: false,
     source: "databricks",
   };
 }

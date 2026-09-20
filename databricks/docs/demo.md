@@ -94,7 +94,7 @@ a hook a real student can hit, not just Sam.
 
 ## In the app: the plan agent
 
-`/plan` → pick the Deloitte opening → **Build my plan**. Watch the trace: `skill_gaps()` → `learning_options("Security+")`
+Dashboard → pick a company → click one of its openings (or `/jobs` → any card) → **Ask the agent**. Watch the trace: `skill_gaps()` → `learning_options("Security+")`
 → `rewrite_resume()` → `finish`. Then the plan (each step is a real cert or course with cost and weeks) and the resume
 (every employer, title and date checked against the profile — the fabrication count is on screen).
 

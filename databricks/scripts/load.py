@@ -89,6 +89,15 @@ def load_learning_catalog(db: Databricks) -> None:
     print(f"    learning_catalog: {len(rows)} rows")
 
 
+def load_category_requirements(db: Databricks) -> None:
+    cats = json.loads((ROOT / "data" / "category_requirements.json").read_text(encoding="utf-8"))
+    rows = [(c["category"], c["vertical"], r["requirement"], r["kind"], r["required"]) for c in cats for r in c["requirements"]]
+    db.sql("TRUNCATE TABLE workspace.jobsearch.category_requirements")
+    values = ",\n".join("(" + ", ".join(sql_literal(v, "x") for v in row) + ")" for row in rows)
+    db.sql(f"INSERT INTO workspace.jobsearch.category_requirements (category, vertical, requirement, kind, required) VALUES\n{values}")
+    print(f"    category_requirements: {len(rows)} rows over {len(cats)} categories")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--skip-generate", action="store_true", help="don't re-run data/generate_mock.py")
@@ -139,9 +148,13 @@ def main() -> None:
     print("plan agent: catalog, tool function, run log")
     db.sql_file(str(SQL / "04_agent.sql"))
     load_learning_catalog(db)
+    print("openings directory: internships + category requirements")
+    db.upload(str(SEED / "internships.jsonl"), f"{VOLUME}/internships.jsonl")
+    db.sql_file(str(SQL / "05_directory.sql"))
+    load_category_requirements(db)
 
     print("row counts")
-    for t in TABLES:
+    for t in TABLES + ["internships", "learning_catalog"]:
         n = db.sql(f"SELECT count(*) FROM workspace.jobsearch.{t}")["rows"][0][0]
         print(f"    {t:24s} {n}")
     print("ok")

@@ -11,27 +11,7 @@ export function PlanResult({ result }: { result: AgentResult }) {
   return (
     <div className="grid gap-[var(--space-24)]" style={{ marginTop: "var(--space-24)" }}>
       <section className="tb-panel">
-        <div className="flex flex-wrap items-baseline justify-between gap-[var(--space-12)]">
-          <p className="mono-label" style={{ margin: 0 }}>&gt; What the agent did</p>
-          <p className="mono-micro" style={{ margin: 0, color: "var(--ink-faint)" }}>
-            {result.mode === "agent" ? "model chose the tools" : "fixed order"} &middot; {result.model} &middot; {(result.durationMs / 1000).toFixed(1)}s
-          </p>
-        </div>
-        <ol style={{ margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-8)" }}>
-          {trace.map((t) => (
-            <li key={t.step} className="mono-micro flex flex-wrap gap-[var(--space-12)]" style={{ textTransform: "none" }}>
-              <span style={{ color: "var(--ink-faint)", minWidth: 18 }}>{String(t.step).padStart(2, "0")}</span>
-              <span style={{ color: "var(--signal)" }}>{t.tool}{Object.keys(t.args).length ? `(${Object.values(t.args).map(String).join(", ")})` : "()"}</span>
-              <span style={{ color: "var(--ink-muted)" }}>&rarr; {t.summary}</span>
-              {t.ms > 0 && <span style={{ marginLeft: "auto", color: "var(--ink-faint)", fontVariantNumeric: "tabular-nums" }}>{t.ms} ms</span>}
-            </li>
-          ))}
-        </ol>
-        {result.note && <p className="mono-micro" style={{ margin: "var(--space-12) 0 0", color: "var(--ink-faint)", textTransform: "none" }}>&gt; {result.note}</p>}
-      </section>
-
-      <section className="tb-panel">
-        <p className="mono-label" style={{ margin: 0 }}>&gt; Plan for {plan.title} at {plan.company}</p>
+        <p className="mono-label" style={{ margin: 0 }}>&gt; How to improve your chances</p>
         <p className="body-sm" style={{ margin: "var(--space-12) 0 0" }}>{plan.whyThisRole}</p>
         {plan.steps.length === 0 ? (
           <p className="body-sm" style={{ margin: "var(--space-16) 0 0", color: "var(--ink-muted)" }}>Nothing on the posting is missing from your profile. Spend the time on the people who can get you in the room.</p>
@@ -108,6 +88,22 @@ export function PlanResult({ result }: { result: AgentResult }) {
           </>
         )}
       </section>
+          <details className="tb-panel">
+        <summary className="mono-label" style={{ cursor: "pointer" }}>&gt; How this was worked out <span className="mono-micro" style={{ color: "var(--ink-faint)", marginLeft: 12 }}>{result.mode === "agent" ? "the model chose the tools" : "fixed order"} &middot; {result.model} &middot; {(result.durationMs / 1000).toFixed(1)}s</span>
+
+        </summary>
+        <ol style={{ margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-8)" }}>
+          {trace.map((t) => (
+            <li key={t.step} className="mono-micro flex flex-wrap gap-[var(--space-12)]" style={{ textTransform: "none" }}>
+              <span style={{ color: "var(--ink-faint)", minWidth: 18 }}>{String(t.step).padStart(2, "0")}</span>
+              <span style={{ color: "var(--signal)" }}>{t.tool}{Object.keys(t.args).length ? `(${Object.values(t.args).map(String).join(", ")})` : "()"}</span>
+              <span style={{ color: "var(--ink-muted)" }}>&rarr; {t.summary}</span>
+              {t.ms > 0 && <span style={{ marginLeft: "auto", color: "var(--ink-faint)", fontVariantNumeric: "tabular-nums" }}>{t.ms} ms</span>}
+            </li>
+          ))}
+        </ol>
+        {result.note && <p className="mono-micro" style={{ margin: "var(--space-12) 0 0", color: "var(--ink-faint)", textTransform: "none" }}>&gt; {result.note}</p>}
+      </details>
     </div>
   );
 }

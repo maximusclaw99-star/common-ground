@@ -25,7 +25,7 @@ export default async function JobsPage() {
 
   const provider = getPositionsProvider();
   const scorable = { profile: student.profile, facts: student.facts };
-  const positions = await provider.getPositions({ companies: student.facts.target_companies, limit: 400 });
+  const positions = await provider.getPositions({ companies: student.facts.target_companies, limit: 8000 });
   const ranked = rankPositions(scorable, positions);
   const verticals = studentVerticals(scorable);
 
@@ -42,13 +42,21 @@ export default async function JobsPage() {
 
   const open = ranked.filter((r) => r.fit.windowStatus !== "closed");
   const soon = open.filter((r) => r.fit.windowStatus === "open" || r.fit.windowStatus === "opens_soon");
-  const months: { month: string; rows: typeof ranked }[] = [];
-  for (const r of [...open].sort((a, b) => a.position.opensOn.localeCompare(b.position.opensOn) || b.fit.score - a.fit.score)) {
-    const month = monthOf(r.position.opensOn);
-    const group = months.find((m) => m.month === month) ?? (months.push({ month, rows: [] }), months[months.length - 1]);
-    group.rows.push(r);
+  // A source with dates groups by the month the window opens; the directory,
+  // which has none, groups by its own categories, just-posted first.
+  const dated = open.filter((r) => r.fit.datesKnown).length * 2 > open.length;
+  const PER_GROUP = 24;
+  const months: { month: string; rows: typeof ranked; hidden: number }[] = [];
+  const ordered = dated
+    ? [...open].sort((a, b) => a.position.opensOn.localeCompare(b.position.opensOn) || b.fit.score - a.fit.score)
+    : [...open].sort((a, b) => Number(b.fit.justPosted) - Number(a.fit.justPosted) || b.fit.score - a.fit.score);
+  for (const r of ordered) {
+    const month = dated ? monthOf(r.position.opensOn) : (r.position.category?.replace(/\s*\(\d[\d,]* roles\)\s*$/, "") ?? "Other");
+    const group = months.find((m) => m.month === month) ?? (months.push({ month, rows: [], hidden: 0 }), months[months.length - 1]);
+    if (group.rows.length < PER_GROUP) group.rows.push(r); else group.hidden += 1;
   }
-  const closed = ranked.filter((r) => r.fit.windowStatus === "closed");
+  if (!dated) months.sort((a, b) => b.rows.length + b.hidden - (a.rows.length + a.hidden));
+  const closed = dated ? ranked.filter((r) => r.fit.windowStatus === "closed") : [];
   const boards = companies as { ats: string }[];
 
   return (
@@ -62,7 +70,9 @@ export default async function JobsPage() {
             {open.length} window{open.length === 1 ? "" : "s"},<br />soonest first.
           </h1>
           <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
-            {soon.length > 0
+            {!dated && open.length > 0
+              ? `${open.length} real postings from the Summer 2027 directory in the verticals you told us about, ${open.filter((r) => r.fit.justPosted).length} just posted. Open one to see who you know there.`
+              : soon.length > 0
               ? `${soon.length} ${soon.length === 1 ? "is" : "are"} open or open inside 60 days. Check who you know there before you apply.`
               : verticals.length
                 ? "Nothing opens in the next 60 days for what you told us. The ones below are further out."
@@ -87,12 +97,14 @@ export default async function JobsPage() {
         </section>
       )}
 
-      {months.map(({ month, rows }) => (
+      {months.map(({ month, rows, hidden }) => (
         <section key={month} className="tb-band tb-band-top tb-layer">
           <div className="tb-wrap">
             <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>{month}</h2>
             <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
-              {rows.length} window{rows.length === 1 ? "" : "s"} open{rows.length === 1 ? "s" : ""} this month
+              {dated
+                ? <>{rows.length} window{rows.length === 1 ? "" : "s"} open{rows.length === 1 ? "s" : ""} this month</>
+                : <>{rows.length + hidden} posting{rows.length + hidden === 1 ? "" : "s"}{hidden > 0 && <> &middot; showing the {rows.length} that fit you best</>}</>}
             </p>
             <div className="tb-cards tb-cards--2">
               {rows.map((r) => (

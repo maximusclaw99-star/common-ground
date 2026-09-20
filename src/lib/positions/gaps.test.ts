@@ -8,6 +8,7 @@ const position: Position = {
   id: "t1", title: "Cyber Risk Intern", company: "Deloitte", companyId: null, type: "internship",
   vertical: "consulting", location: null, opensOn: "2026-10-01", closesOn: "2026-11-01",
   targetGradYears: [2027], description: null, url: null, source: "test",
+  category: null, datesKnown: true, justPosted: false, requirementsTypical: false,
   requirements: [
     { requirement: "Python", kind: "skill", required: true },          // Sam has it
     { requirement: "Excel modeling", kind: "skill", required: false },  // Sam lacks it

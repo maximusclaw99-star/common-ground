@@ -1,8 +1,10 @@
+import Link from "next/link";
 import type { Gap, RankedPosition } from "@/lib/positions";
 
 const TYPE_LABEL: Record<string, string> = { internship: "Internship", full_time: "Full time", research: "Research" };
 
 export function windowLabel(fit: RankedPosition["fit"]): string {
+  if (!fit.datesKnown) return fit.justPosted ? "Just posted" : "Posted";
   switch (fit.windowStatus) {
     case "open": return "Open now";
     case "opens_soon": return `Opens in ${fit.daysUntilOpen} day${fit.daysUntilOpen === 1 ? "" : "s"}`;
@@ -26,7 +28,7 @@ export function OpeningRow({ ranked, gaps, advice }: { ranked: RankedPosition; g
   const closed = fit.windowStatus === "closed";
 
   return (
-    <article className="tb-card" style={{ opacity: closed ? 0.55 : 1 }}>
+    <Link href={`/jobs/${position.id}`} className="tb-card" style={{ opacity: closed ? 0.55 : 1, display: "block", color: "inherit", textDecoration: "none" }}>
       <div className="flex items-start justify-between gap-[var(--space-12)]">
         <div className="min-w-0">
           <p className="title" style={{ textTransform: "uppercase", margin: 0 }}>{position.title}</p>
@@ -48,7 +50,7 @@ export function OpeningRow({ ranked, gaps, advice }: { ranked: RankedPosition; g
       </div>
 
       <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-12) 0 0", textTransform: "none" }}>
-        {position.opensOn} &rarr; {position.closesOn}
+        {position.datesKnown ? <>{position.opensOn} &rarr; {position.closesOn}</> : (position.category ?? "Internship")}
       </p>
 
       <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-8) 0 0" }}>
@@ -81,6 +83,6 @@ export function OpeningRow({ ranked, gaps, advice }: { ranked: RankedPosition; g
           )}
         </div>
       )}
-    </article>
+    </Link>
   );
 }

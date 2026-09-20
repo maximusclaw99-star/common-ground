@@ -67,7 +67,7 @@ export default async function CompanyPage({
 
   const gaps = computeGaps({ profile: student.profile, facts: student.facts, meta: student.meta, demand });
 
-  const openings = rankPositions(scorable, positionsAt(pool.positions, name))
+  const openings = rankPositions(scorable, positionsAt(pool.positions, name), { allVerticals: true })
     .filter((r) => r.fit.windowStatus !== "closed")
     .sort((a, b) => a.position.opensOn.localeCompare(b.position.opensOn) || b.fit.score - a.fit.score)
     .slice(0, 5);
@@ -201,11 +201,11 @@ export default async function CompanyPage({
                   {openings.map(({ position, fit }) => (
                     <li key={position.id} className="flex flex-wrap items-baseline justify-between gap-[var(--space-12)]">
                       <span className="body-sm" style={{ margin: 0 }}>
-                        {position.title}
+                        <Link className="tb-link" href={`/jobs/${position.id}`}>{position.title}</Link>
                         {position.location && <span style={{ color: "var(--ink-faint)" }}> &middot; {position.location}</span>}
                       </span>
                       <span className="mono-micro" style={{ color: fit.windowStatus === "upcoming" ? "var(--ink-faint)" : "var(--alert)", whiteSpace: "nowrap" }}>
-                        {windowLabel(fit)} &middot; {position.opensOn}
+                        {windowLabel(fit)}{fit.datesKnown && <> &middot; {position.opensOn}</>}
                       </span>
                     </li>
                   ))}
