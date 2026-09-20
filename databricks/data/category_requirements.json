@@ -1,0 +1,98 @@
+[
+  {"category": "Software Engineering", "vertical": "swe", "requirements": [
+    {"requirement": "Python", "kind": "skill", "required": true},
+    {"requirement": "Java", "kind": "skill", "required": false},
+    {"requirement": "Git", "kind": "skill", "required": true},
+    {"requirement": "SQL", "kind": "skill", "required": false},
+    {"requirement": "Distributed Systems", "kind": "skill", "required": false},
+    {"requirement": "Prior internship or shipped project", "kind": "experience", "required": false},
+    {"requirement": "BS in Computer Science or related", "kind": "degree", "required": true}]},
+  {"category": "Data Science / Analytics / AI", "vertical": "swe", "requirements": [
+    {"requirement": "Python", "kind": "skill", "required": true},
+    {"requirement": "SQL", "kind": "skill", "required": true},
+    {"requirement": "Machine Learning", "kind": "skill", "required": false},
+    {"requirement": "Statistics", "kind": "skill", "required": true},
+    {"requirement": "Spark", "kind": "skill", "required": false},
+    {"requirement": "Databricks Data Analyst Associate", "kind": "certification", "required": false},
+    {"requirement": "BS in Computer Science or related", "kind": "degree", "required": true}]},
+  {"category": "Product Management", "vertical": "swe", "requirements": [
+    {"requirement": "SQL", "kind": "skill", "required": false},
+    {"requirement": "Stakeholder management", "kind": "skill", "required": true},
+    {"requirement": "PowerPoint", "kind": "skill", "required": false},
+    {"requirement": "Prior internship or shipped project", "kind": "experience", "required": true},
+    {"requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}]},
+  {"category": "Quantitative Trading / Research", "vertical": "finance", "requirements": [
+    {"requirement": "Python", "kind": "skill", "required": true},
+    {"requirement": "Statistics", "kind": "skill", "required": true},
+    {"requirement": "Options pricing", "kind": "skill", "required": false},
+    {"requirement": "Distributed Systems", "kind": "skill", "required": false},
+    {"requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}]},
+  {"category": "Finance / Investment Banking", "vertical": "finance", "requirements": [
+    {"requirement": "Excel modeling", "kind": "skill", "required": true},
+    {"requirement": "Financial modeling", "kind": "skill", "required": true},
+    {"requirement": "DCF valuation", "kind": "skill", "required": false},
+    {"requirement": "Bloomberg Market Concepts", "kind": "certification", "required": false},
+    {"requirement": "SIE", "kind": "certification", "required": false},
+    {"requirement": "Prior finance internship", "kind": "experience", "required": false},
+    {"requirement": "Bachelor's in finance, economics, or math", "kind": "degree", "required": true}]},
+  {"category": "Accounting / Audit / Tax", "vertical": "accounting", "requirements": [
+    {"requirement": "Excel modeling", "kind": "skill", "required": true},
+    {"requirement": "Accounting", "kind": "skill", "required": true},
+    {"requirement": "Financial statements", "kind": "skill", "required": false},
+    {"requirement": "CPA (in progress)", "kind": "certification", "required": true},
+    {"requirement": "Alteryx", "kind": "skill", "required": false},
+    {"requirement": "150 credit hours toward CPA eligibility", "kind": "degree", "required": true},
+    {"requirement": "Prior accounting internship or VITA volunteer work", "kind": "experience", "required": false}]},
+  {"category": "Consulting / Strategy", "vertical": "consulting", "requirements": [
+    {"requirement": "Excel modeling", "kind": "skill", "required": true},
+    {"requirement": "PowerPoint", "kind": "skill", "required": true},
+    {"requirement": "Case interviews", "kind": "skill", "required": true},
+    {"requirement": "Market sizing", "kind": "skill", "required": false},
+    {"requirement": "Prior leadership role in a student org", "kind": "experience", "required": false},
+    {"requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}]},
+  {"category": "Engineering (Mechanical, Electrical, Civil, Chemical) (2,092 roles)", "vertical": "engineering", "requirements": [
+    {"requirement": "MATLAB", "kind": "skill", "required": false},
+    {"requirement": "CAD (SolidWorks or similar)", "kind": "skill", "required": true},
+    {"requirement": "Python", "kind": "skill", "required": false},
+    {"requirement": "Prior internship or shipped project", "kind": "experience", "required": false},
+    {"requirement": "BS in an engineering discipline", "kind": "degree", "required": true}]},
+  {"category": "Operations / Supply Chain / Logistics", "vertical": "operations", "requirements": [
+    {"requirement": "Excel modeling", "kind": "skill", "required": true},
+    {"requirement": "SQL", "kind": "skill", "required": false},
+    {"requirement": "Lean Six Sigma Green Belt", "kind": "certification", "required": false},
+    {"requirement": "Process mapping", "kind": "skill", "required": false},
+    {"requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}]},
+  {"category": "Sales / Business Development", "vertical": "business", "requirements": [
+    {"requirement": "Public speaking", "kind": "skill", "required": true},
+    {"requirement": "Stakeholder management", "kind": "skill", "required": false},
+    {"requirement": "Excel modeling", "kind": "skill", "required": false},
+    {"requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}]},
+  {"category": "Marketing / Communications", "vertical": "business", "requirements": [
+    {"requirement": "PowerPoint", "kind": "skill", "required": true},
+    {"requirement": "Data analytics", "kind": "skill", "required": false},
+    {"requirement": "Public speaking", "kind": "skill", "required": false},
+    {"requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}]},
+  {"category": "Design / UX", "vertical": "design", "requirements": [
+    {"requirement": "Figma", "kind": "skill", "required": true},
+    {"requirement": "Prior internship or shipped project", "kind": "experience", "required": true},
+    {"requirement": "Public speaking", "kind": "skill", "required": false}]},
+  {"category": "Human Resources / People", "vertical": "business", "requirements": [
+    {"requirement": "Stakeholder management", "kind": "skill", "required": true},
+    {"requirement": "Excel modeling", "kind": "skill", "required": false},
+    {"requirement": "Bachelor's in business, economics, or engineering", "kind": "degree", "required": true}]},
+  {"category": "Research / Science / Healthcare", "vertical": "science", "requirements": [
+    {"requirement": "Statistics", "kind": "skill", "required": true},
+    {"requirement": "Python", "kind": "skill", "required": false},
+    {"requirement": "R", "kind": "skill", "required": false},
+    {"requirement": "Prior research experience", "kind": "experience", "required": false}]},
+  {"category": "Legal / Policy / Compliance", "vertical": "business", "requirements": [
+    {"requirement": "Public speaking", "kind": "skill", "required": false},
+    {"requirement": "Stakeholder management", "kind": "skill", "required": false},
+    {"requirement": "Prior leadership role in a student org", "kind": "experience", "required": false}]},
+  {"category": "Education / Nonprofit / Public Sector", "vertical": "business", "requirements": [
+    {"requirement": "Public speaking", "kind": "skill", "required": false},
+    {"requirement": "Prior leadership role in a student org", "kind": "experience", "required": false}]},
+  {"category": "Other Internships (2,103 roles)", "vertical": "other", "requirements": [
+    {"requirement": "Excel modeling", "kind": "skill", "required": false},
+    {"requirement": "Prior internship or shipped project", "kind": "experience", "required": false}]}
+]

@@ -27,6 +27,7 @@ SCHEMA = "workspace.jobsearch."
 TABLES = sorted([
     "students", "people", "companies", "positions", "position_requirements", "connection_paths",
     "matches_positions", "matches_people", "v_skill_gaps", "v_opening_timeline",
+    "internships", "category_requirements", "learning_catalog", "agent_runs",
 ])
 
 SAMPLE_QUESTIONS = [
@@ -38,6 +39,9 @@ SAMPLE_QUESTIONS = [
     "How many positions per vertical open each month over the next year?",
     "Which companies have the most alumni connections to UT Austin students?",
     "List students with no connection path stronger than 0.5 to anyone at a target company.",
+    "How many Summer 2027 internships are there per category, and how many are just posted?",
+    "Which companies in the internships directory have the most software engineering postings?",
+    "What did the plan agent recommend most often, and how many fabrications did the check catch?",
 ]
 
 TEXT_INSTRUCTIONS = [
@@ -48,6 +52,7 @@ TEXT_INSTRUCTIONS = [
     "* window_status values: open, opens_soon (within 60 days), upcoming, closed. Application timing questions use positions.opens_on / closes_on.\n",
     "* 'Skill gaps' means v_skill_gaps; required = true rows are hard blockers.\n",
     "* Always include student name and id together, and person name with company.\n",
+    "* internships is the real Summer 2027 directory (6,600+ postings, no dates or requirements in the source); category_requirements is what each category typically asks for; learning_catalog is how to close a requirement; agent_runs is every run of the plan agent with its tool trace.\n",
     "* Never suggest automated outreach or mass applications; the product is about human conversations.",
 ]
 
