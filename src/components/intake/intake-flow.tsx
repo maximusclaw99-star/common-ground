@@ -19,8 +19,15 @@ function emptyFor(gap: Gap): unknown {
   return gap.field.input === "chips" || gap.field.input === "date-list" ? [] : null;
 }
 
-export function IntakeFlow({ steps, unrouted }: { steps: IntakeStep[]; unrouted: string[] }) {
+export function IntakeFlow({ steps: liveSteps, unrouted }: { steps: IntakeStep[]; unrouted: string[] }) {
   const router = useRouter();
+  // The flow owns its step list until the student finishes. A server action's
+  // response re-renders the page, and the page recomputes steps from the
+  // answers just saved — so the screen that was just answered vanishes from
+  // the prop at the same moment `index` advances, and one click skips two.
+  // Snapshotting on mount makes the prop's later shape irrelevant; the next
+  // visit to /intake mounts fresh and recomputes.
+  const [steps] = useState(liveSteps);
   const [index, setIndex] = useState(0);
   const [saving, startSaving] = useTransition();
   const [error, setError] = useState<string | null>(null);
