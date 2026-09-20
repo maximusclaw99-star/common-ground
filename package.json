@@ -13,7 +13,8 @@
     "seed": "tsx scripts/seed-companies.ts",
     "sync:design": "node scripts/sync-design.mjs",
     "predev": "node scripts/sync-design.mjs",
-    "prebuild": "node scripts/sync-design.mjs"
+    "prebuild": "node scripts/sync-design.mjs",
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",

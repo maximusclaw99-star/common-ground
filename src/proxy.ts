@@ -32,7 +32,7 @@ export async function proxy(request: NextRequest) {
       request.cookies.set(DEMO_COOKIE, id);
       response = NextResponse.next({ request });
       response.cookies.set(DEMO_COOKIE, id, {
-        httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 30,
+        httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 24 * 30,
       });
     }
     response.headers.set("x-cg-mode", "demo");

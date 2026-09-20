@@ -2,7 +2,8 @@
 
 import { getPositionsProvider, rankPositions } from "@/lib/positions";
 import { runPlanAgent, type AgentResult } from "@/lib/plan/agent";
-import { getSession } from "@/lib/session";
+import { AGENT_LIMIT, allow } from "@/lib/limit";
+import { demoAccountId, getSession } from "@/lib/session";
 
 export interface AskState {
   result: AgentResult | null;
@@ -14,6 +15,8 @@ export async function askAgent(_prev: AskState, formData: FormData): Promise<Ask
   const positionId = String(formData.get("position") ?? "");
   const { student } = await getSession();
   if (!student) return { result: null, error: "Sign in first." };
+  const who = student.email ?? (await demoAccountId()) ?? "anonymous";
+  if (!allow("agent", who, AGENT_LIMIT)) return { result: null, error: "That is a lot of runs in ten minutes. Give it a few and try again." };
 
   const provider = getPositionsProvider();
   const positions = await provider.getPositions({ companies: student.facts.target_companies, limit: 8000 });

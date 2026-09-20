@@ -14,8 +14,8 @@ fi
 chmod +x scripts/pre-commit scripts/load.sh
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 if [ -n "$ROOT" ] && [ -d "$ROOT/.git" ]; then
-  ln -sf "$(pwd)/scripts/pre-commit" "$ROOT/.git/hooks/pre-commit"
-  echo "pre-commit secret scan installed at $ROOT/.git/hooks/pre-commit"
+  git -C "$ROOT" config core.hooksPath .githooks
+  echo "pre-commit secret scan active: core.hooksPath -> .githooks"
 fi
 
 [ -f .env ] || { cp .env.example .env; echo "created .env — fill in DATABRICKS_HOST and DATABRICKS_TOKEN"; }

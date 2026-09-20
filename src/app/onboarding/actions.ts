@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { UnreadablePdfError, getResumeProvider } from "@/lib/resume";
 import { EMPTY_FACTS } from "@/lib/ai/schemas";
+import { RESUME_LIMIT, allow } from "@/lib/limit";
 import { deriveAll } from "@/lib/intake/derive";
 import { FIELDS } from "@/lib/intake/fields";
 import { demoStore } from "@/lib/session/demo-store";
@@ -25,6 +26,8 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
   if (!(file instanceof File) || file.size === 0) return { error: "Choose a PDF first." };
   if (file.type !== "application/pdf") return { error: "It needs to be a PDF." };
   if (file.size > 15 * 1024 * 1024) return { error: "That file is over 15 MB." };
+  const who = (await getSession()).student?.email ?? (await demoAccountId()) ?? "anonymous";
+  if (!allow("resume", who, RESUME_LIMIT)) return { error: "That is a lot of uploads in ten minutes. Give it a few and try again." };
 
   // Checked before the bytes are read, so a resume is never taken from someone
   // when nothing can be done with it.

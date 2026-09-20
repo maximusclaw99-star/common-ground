@@ -115,7 +115,7 @@ docs/databricks_notes.md    what worked / didn't on Free Edition, with the exact
 docs/demo.md                queries to run live
 ```
 
-No tokens live in this repo. Every script reads from the environment; the pre-commit hook refuses anything that
+No tokens live in this repo. Every script reads from the environment; the pre-commit hook (`.githooks/pre-commit`, active after `npm install`) refuses anything that
 looks like one. `make check-secrets` scans the tree.
 
 ## The plan agent
