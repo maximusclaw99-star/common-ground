@@ -5,6 +5,7 @@ import { windowLabel } from "@/components/opening-row";
 import { PersonCard } from "@/components/person-card";
 import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
 import { rankPeople } from "@/lib/affinity/score";
+import { scorePersonByHomophily } from "@/lib/homophily";
 import { companyInfo, sameCompany } from "@/lib/companies";
 import { getPeopleProvider } from "@/lib/people";
 import { getPositionsProvider, positionGaps, rankPositions } from "@/lib/positions";
@@ -132,7 +133,7 @@ export default async function OpeningPage({ params }: { params: Promise<{ id: st
                 </p>
               ) : (
                 <div className="grid gap-[var(--space-12)]" style={{ marginTop: "var(--space-12)" }}>
-                  {top.map((r) => <PersonCard key={r.personId} person={byId.get(r.personId)!} result={r} />)}
+                  {top.map((r) => <PersonCard key={r.personId} person={byId.get(r.personId)!} result={r} homophily={scorePersonByHomophily(student, byId.get(r.personId)!)} />)}
                 </div>
               )}
               <Link className="tb-link mono-label" href={`/dashboard/${info.slug}`} style={{ display: "inline-block", marginTop: "var(--space-16)" }}>

@@ -43,6 +43,9 @@ export default async function DashboardPage() {
           <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
             Pick a company.<br />Then meet the people.
           </h1>
+          <p className="mono-label" style={{ margin: "0 0 var(--space-16)" }}>
+            <Link className="tb-link" href="/jobs">Resume helper: applications picked for you, what each one wants, and how to improve your chances &#8599;</Link>
+          </p>
           <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
             One at a time. Choose where you want to apply and we rank everyone there by what you
             genuinely have in common with them.

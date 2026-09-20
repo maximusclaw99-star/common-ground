@@ -29,7 +29,7 @@ export function Nav({ current, signedIn, cta, email }: NavProps) {
       {signedIn ? (
         <div className="tb-nav__links">
           <NavLink href="/dashboard" active={current === "people"}>Dashboard</NavLink>
-          <NavLink href="/jobs" active={current === "openings"}>Openings</NavLink>
+          <NavLink href="/jobs" active={current === "openings"}>Applications</NavLink>
           <NavLink href="/intake" active={current === "profile"}>Profile</NavLink>
         </div>
       ) : (

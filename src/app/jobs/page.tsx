@@ -27,6 +27,13 @@ export default async function JobsPage() {
   const positions = await provider.getPositions({ companies: student.facts.target_companies, limit: 8000 });
   const ranked = rankPositions(scorable, positions);
   const verticals = studentVerticals(scorable);
+  // Everything at the companies the student chose, whatever the vertical —
+  // the focus they set on the dashboard outranks our category guess.
+  const targets = new Set(student.facts.target_companies.map((c) => c.trim().toLowerCase()));
+  const atTargets = rankPositions(scorable, positions.filter((p) => targets.has(p.company.toLowerCase())), { allVerticals: true })
+    .filter((r) => r.fit.windowStatus !== "closed")
+    .sort((a, b) => Number(b.fit.justPosted) - Number(a.fit.justPosted) || b.fit.score - a.fit.score)
+    .slice(0, 24);
 
   const gapsById = new Map(ranked.map((r) => [r.position.id, positionGaps(scorable, r.position)]));
 
@@ -65,12 +72,13 @@ export default async function JobsPage() {
 
       <section className="tb-band tb-layer">
         <div className="tb-wrap">
+          <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Resume helper &middot; Summer 2027 Internships Directory</p>
           <h1 className="display-md" style={{ textTransform: "uppercase", margin: "var(--space-16) 0" }}>
-            {open.length} window{open.length === 1 ? "" : "s"},<br />soonest first.
+            {dated ? <>{open.length} window{open.length === 1 ? "" : "s"},<br />soonest first.</> : <>Applications<br />picked for you.</>}
           </h1>
           <p className="body tb-copy" style={{ color: "var(--ink-muted)", margin: 0 }}>
             {!dated && open.length > 0
-              ? `${open.length} real postings from the Summer 2027 directory in the verticals you told us about, ${open.filter((r) => r.fit.justPosted).length} just posted. Open one to see who you know there.`
+              ? `${open.length} real postings in the verticals you told us about, ${open.filter((r) => r.fit.justPosted).length} just posted. Open one: what they ask for, where you stand, who you know there, and the agent that plans the gaps and rewrites your resume for it.`
               : soon.length > 0
               ? `${soon.length} ${soon.length === 1 ? "is" : "are"} open or open inside 60 days. Check who you know there before you apply.`
               : verticals.length
@@ -92,6 +100,22 @@ export default async function JobsPage() {
                 Open it and ask the agent how to close the {topGap.requirement} gap.
               </p>
             )}
+          </div>
+        </section>
+      )}
+
+      {atTargets.length > 0 && (
+        <section className="tb-band tb-band-top tb-layer">
+          <div className="tb-wrap">
+            <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>At your companies</h2>
+            <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "0 0 var(--space-24)" }}>
+              {student.facts.target_companies.join(" · ")} &middot; every posting there, whatever the category
+            </p>
+            <div className="grid gap-[var(--space-16)] md:grid-cols-2">
+              {atTargets.map((r) => (
+                <OpeningRow key={r.position.id} ranked={r} gaps={gapsById.get(r.position.id) ?? positionGaps(scorable, r.position)} />
+              ))}
+            </div>
           </div>
         </section>
       )}

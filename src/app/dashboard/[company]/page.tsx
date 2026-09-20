@@ -49,15 +49,15 @@ export default async function CompanyPage({
   const { results, demand } = rankPeople(scorable, here);
   const byId = new Map(pool.people.map((p) => [p.id, p]));
   const strong = results.filter((r) => r.rank <= 5);
-  const timely = results.filter((r) => r.outreach.timing);
   const best = results[0];
 
-  const homophily = byHomophily ? rankPeopleByHomophily(student, here) : [];
+  const homophily = rankPeopleByHomophily(student, here);
+  const homophilyById = new Map(homophily.map((h) => [h.personId, h]));
   const ladderById = new Map(results.map((r) => [r.personId, r]));
   // What the main list shows, in the chosen order.
   const listed = byHomophily
     ? homophily.map((h) => ({ id: h.personId, result: ladderById.get(h.personId)!, homophily: h }))
-    : results.map((r) => ({ id: r.personId, result: r, homophily: undefined }));
+    : results.map((r) => ({ id: r.personId, result: r, homophily: homophilyById.get(r.personId) }));
   const here_ = `/dashboard/${slug}`;
 
   // Strong ties elsewhere: a shared fraternity is a shared fraternity
@@ -70,7 +70,7 @@ export default async function CompanyPage({
   const openings = rankPositions(scorable, positionsAt(pool.positions, name), { allVerticals: true })
     .filter((r) => r.fit.windowStatus !== "closed")
     .sort((a, b) => a.position.opensOn.localeCompare(b.position.opensOn) || b.fit.score - a.fit.score)
-    .slice(0, 5);
+    .slice(0, 10);
 
   return (
     <div className="tb-page" style={{ minHeight: "100vh" }}>
@@ -108,24 +108,6 @@ export default async function CompanyPage({
         </div>
       </section>
 
-      {timely.length > 0 && (
-        <section className="tb-band tb-band-top tb-layer">
-          <div className="tb-wrap">
-            <p className="mono-label" style={{ color: "var(--alert)", margin: "0 0 var(--space-8)" }}>
-              <span className="tb-led tb-led--alert" aria-hidden /> Window closing
-            </p>
-            <h2 className="display-sm" style={{ textTransform: "uppercase", margin: "0 0 var(--space-8)" }}>
-              Write to these first
-            </h2>
-            <p className="body-sm tb-copy" style={{ color: "var(--ink-muted)", margin: "0 0 var(--space-24)" }}>
-              {timely[0].outreach.timing}.
-            </p>
-            <div className="tb-cards tb-cards--2">
-              {timely.map((r) => <PersonCard key={r.personId} person={byId.get(r.personId)!} result={r} />)}
-            </div>
-          </div>
-        </section>
-      )}
 
       {results.length > 0 && (
         <section className="tb-band tb-band-top tb-layer">
@@ -194,8 +176,8 @@ export default async function CompanyPage({
             {openings.length > 0 && (
               <div className="tb-panel">
                 <div className="flex flex-wrap items-center justify-between gap-[var(--space-16)]">
-                  <p className="mono-label" style={{ margin: 0 }}>&gt; Openings at {info.name}</p>
-                  <Link className="tb-link mono-label" href="/jobs">All openings &#8599;</Link>
+                  <p className="mono-label" style={{ margin: 0 }}>&gt; Applications at {info.name} &middot; Summer 2027 directory</p>
+                  <Link className="tb-link mono-label" href="/jobs">All recommended &#8599;</Link>
                 </div>
                 <ul style={{ margin: "var(--space-16) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-12)" }}>
                   {openings.map(({ position, fit }) => (
@@ -206,7 +188,7 @@ export default async function CompanyPage({
                       </span>
                       <span className="mono-micro" style={{ color: fit.windowStatus === "upcoming" ? "var(--ink-faint)" : "var(--alert)", whiteSpace: "nowrap" }}>
                         {windowLabel(fit)}{fit.datesKnown && <> &middot; {position.opensOn}</>}
-                        {" "}&middot; <Link className="tb-link" href={`/jobs/${position.id}`}>Improve my chances &#8599;</Link>
+                        {" "}&middot; <Link className="tb-link" href={`/jobs/${position.id}`}>What they want &middot; improve my chances &#8599;</Link>
                       </span>
                     </li>
                   ))}

@@ -57,6 +57,10 @@ export function OpeningRow({ ranked, gaps, advice }: { ranked: RankedPosition; g
         {fit.reasons.join(" · ")}
       </p>
 
+      <p className="mono-label" style={{ margin: "var(--space-12) 0 0", color: "var(--ink)" }}>
+        What they want &middot; improve my chances &#8599;
+      </p>
+
       {gaps.length > 0 && (
         <div className="tb-rule" style={{ marginTop: "var(--space-12)", paddingTop: "var(--space-12)" }}>
           <p className="mono-micro" style={{ margin: 0, color: blockers.length ? "var(--alert)" : "var(--ink-subtle)" }}>

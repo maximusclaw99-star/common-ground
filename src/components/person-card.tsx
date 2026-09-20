@@ -1,16 +1,37 @@
 import Link from "next/link";
 import type { AffinityResult, Person } from "@/lib/affinity/types";
-import type { HomophilyResult } from "@/lib/homophily/scorer";
+import { NO_FACTORS, type HomophilyResult } from "@/lib/homophily/scorer";
 import { Avatar } from "./avatar";
 import { HomophilyBadge } from "./homophily-badge";
 import { TierBadge } from "./tier-badge";
 
 /**
- * One person. With `homophily` set the card shows that score and its match
- * drivers instead of the ladder tier and its opener — the same card, ranked
- * by the other scorer.
+ * One person. The body is what you have in common, whichever scorer ranked
+ * the list; `homophily` swaps the badge and adds its drivers to the lines.
  */
+/**
+ * What the student and this person share, as sentences, strongest first: the
+ * ladder's evidence (a post or an event only if nothing personal is shared)
+ * plus the homophily drivers, deduplicated. Three lines at most on a card.
+ */
+export function inCommonLines(result: AffinityResult, homophily?: HomophilyResult, max = 3): string[] {
+  const personal = result.evidence.filter((e) => e.kind !== "post" && e.kind !== "event").map((e) => e.label);
+  const timely = result.evidence.filter((e) => e.kind === "post" || e.kind === "event").map((e) => e.label);
+  const drivers = (homophily?.matchDrivers ?? []).filter((d) => d !== NO_FACTORS);
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const line of [...personal, ...drivers, ...(personal.length || drivers.length ? [] : timely)]) {
+    const key = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(line);
+    if (out.length >= max) break;
+  }
+  return out;
+}
+
 export function PersonCard({ person, result, homophily }: { person: Person; result: AffinityResult; homophily?: HomophilyResult }) {
+  const lines = inCommonLines(result, homophily);
   return (
     <Link href={`/people/${person.id}`} className="tb-card">
       <div className="flex items-start justify-between gap-[var(--space-12)]">
@@ -26,14 +47,14 @@ export function PersonCard({ person, result, homophily }: { person: Person; resu
         {homophily ? <HomophilyBadge result={homophily} /> : <TierBadge rank={result.rank} score={result.score} />}
       </div>
 
-      {homophily ? (
-        <ul className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-4)" }}>
-          {homophily.matchDrivers.map((d) => <li key={d}>&rarr; {d}</li>)}
-        </ul>
-      ) : (
+      {lines.length === 0 ? (
         <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0" }}>
-          {result.evidence[0]?.label ?? "Nothing in common yet beyond wanting to work there."}
+          Nothing in common yet beyond wanting to work there.
         </p>
+      ) : (
+        <ul className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-4)" }}>
+          {lines.map((d) => <li key={d}>&rarr; {d}</li>)}
+        </ul>
       )}
 
       {result.outreach.timing && (
