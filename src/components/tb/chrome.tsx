@@ -111,11 +111,18 @@ export function StatusFooter({
  * dropping a student's answers would be a worse failure than saying so.
  */
 export function DemoStrip() {
+  // Two demo modes now. Without Databricks the student lives in this server's
+  // memory; with it, in a Delta table keyed by the browser's cookie, which is
+  // what the deployed site runs. The line says which, because "no database"
+  // on a site that is saving everything to one is a lie.
+  const persisted = Boolean(process.env.DATABRICKS_HOST && process.env.DATABRICKS_TOKEN && process.env.DEMO_SESSIONS !== "memory");
   return (
     <div className="tb-band-bottom tb-layer mono-micro"
       style={{ padding: "var(--space-8) var(--space-24)", color: "var(--ink-faint)", textTransform: "uppercase" }}>
-      <span className="tb-led tb-led--alert" aria-hidden="true" />{" "}
-      No database configured &mdash; your answers are private to this browser and live in the server&rsquo;s memory until it restarts
+      <span className={`tb-led ${persisted ? "tb-led--live" : "tb-led--alert"}`} aria-hidden="true" />{" "}
+      {persisted
+        ? <>Demo &mdash; no sign-in. Your answers are saved to this browser&rsquo;s session in the Databricks workspace.</>
+        : <>No database configured &mdash; answers are private to this browser and live in the server&rsquo;s memory until it restarts</>}
     </div>
   );
 }
