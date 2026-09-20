@@ -33,7 +33,7 @@ Rules:
 - Record anything ambiguous or contradictory in "uncertainties" instead of guessing. That list is shown to the student to correct, so it is a feature, not a failure.
 - Fill "affinity" from what the resume prints under Activities, Leadership, Certifications or inside experience bullets: clubs and student organisations, Greek letters and honour societies, named programmes, fellowships and scholarships, case competitions, named clients or engagements, certifications (including ones in progress), and any clearance.
 - Do not infer an affiliation from a company or school name. If the document does not say it, it did not happen.
-- If an abbreviation is ambiguous ("BAP"), record it verbatim and put the ambiguity in "uncertainties".
+- If an abbreviation in the document is ambiguous, record it verbatim and put the ambiguity in "uncertainties". Only mention things that are actually in the document; never note that something is absent.
 - Do not attempt hometown, high school, communities, events or target companies. They are not on a resume, and a guessed hometown is worse than a blank one.
 
 Reply with ONE JSON object and nothing else. No prose, no code fence. Use exactly this shape, using null or [] where the resume says nothing:
@@ -48,6 +48,9 @@ Reply with ONE JSON object and nothing else. No prose, no code fence. Use exactl
    "case_competitions":string[],"programs":string[],"prior_employers":string[],"clients_and_programs":string[],
    "certifications_in_progress":string[],"clearance":string|null},
  "uncertainties":string[]}`;
+
+/** Notes that describe something missing from the resume, which are never useful to show. */
+const ABSENCE = /\b(not|isn't|is not|was not|wasn't) (present|listed|mentioned|found|included|in the (resume|document))\b|\babsent\b|does not (appear|mention|list|include)/i;
 
 /** ai_query on a 70B model is comfortably slower than an interactive query. */
 const WAIT = "50s";
@@ -93,7 +96,11 @@ export const databricksResumeProvider: ResumeProvider = {
 
     for (let attempt = 0; attempt < 2; attempt += 1) {
       try {
-        return StudentProfileSchema.parse(extractJsonObject(reply));
+        const profile = StudentProfileSchema.parse(extractJsonObject(reply));
+        // A 70B model sometimes notes that something is *absent* ("BAP is not
+        // present"), which is not an ambiguity in the document and reads as a
+        // misread to the student. Only notes about what is on the page survive.
+        return { ...profile, uncertainties: profile.uncertainties.filter((u) => !ABSENCE.test(u)) };
       } catch (error) {
         const complaint = error instanceof Error ? error.message : String(error);
         if (attempt === 1) {

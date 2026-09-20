@@ -2,11 +2,12 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { DemoStrip, Nav, StatusFooter } from "@/components/tb/chrome";
 import { Avatar } from "@/components/avatar";
-import { TierBadge, TierLadder, tierColor } from "@/components/tier-badge";
+import { TierBadge, tierColor } from "@/components/tier-badge";
 import { scoreAffinity } from "@/lib/affinity/score";
 import { getPeopleProvider } from "@/lib/people";
 import { companyInfo } from "@/lib/companies";
 import { scorePersonByHomophily } from "@/lib/homophily";
+import { NO_FACTORS } from "@/lib/homophily/scorer";
 import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,18 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
 
   const result = scoreAffinity({ profile: student.profile, facts: student.facts }, person);
   const homophily = scorePersonByHomophily(student, person);
+  // One list, strongest first: the ladder's evidence sentences carry a tier
+  // colour; the homophily drivers fill in anything the ladder did not phrase.
+  const seen = new Set<string>();
+  const inCommon = [
+    ...result.evidence.map((e) => ({ text: e.label, rank: e.rank as number | null })),
+    ...homophily.matchDrivers.filter((d) => d !== NO_FACTORS).map((d) => ({ text: d, rank: null as number | null })),
+  ].filter((c) => {
+    const key = c.text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
   const companyPath = person.currentCompany ? `/dashboard/${companyInfo(person.currentCompany).slug}` : "/dashboard";
 
   return (
@@ -113,26 +126,25 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
 
           <aside className="grid gap-[var(--space-24)] content-start">
             <div className="tb-panel">
-              <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: "0 0 var(--space-12)" }}>
-                &gt; Where this lands
-              </p>
-              <TierLadder activeRank={result.rank} />
-            </div>
-
-            <div className="tb-panel">
-              <div className="flex flex-wrap items-center justify-between gap-[var(--space-12)]">
-                <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; Everything in common</p>
-                <span className="mono-label" style={{ color: homophily.totalScore > 0 ? "var(--signal)" : "var(--ink-faint)" }}>
-                  {homophily.totalScore} pts
-                </span>
-              </div>
-              <ul className="body-sm" style={{ margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", color: "var(--ink-muted)", display: "grid", gap: "var(--space-8)" }}>
-                {homophily.matchDrivers.map((d) => <li key={d}>&rarr; {d}</li>)}
-              </ul>
+              <p className="mono-label" style={{ color: "var(--ink-subtle)", margin: 0 }}>&gt; What you have in common</p>
+              {inCommon.length === 0 ? (
+                <p className="body-sm" style={{ color: "var(--ink-muted)", margin: "var(--space-12) 0 0" }}>
+                  Nothing specific yet beyond wanting to work there. The questions below are what would find something.
+                </p>
+              ) : (
+                <ul style={{ margin: "var(--space-12) 0 0", padding: 0, listStyle: "none", display: "grid", gap: "var(--space-10)" }}>
+                  {inCommon.map((c) => (
+                    <li key={c.text} style={{ display: "flex", gap: "var(--space-12)", alignItems: "flex-start" }}>
+                      <span aria-hidden style={{ width: 8, height: 8, marginTop: 7, flexShrink: 0, background: c.rank ? tierColor(c.rank) : "var(--ink-faint)" }} />
+                      <p className="body-sm" style={{ margin: 0 }}>{c.text}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
               <p className="mono-micro" style={{ color: "var(--ink-faint)", margin: "var(--space-12) 0 0", textTransform: "none" }}>
-                Weighted by your settings.{" "}
+                Strongest first.{" "}
                 <Link href={`${companyPath}?rank=homophily`} className="tb-link" style={{ color: "var(--ink)", textTransform: "none" }}>
-                  Change the weights
+                  Weight what matters to you
                 </Link>
               </p>
             </div>

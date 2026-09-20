@@ -21,7 +21,7 @@ Rules:
 
 Also fill "affinity": clubs and student organisations, Greek letters and honour societies, named programmes, fellowships and scholarships, case competitions, named clients or engagements, certifications (including ones in progress), and any clearance. These decide who we introduce the student to, so a club you skipped costs them a real connection.
 - Do not infer an affiliation from a company or school name. If the document does not say it, it did not happen.
-- If an abbreviation is ambiguous ("BAP"), record it verbatim and put the ambiguity in "uncertainties" — the student is shown that note next to the question that resolves it.
+- If an abbreviation in the document is ambiguous, record it verbatim and put the ambiguity in "uncertainties" — the student is shown that note next to the question that resolves it.
 - Do not attempt hometown, high school, communities, events or target companies. They are not on a resume, and a guessed hometown is worse than a blank one.`;
 
 export async function extractProfile(input: {
