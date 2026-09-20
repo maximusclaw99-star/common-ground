@@ -30,7 +30,7 @@ export async function loadCompanyPool(targetCompanies: readonly string[]): Promi
   const peopleProvider = getPeopleProvider();
   const [people, positions] = await Promise.all([
     peopleProvider.getPeople({ companies: targetCompanies, limit: 2000 }),
-    getPositionsProvider().getPositions({ companies: targetCompanies, limit: 400 })
+    getPositionsProvider().getPositions({ companies: targetCompanies, limit: 8000 })
       .catch((err) => {
         console.warn("[dashboard] openings unavailable", err instanceof Error ? err.message : err);
         return [] as Position[];

@@ -11,7 +11,7 @@ function Mark() {
 }
 
 export interface NavProps {
-  current?: "people" | "openings" | "plan" | "profile";
+  current?: "people" | "openings" | "profile";
   signedIn?: boolean;
   cta?: { label: string; href: string } | null;
   /** Whose account this is. Absent in demo mode, where there is no account. */
@@ -30,7 +30,6 @@ export function Nav({ current, signedIn, cta, email }: NavProps) {
         <div className="tb-nav__links">
           <NavLink href="/dashboard" active={current === "people"}>Dashboard</NavLink>
           <NavLink href="/jobs" active={current === "openings"}>Openings</NavLink>
-          <NavLink href="/plan" active={current === "plan"}>Plan</NavLink>
           <NavLink href="/intake" active={current === "profile"}>Profile</NavLink>
         </div>
       ) : (
