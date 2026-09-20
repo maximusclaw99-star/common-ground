@@ -16,7 +16,8 @@ const req = (requirement: string, kind: Position["requirements"][number]["kind"]
 
 export function mockPositions(now = Date.now()): Position[] {
   const d = (n: number) => inDays(n, now);
-  const base = { source: "mock", location: null as string | null, description: null as string | null, companyId: null as string | null };
+  const base = { source: "mock", location: null as string | null, description: null as string | null, companyId: null as string | null,
+    category: null as string | null, datesKnown: true, justPosted: false, requirementsTypical: false };
   return [
     { ...base, id: "m01", title: "Technology Analyst Intern", company: "Deloitte", type: "internship", vertical: "consulting",
       location: "Arlington, VA", opensOn: d(12), closesOn: d(58), targetGradYears: [2027, 2028], url: "https://jobs.example.com/deloitte/m01",

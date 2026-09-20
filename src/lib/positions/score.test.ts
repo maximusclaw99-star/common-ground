@@ -67,3 +67,19 @@ test("accounting is a vertical: audit and tax targets resolve to it", () => {
   };
   assert.equal(studentVerticals(acct)[0], "accounting");
 });
+
+test("a posting with no dates counts as open and says posted, never a countdown", () => {
+  const undated: Position = { ...byId("m01"), datesKnown: false, justPosted: true, opensOn: "2026-09-19", closesOn: "2026-12-18" };
+  const fit = scorePosition(student, undated, { now: NOW })!;
+  assert.equal(fit.windowStatus, "open");
+  assert.equal(fit.datesKnown, false);
+  assert.ok(fit.reasons.includes("Just posted"));
+});
+
+test("allVerticals keeps out-of-vertical roles at zero vertical points, and says why", () => {
+  const finance = byId("m14");
+  assert.equal(scorePosition(student, finance, { now: NOW, verticals: ["consulting"] }), null);
+  const kept = scorePosition(student, finance, { now: NOW, verticals: ["consulting"], allVerticals: true })!;
+  assert.ok(kept.reasons[0].startsWith("Outside the verticals"));
+  assert.ok(kept.score < scorePosition(student, byId("m01"), { now: NOW, verticals: ["consulting"] })!.score);
+});

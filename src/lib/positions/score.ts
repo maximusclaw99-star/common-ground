@@ -24,6 +24,9 @@ export interface PositionScore {
   positionId: string;
   score: number;
   windowStatus: WindowStatus;
+  /** False when the source had no dates; the label should say "posted", not a countdown. */
+  datesKnown: boolean;
+  justPosted: boolean;
   /** Negative once open. */
   daysUntilOpen: number;
   reasons: string[];
@@ -32,6 +35,11 @@ export interface PositionScore {
 
 const VERTICAL_WORDS: Record<string, RegExp> = {
   accounting: /\b(account|audit|tax|cpa|assurance|forensic)/i,
+  engineering: /\b(mechanical|electrical|civil|chemical|aerospace|industrial eng|hardware|manufacturing)/i,
+  operations: /\b(operations|supply chain|logistics|procurement)/i,
+  business: /\b(sales|business development|marketing|communications|human resources|\bhr\b|people ops|legal|policy|compliance|nonprofit|public sector)/i,
+  design: /\b(design|ux|ui|product design)/i,
+  science: /\b(research|scien|healthcare|biolog|chem|lab)/i,
   swe: /\b(software|engineer(ing)?|developer|swe|backend|frontend|full[- ]?stack|ml|machine learning|data eng|sre|devops|security eng|cyber)/i,
   consulting: /\b(consult|advisory|strategy|analyst|business analyst|technology analyst|public sector)/i,
   finance: /\b(financ|banking|investment|trading|trader|quant|equity|asset|wealth|capital)/i,
@@ -72,6 +80,8 @@ const DAY = 86_400_000;
 const dayDiff = (iso: string, now: number) => Math.round((Date.parse(iso + "T00:00:00Z") - now) / DAY);
 
 export function windowStatus(position: Position, now: number): { status: WindowStatus; daysUntilOpen: number } {
+  // No dates from the source: it is posted and open, and the UI says "posted".
+  if (!position.datesKnown) return { status: "open", daysUntilOpen: 0 };
   const daysUntilOpen = dayDiff(position.opensOn, now);
   const daysUntilClose = dayDiff(position.closesOn, now);
   if (daysUntilOpen <= 0 && daysUntilClose >= 0) return { status: "open", daysUntilOpen };
@@ -83,19 +93,24 @@ export function windowStatus(position: Position, now: number): { status: WindowS
 export function scorePosition(
   student: ScorableStudent,
   position: Position,
-  opts?: { now?: number; verticals?: string[] },
+  opts?: { now?: number; verticals?: string[]; allVerticals?: boolean },
 ): PositionScore | null {
   const now = opts?.now ?? Date.now();
   const verticals = opts?.verticals ?? studentVerticals(student);
   const vIndex = verticals.indexOf(position.vertical);
   // No verticals known yet (blank intake) -> everything is a candidate at the
   // secondary weight, so the page is not empty before the questionnaire.
-  if (verticals.length && vIndex < 0) return null;
+  // `allVerticals` keeps out-of-vertical roles too, at zero vertical points —
+  // a company page shows everything the employer posted, ranked honestly.
+  const outside = verticals.length > 0 && vIndex < 0;
+  if (outside && !opts?.allVerticals) return null;
   const primary = vIndex === 0;
   const reasons: string[] = [];
-  let score = verticals.length ? (primary ? 40 : 25) : 25;
+  let score = outside ? 0 : verticals.length ? (primary ? 40 : 25) : 25;
   reasons.push(
-    verticals.length
+    outside
+      ? `Outside the verticals you told us about (${position.vertical})`
+      : verticals.length
       ? `${primary ? "Primary" : "Secondary"} target: ${position.vertical}`
       : `Vertical ${position.vertical} — tell us what you want and this sharpens`,
   );
@@ -137,7 +152,8 @@ export function scorePosition(
   const { status, daysUntilOpen } = windowStatus(position, now);
   score += status === "open" ? 5 : status === "opens_soon" ? 5 : status === "upcoming" ? 2 : -20;
   reasons.push(
-    status === "open" ? "Applications open now"
+    !position.datesKnown ? (position.justPosted ? "Just posted" : "Posted; no closing date given")
+      : status === "open" ? "Applications open now"
       : status === "opens_soon" ? `Opens in ${daysUntilOpen} days`
       : status === "upcoming" ? `Opens ${position.opensOn}`
       : "Application window closed",
@@ -153,6 +169,8 @@ export function scorePosition(
     positionId: position.id,
     score: Math.round(score * 10) / 10,
     windowStatus: status,
+    datesKnown: position.datesKnown,
+    justPosted: position.justPosted,
     daysUntilOpen,
     reasons,
     primaryVertical: primary,
@@ -165,13 +183,13 @@ export interface RankedPosition { position: Position; fit: PositionScore }
 export function rankPositions(
   student: ScorableStudent,
   positions: readonly Position[],
-  opts?: { now?: number },
+  opts?: { now?: number; allVerticals?: boolean },
 ): RankedPosition[] {
   const verticals = studentVerticals(student);
   const now = opts?.now ?? Date.now();
   const ranked: RankedPosition[] = [];
   for (const position of positions) {
-    const fit = scorePosition(student, position, { now, verticals });
+    const fit = scorePosition(student, position, { now, verticals, allVerticals: opts?.allVerticals });
     if (fit) ranked.push({ position, fit });
   }
   ranked.sort((a, b) =>

@@ -9,9 +9,9 @@ export interface PositionRequirement {
 }
 
 /**
- * One opening. Dates are ISO `YYYY-MM-DD`; the window is what the product is
- * about, so both ends are mandatory even when a source only knows one and we
- * had to assume the other.
+ * One opening. Dates are ISO `YYYY-MM-DD`. A source that carries no dates
+ * (the internships directory) sets `datesKnown: false` and the UI says
+ * "posted" instead of pretending to know a window.
  */
 export interface Position {
   id: string;
@@ -19,15 +19,23 @@ export interface Position {
   company: string;
   companyId: string | null;
   type: PositionType;
-  /** swe | consulting | finance — the launch verticals. */
+  /** swe | consulting | finance | accounting | engineering | operations | business | design | science | other */
   vertical: string;
+  /** The source's own grouping, e.g. "Finance / Investment Banking". Null for the mock set. */
+  category: string | null;
   location: string | null;
   opensOn: string;
   closesOn: string;
+  /** False when opensOn/closesOn are stand-ins because the source has no dates. */
+  datesKnown: boolean;
+  /** The source flagged it as newly posted. */
+  justPosted: boolean;
   targetGradYears: number[];
   description: string | null;
   url: string | null;
+  /** From the posting when the source has text; otherwise typical for the category, and `requirementsTypical` is true. */
   requirements: PositionRequirement[];
+  requirementsTypical: boolean;
   /** Provider name, for the status footer. */
   source: string;
 }

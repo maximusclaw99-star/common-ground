@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
 import captured from "./__fixtures__/positions-statement.json";
-import { toPosition } from "./databricks";
+import { toDirectoryPosition, toPosition } from "./databricks";
 
 /**
  * The fixture is a real Statement Execution API response (captured 2026-09-19,
@@ -47,4 +47,21 @@ test("missing or malformed nested columns degrade to empty arrays, never throw",
   const p = toPosition({ ...rows[0], target_grad_years: "not json", requirements: null });
   assert.deepEqual(p.targetGradYears, []);
   assert.deepEqual(p.requirements, []);
+});
+
+test("a directory row becomes a Position with typical requirements and stand-in dates flagged as such", () => {
+  const p = toDirectoryPosition({
+    id: "i00003", category: "Quantitative Trading / Research", company: "Booz Allen Hamilton",
+    title: "University - Summer 2027 Quantum Computing Intern", location: "Washington, District of Columbia, United States",
+    just_posted: "true", apply_url: "https://bah.wd1.myworkdayjobs.com/x", vertical: "finance",
+    requirements: JSON.stringify([{ requirement: "Python", kind: "skill", required: true }, { requirement: "Statistics", kind: "skill", required: true }]),
+  });
+  assert.equal(p.type, "internship");
+  assert.equal(p.vertical, "finance");
+  assert.equal(p.datesKnown, false);
+  assert.equal(p.justPosted, true);
+  assert.equal(p.requirementsTypical, true);
+  assert.equal(p.requirements.length, 2);
+  assert.equal(p.url, "https://bah.wd1.myworkdayjobs.com/x");
+  assert.deepEqual(toDirectoryPosition({ id: "x", requirements: null }).requirements, []);
 });
