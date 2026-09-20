@@ -137,7 +137,7 @@ export default async function CompanyPage({
             )}
             <div className="tb-cards tb-cards--2">
               {listed.slice(0, 120).map(({ id, result, homophily: h }) => (
-                <PersonCard key={id} person={byId.get(id)!} result={result} homophily={h} />
+                <PersonCard key={id} person={byId.get(id)!} result={result} homophily={h} badge={byHomophily ? "homophily" : "tier"} />
               ))}
             </div>
             {results.length > 120 && (

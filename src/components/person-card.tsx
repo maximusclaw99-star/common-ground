@@ -9,28 +9,36 @@ import { TierBadge } from "./tier-badge";
  * One person. The body is what you have in common, whichever scorer ranked
  * the list; `homophily` swaps the badge and adds its drivers to the lines.
  */
+/** Ladder evidence that is genuinely shared with the resume: not a post, an event, or "same field". */
+const SHARED_KINDS = new Set(["school", "org", "employer", "client", "place", "interest"]);
+
 /**
- * What the student and this person share, as sentences, strongest first: the
- * ladder's evidence (a post or an event only if nothing personal is shared)
- * plus the homophily drivers, deduplicated. Three lines at most on a card.
+ * What the student and this person share, as sentences, strongest first:
+ * the ladder's shared facts, then the homophily drivers that add a fact the
+ * ladder did not already name (the two scorers describe the same university
+ * in different words). Three lines at most on a card; nothing else.
  */
 export function inCommonLines(result: AffinityResult, homophily?: HomophilyResult, max = 3): string[] {
-  const personal = result.evidence.filter((e) => e.kind !== "post" && e.kind !== "event").map((e) => e.label);
-  const timely = result.evidence.filter((e) => e.kind === "post" || e.kind === "event").map((e) => e.label);
-  const drivers = (homophily?.matchDrivers ?? []).filter((d) => d !== NO_FACTORS);
-  const seen = new Set<string>();
   const out: string[] = [];
-  for (const line of [...personal, ...drivers, ...(personal.length || drivers.length ? [] : timely)]) {
-    const key = line.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
-    out.push(line);
-    if (out.length >= max) break;
+  for (const e of result.evidence) {
+    if (SHARED_KINDS.has(e.kind) && !out.includes(e.label)) out.push(e.label);
   }
-  return out;
+  const said = out.join(" | ").toLowerCase();
+  for (const d of homophily?.matchDrivers ?? []) {
+    if (d === NO_FACTORS) continue;
+    const value = d.replace(/\s*\(\+\d+\)\s*$/, "").split(":")[1]?.trim().toLowerCase();
+    if (value && said.includes(value)) continue;
+    if (!value && /hometown/i.test(d) && result.evidence.some((e) => e.kind === "place")) continue;
+    out.push(d);
+  }
+  return out.slice(0, max);
 }
 
-export function PersonCard({ person, result, homophily }: { person: Person; result: AffinityResult; homophily?: HomophilyResult }) {
+export function PersonCard({ person, result, homophily, badge = "tier" }: {
+  person: Person; result: AffinityResult; homophily?: HomophilyResult;
+  /** Which score the badge shows — the one the list is ordered by. */
+  badge?: "tier" | "homophily";
+}) {
   const lines = inCommonLines(result, homophily);
   return (
     <Link href={`/people/${person.id}`} className="tb-card">
@@ -44,7 +52,7 @@ export function PersonCard({ person, result, homophily }: { person: Person; resu
             </p>
           </div>
         </div>
-        {homophily ? <HomophilyBadge result={homophily} /> : <TierBadge rank={result.rank} score={result.score} />}
+        {badge === "homophily" && homophily ? <HomophilyBadge result={homophily} /> : <TierBadge rank={result.rank} score={result.score} />}
       </div>
 
       {lines.length === 0 ? (
@@ -57,11 +65,6 @@ export function PersonCard({ person, result, homophily }: { person: Person; resu
         </ul>
       )}
 
-      {result.outreach.timing && (
-        <p className="mono-micro" style={{ color: "var(--alert)", margin: "var(--space-12) 0 0" }}>
-          <span className="tb-led tb-led--alert" aria-hidden /> {result.outreach.timing}
-        </p>
-      )}
     </Link>
   );
 }
