@@ -2,6 +2,7 @@
 
 import { useActionState, useState, useSyncExternalStore } from "react";
 import { PlanResult } from "@/components/plan-result";
+import { ProgressBar } from "@/components/tb/progress-bar";
 import { askAgent, type AskState } from "./actions";
 
 const subscribe = (notify: () => void) => { const id = setInterval(notify, 500); return () => clearInterval(id); };
@@ -22,7 +23,7 @@ function Progress({ provider }: { provider: string }) {
   const elapsed = now === 0 ? 0 : Math.max(0, Math.round((now * 500 - startedAt) / 1000));
   return (
     <div style={{ marginTop: "var(--space-16)" }} aria-live="polite">
-      <div className="tb-progress" role="progressbar" aria-label="Working out your plan"><div className="tb-progress__bar" /></div>
+      <ProgressBar elapsed={elapsed} typicalSeconds={20} label="Working out your plan" />
       <div className="mono-micro flex flex-wrap items-center justify-between gap-[var(--space-12)]" style={{ marginTop: "var(--space-8)", color: "var(--ink-faint)" }}>
         <span style={{ textTransform: "uppercase" }}><span className="tb-led tb-led--live" aria-hidden /> {stageAt(elapsed)}</span>
         <span style={{ fontVariantNumeric: "tabular-nums" }}>{elapsed}s &middot; via {provider}</span>

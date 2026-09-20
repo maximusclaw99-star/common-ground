@@ -197,19 +197,15 @@ body {
     border: var(--border-1) solid var(--rule-strong);
     border-radius: var(--radius-none);
   }
+  /* Width is set inline from the measured elapsed time; the stripe is a texture, not a sweep. */
   .tb-progress__bar {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
-    width: 28%;
-    background: var(--ink);
-    animation: tb-sweep 1.4s linear infinite;
-  }
-  @keyframes tb-sweep {
-    from { transform: translateX(-100%); }
-    /* 100% of the track expressed in multiples of the block's own width. */
-    to   { transform: translateX(357%); }
+    width: 0;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 12px, var(--ink-muted) 12px 24px);
+    transition: width 500ms linear;
   }
 
   /* The readout at the point the two hands meet. */
@@ -234,9 +230,6 @@ body {
   .tb-chip, .tb-card, .tb-mic { transition: none; }
   /* The mic still turns solid while listening; it just stops pulsing. */
   .tb-mic[aria-pressed="true"] { animation: none; }
-  /* Nothing sweeps; the elapsed counter beside it still says work is happening. */
-  .tb-progress__bar {
-    animation: none; width: 100%; opacity: 0.6;
-    background: repeating-linear-gradient(90deg, var(--ink) 0 12px, transparent 12px 24px);
-  }
+  /* The fill still grows with the clock; it just steps instead of easing. */
+  .tb-progress__bar { transition: none; }
 }

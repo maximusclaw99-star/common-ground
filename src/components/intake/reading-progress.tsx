@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import { ProgressBar } from "@/components/tb/progress-bar";
 
 /**
  * What the upload shows while the resume is being read.
  *
- * Indeterminate, deliberately. The server action is a single round trip and
- * reports nothing until it returns, so any percentage here would be a number
- * this page invented about itself — and the whole diagnostic idiom in this
- * system rests on readings being measured rather than staged.
+ * The server action is a single round trip and reports nothing until it
+ * returns, so the bar fills on the measured clock against the time a read
+ * usually takes (see ProgressBar), not on a percentage this page invented.
  *
  * The elapsed seconds ARE measured. The stage labels are derived from the
  * pipeline's known shape (upload, then parse, then the model), not reported by
@@ -63,9 +63,7 @@ export function ReadingProgress({ reader }: { reader: string }) {
 
   return (
     <div style={{ marginTop: "var(--space-24)" }} aria-live="polite">
-      <div className="tb-progress" role="progressbar" aria-label="Reading your resume">
-        <div className="tb-progress__bar" />
-      </div>
+      <ProgressBar elapsed={elapsed} typicalSeconds={reader === "anthropic" ? 8 : 18} label="Reading your resume" />
       <div className="mono-micro flex flex-wrap items-center justify-between gap-[var(--space-12)]"
         style={{ marginTop: "var(--space-8)", color: "var(--ink-faint)" }}>
         <span style={{ textTransform: "uppercase" }}>
