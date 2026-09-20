@@ -56,8 +56,11 @@ export async function uploadResume(_prev: UploadState, formData: FormData): Prom
     // What the resume already told us counts for ranking right away; the
     // questionnaire still asks the student to confirm each of these, because
     // no meta entry is written here, so nothing is silently treated as answered.
+    // A new resume is a new student: answers to the previous questionnaire
+    // are cleared with it, or every question would count as answered and the
+    // intake would open on "all caught up" for a profile it never asked about.
     const facts = { ...EMPTY_FACTS, ...deriveAll(FIELDS, profile) };
-    await demoStore.save(id, { profile, facts });
+    await demoStore.save(id, { profile, facts, meta: {}, intakeCompletedAt: null });
     redirect("/onboarding/review");
   }
 
